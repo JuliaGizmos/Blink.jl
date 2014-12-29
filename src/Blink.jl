@@ -1,5 +1,9 @@
 module Blink
 
-# package code goes here
+using Lazy
+
+include("procs.jl")
+include("jsexprs.jl")
+include("jscall.jl")
 
 end # module
