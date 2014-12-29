@@ -25,7 +25,7 @@ end
 
 import Base: Process, TcpSocket
 
-export init, AtomShell
+export AtomShell
 
 type AtomShell
   proc::Process
@@ -48,15 +48,18 @@ function try_connect(args...; interval = 0.01, attempts = 100)
   end
 end
 
+const hooks = Function[]
+shellinit(f::Function) = push!(hooks, f)
+
 function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
   proc = spawn_rdr(`$atom $dbg $mainjs port $p`)
   conn = try_connect(ip"127.0.0.1", p)
-  AtomShell(proc, conn)
+  shell = AtomShell(proc, conn)
+  for f in hooks
+    f(shell)
+  end
+  return shell
 end
-
-# shell utils
-
-active(shell::AtomShell) = process_running(shell.proc)

@@ -31,8 +31,14 @@ var server = net.createServer(function(c) { //'connection' listener
 
   function line(s) {
     data = JSON.parse(s);
+    var result;
     if (data.command == "eval") {
-      eval(data.code);
+      result = eval(data.code);
+      if (data.callback) {
+        result == undefined && (result = null);
+        result = {callback: data.callback, result: result};
+        c.write(JSON.stringify(result));
+      }
     } else {
       throw "No such command: " + data.command;
     }
