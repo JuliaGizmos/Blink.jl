@@ -51,4 +51,24 @@ server.listen(port, function() { //'listening' listener
 });
 
 app.on("ready", function() {
+  app.on('window-all-closed', function(e) {
+  });
 });
+
+// Window creation
+var Window = require("browser-window");
+var windows = {};
+
+function createWindow(opts) {
+  var win = new Window(opts);
+  windows[win.id] = win;
+  if (opts.url) {
+    win.loadUrl(opts.url);
+  }
+
+  win.on('closed', function() {
+    delete windows[win.id];
+  });
+
+  return win.id;
+}
