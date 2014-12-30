@@ -2,7 +2,7 @@ module Blink
 
 using Lazy
 
-include("procs.jl")
+include("process.jl")
 include("jsexprs.jl")
 include("jscall.jl")
 include("window.jl")
