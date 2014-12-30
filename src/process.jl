@@ -10,10 +10,11 @@ spawn_rdr(cmd) = spawn(cmd, Base.spawn_opts_inherit()...)
 _inspector = nothing
 
 function inspector()
-  hascommand("node-inspector") || error("You must have node-inspector installed to debug.")
-  global _inspector
-  _inspector != nothing && process_running(_inspector) && return _inspector
-  _inspector = spawn_rdr(`node-inspector`)
+  if hascommand("node-inspector")
+    global _inspector
+    _inspector != nothing && process_running(_inspector) && return _inspector
+    _inspector = spawn_rdr(`node-inspector`)
+  end
 end
 
 function inspector(port)
