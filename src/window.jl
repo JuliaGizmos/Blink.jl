@@ -11,7 +11,7 @@ end
 shell(win::Window) = win.shell
 id(win::Window) = win.id
 
-function Window(a::AtomShell, opts::Associative)
+function Window(a::AtomShell, opts::Associative = Dict())
   id = @js a createWindow($opts)
   return Window(id, a)
 end
