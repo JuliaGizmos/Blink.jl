@@ -32,7 +32,7 @@ type AtomShell
   sock::TcpSocket
 end
 
-@osx_only const atom = Pkg.dir("Blink", "deps/Atom.app/Contents/MacOS/Atom")
+@osx_only const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Julia")
 const mainjs = Pkg.dir("Blink", "js", "main.js")
 
 port() = rand(2_000:10_000)
