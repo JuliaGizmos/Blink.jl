@@ -9,7 +9,7 @@ include("window.jl")
 include("utils.jl")
 
 export docs
-docs() = Main.Graphics.docs()
+docs(a...) = Main.Graphics.docs(a...)
 
 end # module
 
