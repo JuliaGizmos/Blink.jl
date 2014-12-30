@@ -17,9 +17,9 @@ end
 const counter = [0]
 cb() = counter[1] += 1
 
-function js_(shell::AtomShell, js::String; callback = false)
+function js_(shell::AtomShell, js::JSString; callback = false)
   cmd = @d(:command => :eval,
-           :code => js)
+           :code => js.s)
   if callback
     id, cond = cb(), Condition()
     cmd[:callback] = id

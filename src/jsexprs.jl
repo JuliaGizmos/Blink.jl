@@ -2,10 +2,19 @@ using JSON
 
 jsexpr(io, x) = JSON.print(io, x)
 
-jsexpr(x) = sprint(jsexpr, x)
+type JSString
+  s::UTF8String
+end
+
+jsexpr(x) = JSString(sprint(jsexpr, x))
+
+macro js_str(s)
+  :(JSString($(esc(s))))
+end
 
 # Expressions
 
+jsexpr(io, x::JSString) = print(io, x.s)
 jsexpr(io, x::Symbol) = print(io, x)
 jsexpr(io, x::QuoteNode) = jsexpr(io, x.value)
 jsexpr(io, x::LineNumberNode) = nothing
@@ -26,6 +35,13 @@ function call_expr(io, f, args...)
   print(io, ")")
 end
 
+function ref_expr(io, x, args...)
+  jsexpr(io, x)
+  print(io, "[")
+  jsexpr_joined(io, args)
+  print(io, "]")
+end
+
 jsexpr(io, x::Expr) =
   @switch isexpr(x, _),
     :call -> call_expr(io, x.args...),
@@ -34,6 +50,7 @@ jsexpr(io, x::Expr) =
     :block -> jsexpr_joined(io, x.args, ";"),
     :new -> (print(io, "new "); jsexpr(io, x.args[1])),
     :var -> (print(io, "var "); jsexpr(io, x.args[1])),
+    :ref -> ref_expr(io, x.args...),
     :macrocall -> jsexpr(io, macroexpand(x)),
     :line -> nothing,
     error("Unsupported JS expression `$(x.head)`")

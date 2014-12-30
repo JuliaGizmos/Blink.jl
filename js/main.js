@@ -72,3 +72,10 @@ function createWindow(opts) {
 
   return win.id;
 }
+
+function withwin(id, code) {
+  if (windows[id]) {
+    return eval('(function() { return (' + code + ')});')
+             .call(windows[id]);
+  }
+}
