@@ -55,7 +55,7 @@ function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  proc = spawn_rdr(`$atom $dbg $mainjs port $p`)
+  proc = (debug ? spawn_rdr : spawn)(`$atom $dbg $mainjs port $p`)
   conn = try_connect(ip"127.0.0.1", p)
   shell = AtomShell(proc, conn)
   for f in hooks
