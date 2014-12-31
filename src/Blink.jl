@@ -13,4 +13,4 @@ docs(a...) = Main.Graphics.docs(a...)
 
 end # module
 
-include("display/docs.jl")
+include("display/graphics.jl")
