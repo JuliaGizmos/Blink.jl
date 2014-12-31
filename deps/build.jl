@@ -7,7 +7,7 @@ download(x) = run(`curl -LO $x`)
 @unix_only unzip(x) = run(`unzip $x`)
 
 @windows_only unzip(x, y) =
-  run(`7z e $x -o $y`)
+  run(`7z x $x -o$y`)
 
 @osx_only begin
   rm′("Julia.app")

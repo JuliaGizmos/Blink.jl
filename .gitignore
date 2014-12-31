@@ -1,1 +1,3 @@
 /deps/Julia.app
+/deps/atom
+/deps/*.zip
