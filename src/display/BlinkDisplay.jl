@@ -1,7 +1,4 @@
-module Graphics
-
-include("system.jl")
-include("compat.jl")
+module BlinkDisplay
 
 using Blink, Lazy
 
@@ -12,6 +9,10 @@ function shell()
   _shell ≠ nothing && active(_shell) && return _shell
   _shell = Blink.init()
 end
+
+include("display.jl")
+
+export docs
 
 docpane(url = "http://docs.julialang.org/en/latest/") =
   Window(shell(), @d(:url => url,

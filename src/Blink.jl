@@ -1,3 +1,6 @@
+include("graphics/Graphics.jl")
+using Graphics
+
 module Blink
 
 using Lazy
@@ -10,5 +13,5 @@ include("utils.jl")
 
 end # module
 
-include("display/graphics.jl")
-using Graphics
+include("display/BlinkDisplay.jl")
+using BlinkDisplay
