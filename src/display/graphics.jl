@@ -1,5 +1,8 @@
 module Graphics
 
+include("system.jl")
+include("compat.jl")
+
 using Blink, Lazy
 
 _shell = nothing
