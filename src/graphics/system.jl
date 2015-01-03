@@ -1,6 +1,4 @@
-# using Requires, Lazy
-
-using Lazy
+using Requires, Lazy
 
 export @media
 
@@ -78,12 +76,11 @@ media(x) = media(typeof(x))
 media(T, M) =
   @eval media(::Type{$T}) = $M
 
-# Need to fix @require in Jewel.jl for this.
-# @require Gadfly begin
-#   media(Gadfly.Plot) = Media.Plot
-# end
 media(AbstractMatrix, Media.Matrix)
 media(AbstractVector, Media.List)
+
+@require Gadfly media(Gadfly.Plot, Media.Plot)
+@require Images media(Images.Image, Media.Image)
 
 # A "pool" simply associates types with output devices. Obviously
 # the idea is to use media types for genericity, but object types
