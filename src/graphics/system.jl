@@ -1,6 +1,6 @@
 using Requires, Lazy
 
-export @media
+export render, setdisplay, getdisplay, current_input, Media, @media, media
 
 # Some type system utils
 
