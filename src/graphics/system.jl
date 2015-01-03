@@ -75,13 +75,15 @@ media(::Type{Any}) = Media.Textual
 media(T::Type) = media(super(T))
 media(x) = media(typeof(x))
 
-media(::Type{AbstractMatrix}) = Media.Matrix
-media(::Type{AbstractVector}) = Media.List
+media(T, M) =
+  @eval media(::Type{$T}) = $M
 
 # Need to fix @require in Jewel.jl for this.
 # @require Gadfly begin
 #   media(Gadfly.Plot) = Media.Plot
 # end
+media(AbstractMatrix, Media.Matrix)
+media(AbstractVector, Media.List)
 
 # A "pool" simply associates types with output devices. Obviously
 # the idea is to use media types for genericity, but object types
