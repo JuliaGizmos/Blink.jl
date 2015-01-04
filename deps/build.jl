@@ -29,5 +29,5 @@ end
   shell = "atom-shell-v$version-linux-$arch.zip"
   download("https://github.com/atom/atom-shell/releases/download/v$version/$shell")
   run(`unzip $shell -d atom`)
-  #rm(shell)
+  rm(shell)
 end
