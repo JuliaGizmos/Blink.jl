@@ -34,6 +34,7 @@ type AtomShell
 end
 
 @osx_only const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Julia")
+@linux_only const atom = Pkg.dir("Blink", "deps/atom/atom")
 @windows_only const atom = Pkg.dir("Blink", "deps", "atom", "atom.exe")
 const mainjs = Pkg.dir("Blink", "js", "main.js")
 
