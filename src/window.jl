@@ -11,8 +11,10 @@ end
 shell(win::Window) = win.shell
 id(win::Window) = win.id
 
+const window_defaults = @d(:url => "about:blank")
+
 function Window(a::AtomShell, opts::Associative = Dict())
-  id = @js a createWindow($opts)
+  id = @js a createWindow($(merge(window_defaults, opts)))
   return Window(id, a)
 end
 
