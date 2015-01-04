@@ -27,9 +27,7 @@ function js(shell::AtomShell, js; callback = true)
   end
   JSON.print(shell.sock, cmd)
   println(shell.sock)
-  if callback
-    return wait(cond)
-  end
+  return callback ? wait(cond) : shell
 end
 
 js_(args...) = js(args..., callback = false)

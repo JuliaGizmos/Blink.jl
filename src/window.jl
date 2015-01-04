@@ -1,8 +1,8 @@
-import Base: position
+import Base: position, size
 
 export Window, flashframe, shell, id, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
-  body, loadhtml, loadfile
+  body, loadhtml, loadfile, css
 
 type Window
   id::Int
@@ -13,6 +13,7 @@ shell(win::Window) = win.shell
 id(win::Window) = win.id
 
 const window_defaults = @d(:url => "about:blank",
+                           :title => "Julia",
                            "node-integration" => false)
 
 function Window(a::AtomShell, opts::Associative = Dict())
@@ -21,11 +22,12 @@ function Window(a::AtomShell, opts::Associative = Dict())
 end
 
 function dot(w::Window, code; callback = true)
-  js(w.shell, :(withwin($(w.id), $(jsstring(code)))),
-     callback = callback)
+  r = js(w.shell, :(withwin($(w.id), $(jsstring(code)))),
+         callback = callback)
+  return callback ? r : w
 end
 
-dot_(args...) = dot_(args..., callback = false)
+dot_(args...) = dot(args..., callback = false)
 
 macro dot (win, code)
   :(dot($(esc(win)), $(Expr(:quote, Expr(:., :this, code)))))
@@ -34,9 +36,6 @@ end
 macro dot_ (win, code)
   :(dot_($(esc(win)), $(Expr(:quote, Expr(:., :this, code)))))
 end
-
-js(win::Window, js; callback = true) =
-  dot(win, :(this.webContents.executeJavaScript($(jsstring(js)))), callback = callback)
 
 # Window management APIs
 
@@ -64,6 +63,12 @@ position(win::Window, x, y) =
 position(win::Window) =
   @dot win getPosition()
 
+size(win::Window, w, h) =
+  @dot_ win setSize($w, $h)
+
+size(win::Window) =
+  @dot win getSize()
+
 floating(win::Window, flag) =
   @dot_ win setAlwaysOnTop($flag)
 
@@ -87,12 +92,19 @@ tools(win::Window) =
 
 # Window content APIs
 
+js(win::Window, js; callback = true) =
+  dot(win, :(this.webContents.executeJavaScript($(jsstring(js)))), callback = callback)
+
+css(win::Window, css::String) =
+  @dot_ win webContents.insertCSS($css)
+
 body(win::Window, html::String) =
   @js win document.body.innerHTML = $html
 
 function loadhtml(win::Window, html)
   tmp = string(tempname(), ".html")
   open(tmp, "w") do io
+    println(io, "<style>html,body{margin:0;padding:0;border:0;}</style>\n")
     writemime(io, MIME"text/html"(), html)
   end
   loadfile(win, tmp)
