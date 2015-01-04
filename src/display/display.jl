@@ -26,7 +26,6 @@ function Graphics.render(view::WebView, x; options = @d())
   w = isa(pinned(view), Window) ? view.pinned :
         window(@d(:width => size[1], :height => size[2]))
   loadhtml(w, x)
-#   css(w, "html,body{margin:0;padding:0;border:0;}")
   title(w, string(displaytitle(x), " (", id(w), ")",
                   isa(pinned(view), Window) ? pinstr : ""))
   view.last = w

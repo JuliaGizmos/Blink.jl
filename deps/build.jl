@@ -9,6 +9,8 @@ download(x) = run(`curl -LO $x`)
 @windows_only unzip(x, y) =
   run(`7z x $x -o$y`)
 
+download("http://junolab.s3.amazonaws.com/atom-shell/julia.png")
+
 @osx_only begin
   rm′("Julia.app")
   shell = "atom-shell-mac-$version.zip"

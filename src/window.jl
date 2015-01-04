@@ -14,7 +14,9 @@ id(win::Window) = win.id
 
 const window_defaults = @d(:url => "about:blank",
                            :title => "Julia",
-                           "node-integration" => false)
+                           "node-integration" => false,
+                           "use-content-size" => true,
+                           :icon => Pkg.dir("Blink", "deps", "julia.png"))
 
 function Window(a::AtomShell, opts::Associative = Dict())
   id = @js a createWindow($(merge(window_defaults, opts)))
@@ -101,10 +103,14 @@ css(win::Window, css::String) =
 body(win::Window, html::String) =
   @js win document.body.innerHTML = $html
 
+const initcss = """
+  <style>html,body{margin:0;padding:0;border:0;text-align:center;}</style>
+  """
+
 function loadhtml(win::Window, html)
   tmp = string(tempname(), ".html")
   open(tmp, "w") do io
-    println(io, "<style>html,body{margin:0;padding:0;border:0;}</style>\n")
+    println(io, initcss)
     writemime(io, MIME"text/html"(), html)
   end
   loadfile(win, tmp)
