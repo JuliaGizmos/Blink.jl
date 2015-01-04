@@ -81,6 +81,7 @@ media(AbstractVector, Media.List)
 
 @require Gadfly media(Gadfly.Plot, Media.Plot)
 @require Images media(Images.Image, Media.Image)
+@require DataFrames media(DataFrames.DataFrame, Media.Dataset)
 
 # A "pool" simply associates types with output devices. Obviously
 # the idea is to use media types for genericity, but object types
