@@ -14,6 +14,7 @@ window(opts = @d()) = Window(shell(), opts)
 
 include("display.jl")
 include("objects.jl")
+include("mimes.jl")
 
 export docs
 

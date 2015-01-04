@@ -107,11 +107,11 @@ const initcss = """
   <style>html,body{margin:0;padding:0;border:0;text-align:center;}</style>
   """
 
-function loadhtml(win::Window, html)
+function loadhtml(win::Window, html::String)
   tmp = string(tempname(), ".html")
   open(tmp, "w") do io
     println(io, initcss)
-    writemime(io, MIME"text/html"(), html)
+    println(io, html)
   end
   loadfile(win, tmp)
   @schedule (sleep(1); rm(tmp))
