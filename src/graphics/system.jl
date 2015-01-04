@@ -69,12 +69,12 @@ The default is `Textual`.
 
     media(Gadfly.Plot) == Graphics.Plot
 """
-media(::Type{Any}) = Media.Textual
-media(T::Type) = media(super(T))
 media(x) = media(typeof(x))
 
 media(T, M) =
-  @eval media(::Type{$T}) = $M
+  @eval media{T<:$T}(::Type{T}) = $M
+
+media(Any, Media.Textual)
 
 media(AbstractMatrix, Media.Matrix)
 media(AbstractVector, Media.List)
