@@ -1,7 +1,8 @@
 import Base: position
 
 export Window, flashframe, shell, id, progress, title,
-  centre, floating, loadurl
+  centre, floating, loadurl, opentools, closetools, tools,
+  body, loadhtml, loadfile
 
 type Window
   id::Int
@@ -11,7 +12,8 @@ end
 shell(win::Window) = win.shell
 id(win::Window) = win.id
 
-const window_defaults = @d(:url => "about:blank")
+const window_defaults = @d(:url => "about:blank",
+                           "node-integration" => false)
 
 function Window(a::AtomShell, opts::Associative = Dict())
   id = @js a createWindow($(merge(window_defaults, opts)))
@@ -19,7 +21,7 @@ function Window(a::AtomShell, opts::Associative = Dict())
 end
 
 function dot(w::Window, code; callback = true)
-  js(w.shell, :(withwin($(w.id), $(jsexpr(code).s))),
+  js(w.shell, :(withwin($(w.id), $(jsstring(code)))),
      callback = callback)
 end
 
@@ -32,6 +34,11 @@ end
 macro dot_ (win, code)
   :(dot_($(esc(win)), $(Expr(:quote, Expr(:., :this, code)))))
 end
+
+js(win::Window, js; callback = true) =
+  dot(win, :(this.webContents.executeJavaScript($(jsstring(js)))), callback = callback)
+
+# Window management APIs
 
 active(win::Window) =
   @js win.shell windows.hasOwnProperty($(win.id))
@@ -65,3 +72,30 @@ floating(win::Window) =
 
 loadurl(win::Window, url) =
   @dot win loadUrl($url)
+
+loadfile(win::Window, f) =
+  loadurl(win, "file://$f")
+
+opentools(win::Window) =
+  @dot win openDevTools()
+
+closetools(win::Window) =
+  @dot win closeDevTools()
+
+tools(win::Window) =
+  @dot win toggleDevTools()
+
+# Window content APIs
+
+body(win::Window, html::String) =
+  @js win document.body.innerHTML = $html
+
+function loadhtml(win::Window, html)
+  tmp = string(tempname(), ".html")
+  open(tmp, "w") do io
+    writemime(io, MIME"text/html"(), html)
+  end
+  loadfile(win, tmp)
+  @schedule (sleep(1); rm(tmp))
+  return
+end

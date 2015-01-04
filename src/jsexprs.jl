@@ -8,6 +8,8 @@ end
 
 jsexpr(x) = JSString(sprint(jsexpr, x))
 
+jsstring(x) = jsexpr(x).s
+
 macro js_str(s)
   :(JSString($(esc(s))))
 end
