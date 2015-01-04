@@ -16,13 +16,12 @@ function Window(a::AtomShell, opts::Associative = Dict())
   return Window(id, a)
 end
 
-function dot_(w::Window, code; callback = false)
-  js_(w.shell, :(withwin($(w.id), $(jsexpr(code).s))),
-      callback = callback)
+function dot(w::Window, code; callback = true)
+  js(w.shell, :(withwin($(w.id), $(jsexpr(code).s))),
+     callback = callback)
 end
 
-dot(args...; callback = true) =
-  dot_(args..., callback = callback)
+dot_(args...) = dot_(args..., callback = false)
 
 macro dot (win, code)
   :(dot($(esc(win)), $(Expr(:quote, Expr(:., :this, code)))))

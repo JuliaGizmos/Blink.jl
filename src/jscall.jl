@@ -17,9 +17,9 @@ end
 const counter = [0]
 cb() = counter[1] += 1
 
-function js_(shell::AtomShell, js::JSString; callback = false)
+function js(shell::AtomShell, js; callback = true)
   cmd = @d(:command => :eval,
-           :code => js.s)
+           :code => jsexpr(js).s)
   if callback
     id, cond = cb(), Condition()
     cmd[:callback] = id
@@ -32,10 +32,7 @@ function js_(shell::AtomShell, js::JSString; callback = false)
   end
 end
 
-js_(shell::AtomShell, ex; callback = false) =
-  js_(shell, jsexpr(ex), callback = callback)
-
-js(args...) = js_(args..., callback = true)
+js_(args...) = js(args..., callback = false)
 
 macro js_(shell, ex)
   :(js_($(esc(shell)), $(Expr(:quote, ex))))
