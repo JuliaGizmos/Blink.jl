@@ -5,6 +5,9 @@ type WebView
   pinned
 end
 
+pinned(view::WebView) =
+  isa(view.pinned, Window) && active(view.pinned) ? view.pinned : nothing
+
 WebView() = WebView(nothing, nothing)
 
 const _display = WebView()
@@ -20,12 +23,12 @@ displaytitle(x) = "Julia"
 
 function Graphics.render(view::WebView, x; options = @d())
   size = displaysize(x)
-  w = isa(view.pinned, Window) ? view.pinned :
+  w = isa(pinned(view), Window) ? view.pinned :
         window(@d(:width => size[1], :height => size[2]))
   loadhtml(w, x)
 #   css(w, "html,body{margin:0;padding:0;border:0;}")
   title(w, string(displaytitle(x), " (", id(w), ")",
-                  isa(view.pinned, Window) ? pinstr : ""))
+                  isa(pinned(view), Window) ? pinstr : ""))
   view.last = w
   return w
 end
