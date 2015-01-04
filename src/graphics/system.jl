@@ -1,6 +1,6 @@
 using Requires, Lazy
 
-export render, setdisplay, getdisplay, current_input, Media, @media, media
+export render, setdisplay, unsetdisplay, getdisplay, current_input, Media, @media, media
 
 # Some type system utils
 
@@ -93,6 +93,9 @@ pool() = _pool
 
 setdisplay(T, output) =
   pool()[T] = output
+
+unsetdisplay(T) =
+  haskey(pool(), T) && delete!(pool(), T)
 
 function getdisplay(T, pool)
   K = nearest(T, [Any, keys(pool)...])
