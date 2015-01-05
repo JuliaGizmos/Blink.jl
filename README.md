@@ -51,9 +51,11 @@ setdisplay(FloatingPoint, BlinkDisplay._display)
 2.3 #> Displays with Blink
 ```
 
-In principle you can also set displays for a given input device, although this needs more support from Base to work well. Use
+In principle you can also set displays for a given input device, although this needs more support from Base to work well.
 
-``julia
+Use
+
+```julia
 unsetdisplay(Media.Tabular)
 ```
 
