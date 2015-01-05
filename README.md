@@ -1,6 +1,6 @@
 # Blink.jl
 
-Blink.jl provides a Julia API for creating and working with browser windows, (currently) via [Atom-Shell](https://github.com/atom/atom-shell).
+Blink.jl provides a [Julia](http://julialang.org/) API for creating and working with browser windows, (currently) via [Atom-Shell](https://github.com/atom/atom-shell).
 
 Basic usage:
 
