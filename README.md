@@ -1,6 +1,6 @@
 # Blink.jl
 
-Blink.jl provides a Julia API for creating and working with browser windows, (currently) via [Atom-Shell](https://github.com/atom/atom-shell).
+Blink.jl provides a [Julia](http://julialang.org/) API for creating and working with browser windows, (currently) via [Atom-Shell](https://github.com/atom/atom-shell).
 
 Basic usage:
 
@@ -61,5 +61,5 @@ You can open the devtools for a specific window with `tools(w)`.
 
 ## Issues & Caveats
 
-* Blink.jl communicates with browser processes over TCP. This limits the practicality of JS interop; you need to write a JS gui with a Julia backend as opposed to a pure-Julia app. Hopefully in the future we can get something more direct going with Cxx.jl & libchromiumcontent
+* Blink.jl communicates with browser processes over TCP. This limits the practicality of JS interop; you need to write a JS gui with a Julia backend as opposed to a pure-Julia app. Hopefully in the future we can get something more direct going with [Cxx.jl](https://github.com/Keno/Cxx.jl) & [libchromiumcontent](https://github.com/brightray/libchromiumcontent)
 * On Windows, the spawned process dumps its output into Julia's STDOUT, which is kind of annoying.
