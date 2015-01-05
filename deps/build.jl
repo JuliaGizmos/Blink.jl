@@ -18,7 +18,6 @@ end
   rm′("atom")
   shell = "atom-shell-v$version-win32-ia32.zip"
   download("https://github.com/atom/atom-shell/releases/download/v$version/$shell")
-  unzip(shell, "atom")
   run(`7z x $shell -oatom`)
   rm(shell)
 end
