@@ -10,7 +10,7 @@ download("http://junolab.s3.amazonaws.com/atom-shell/julia.png")
   rm′("Julia.app")
   shell = "atom-shell-mac-$version.zip"
   download("http://junolab.s3.amazonaws.com/atom-shell/$shell")
-  run(`unzip $x`)
+  run(`unzip $shell`)
   rm(shell)
 end
 
