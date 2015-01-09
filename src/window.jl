@@ -2,7 +2,7 @@ import Base: position, size
 
 export Window, flashframe, shell, id, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
-  body, loadhtml, loadfile, css
+  head, head!, body, loadhtml, loadfile, css
 
 type Window
   id::Int
@@ -18,9 +18,18 @@ const window_defaults = @d(:url => "about:blank",
                            "use-content-size" => true,
                            :icon => Pkg.dir("Blink", "deps", "julia.png"))
 
+const windowhooks = Function[]
+
+windowinit(f) =
+    push!(windowhooks, f)
+
 function Window(a::AtomShell, opts::Associative = Dict())
   id = @js a createWindow($(merge(window_defaults, opts)))
-  return Window(id, a)
+  w = Window(id, a)
+  for f in windowhooks
+      f(w)
+  end
+  w
 end
 
 function dot(w::Window, code; callback = true)
@@ -102,6 +111,12 @@ css(win::Window, css::String) =
 
 body(win::Window, html::String) =
   @js win document.body.innerHTML = $html
+
+head!(win::Window, html::String) =
+  @js win document.head.innerHTML = document.head.innerHTML + $html
+
+head(win::Window, html::String) =
+  @js win document.head.innerHTML = $html
 
 const initcss = """
   <style>html,body{margin:0;padding:0;border:0;text-align:center;}</style>
