@@ -32,7 +32,7 @@ end
 
 function call_expr(io, f, args...)
   if f in [:(=), :+, :-, :*, :/, :%]
-    jsexpr_joined(io, args, string(f))
+    print(io, "(", jsexpr_joined(io, args, string(f)), ")")
     return
   end
   jsexpr(io, f)
