@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Julia</title>
+        <script>
+            var ws = location.href.replace("http", "ws");
+            var sock = new WebSocket(ws);
+
+            sock.onmessage = function (event) {
+                window.eval(event.data);
+            };
+        </script>
+    </head>
+    <body>
+    <h1>No Content (yet)</h1>
+    </body>
+</html>

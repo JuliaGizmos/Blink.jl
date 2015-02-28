@@ -5,6 +5,8 @@ module Blink
 
 using Lazy
 
+include("content/content.jl")
+
 include("process.jl")
 include("jsexprs.jl")
 include("jscall.jl")
