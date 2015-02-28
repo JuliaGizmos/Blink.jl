@@ -1,4 +1,4 @@
-port() = get(ENV, "BLINK_PORT", 80)
+port() = get(ENV, "BLINK_PORT", 8000)
 
 const ippat = r"([0-9]+\.){3}[0-9]+"
 
