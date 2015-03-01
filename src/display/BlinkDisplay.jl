@@ -1,13 +1,13 @@
 module BlinkDisplay
 
-using Blink, Graphics, Lazy, Requires
+using Blink, .AtomShell, Graphics, Lazy, Requires
 
 _shell = nothing
 
 function shell(; debug = false)
   global _shell
   _shell ≠ nothing && active(_shell) && return _shell
-  _shell = Blink.init(debug = debug)
+  _shell = AtomShell.init(debug = debug)
 end
 
 window(opts = @d()) = Window(shell(), opts)

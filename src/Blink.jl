@@ -1,20 +1,18 @@
-include("graphics/Graphics.jl")
-using Graphics
-
 module Blink
 
 using Lazy
 
 include("content/content.jl")
+include("jscall/jsexprs.jl")
 include("browser.jl")
 
-include("process.jl")
-include("jsexprs.jl")
-include("jscall.jl")
-include("window.jl")
-include("utils.jl")
+include("AtomShell/AtomShell.jl")
+export AtomShell
 
 end # module
+
+include("graphics/Graphics.jl")
+using Graphics
 
 include("display/BlinkDisplay.jl")
 using BlinkDisplay

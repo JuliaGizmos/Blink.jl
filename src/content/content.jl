@@ -1,5 +1,3 @@
-module Content
-
 using HttpServer, WebSockets
 
 include("config.jl")
@@ -74,6 +72,4 @@ function __init__()
 
   const server = Server(http, WebSocketHandler(sock_handler))
   @schedule @errs run(server, port())
-end
-
 end

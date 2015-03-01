@@ -1,3 +1,8 @@
+using Lazy, JSON
+import ..Blink: jsexpr
+
+# TODO: move most of this to base jscall
+
 export js, js_, @js, @js_, @var, @new
 
 const callbacks = Dict{Int,Condition}()
@@ -17,7 +22,7 @@ end
 const counter = [0]
 cb() = counter[1] += 1
 
-function js(shell::AtomShell, js; callback = true)
+function js(shell::Shell, js; callback = true)
   cmd = @d(:command => :eval,
            :code => jsexpr(js).s)
   if callback

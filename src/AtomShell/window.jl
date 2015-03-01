@@ -6,7 +6,7 @@ export Window, flashframe, shell, id, progress, title,
 
 type Window
   id::Int
-  shell::AtomShell
+  shell::Shell
 end
 
 shell(win::Window) = win.shell
@@ -18,7 +18,7 @@ const window_defaults = @d(:url => "about:blank",
                            "use-content-size" => true,
                            :icon => Pkg.dir("Blink", "deps", "julia.png"))
 
-function Window(a::AtomShell, opts::Associative = Dict())
+function Window(a::Shell, opts::Associative = Dict())
   id = @js a createWindow($(merge(window_defaults, opts)))
   return Window(id, a)
 end

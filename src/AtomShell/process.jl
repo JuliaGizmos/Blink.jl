@@ -26,17 +26,17 @@ end
 
 import Base: Process, TcpSocket
 
-export AtomShell
+export Shell
 
-type AtomShell
+type Shell
   proc::Process
   sock::TcpSocket
 end
 
-@osx_only const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Julia")
-@linux_only const atom = Pkg.dir("Blink", "deps/atom/atom")
+@osx_only     const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Julia")
+@linux_only   const atom = Pkg.dir("Blink", "deps/atom/atom")
 @windows_only const atom = Pkg.dir("Blink", "deps", "atom", "atom.exe")
-const mainjs = Pkg.dir("Blink", "js", "main.js")
+const mainjs = Pkg.dir("Blink", "src", "AtomShell", "main.js")
 
 port() = rand(2_000:10_000)
 
@@ -60,7 +60,7 @@ function init(; debug = false)
   dbg = debug ? "--debug=$dp" : []
   proc = (debug ? spawn_rdr : spawn)(`$atom $dbg $mainjs port $p`)
   conn = try_connect(ip"127.0.0.1", p)
-  shell = AtomShell(proc, conn)
+  shell = Shell(proc, conn)
   for f in hooks
     f(shell)
   end
