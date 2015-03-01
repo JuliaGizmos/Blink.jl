@@ -34,7 +34,7 @@ end
 macro errs (ex)
   :(try $ex
     catch e
-      showerror(STDOUT, e, catch_backtrace())
+      showerror(STDERR, e, catch_backtrace())
     end)
 end
 
@@ -52,8 +52,9 @@ function http_handler(req, res)
 end
 
 function sock_handler(req, client)
+  local f
   try
-    f = pool[id(req.resource)]
+    f = pool[id(req.resource)].value
     # TODO: check if f already has a client, call init
   catch e
     close(client)
