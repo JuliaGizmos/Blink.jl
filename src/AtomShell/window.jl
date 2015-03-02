@@ -94,7 +94,7 @@ tools(win::Window) =
 
 # Window content APIs
 
-js(win::Window, js; callback = true) =
+js(win::Window, js::JSString; callback = true) =
   dot(win, :(this.webContents.executeJavaScript($(jsstring(js)))), callback = callback)
 
 css(win::Window, css::String) =

@@ -3,7 +3,7 @@ module Blink
 using Lazy
 
 include("content/content.jl")
-include("jscall/jsexprs.jl")
+include("rpc/rpc.jl")
 include("browser.jl")
 
 include("AtomShell/AtomShell.jl")

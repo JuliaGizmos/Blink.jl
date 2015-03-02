@@ -51,9 +51,6 @@ function try_connect(args...; interval = 0.01, attempts = 100)
   end
 end
 
-const hooks = Function[]
-shellinit(f::Function) = push!(hooks, f)
-
 function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
@@ -61,8 +58,41 @@ function init(; debug = false)
   proc = (debug ? spawn_rdr : spawn)(`$atom $dbg $mainjs port $p`)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Shell(proc, conn)
-  for f in hooks
-    f(shell)
-  end
+  initcbs(shell)
   return shell
 end
+
+# JS calling stuff
+
+import ..Blink: js, jsexpr, callback!
+
+function js(shell::Shell, js::JSString; callback = true)
+  cmd = @d(:command => :eval,
+           :code => js.s)
+  if callback
+    id, cond = callback!()
+    cmd[:callback] = id
+  end
+  JSON.print(shell.sock, cmd)
+  println(shell.sock)
+  return callback ? wait(cond) : shell
+end
+
+function initcbs(shell)
+  @schedule begin
+    while active(shell)
+      data = JSON.parse(shell.sock)
+      haskey(data, "callback") && callback!(data["callback"], data["result"])
+    end
+  end
+end
+
+# utils
+
+import Base: quit
+
+export active
+
+active(shell::Shell) = process_running(shell.proc)
+
+quit(shell::Shell) = close(shell.sock)
