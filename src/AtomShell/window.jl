@@ -26,7 +26,7 @@ function Window(a::Shell, opts::Associative = Dict())
 end
 
 function dot(w::Window, code; callback = true)
-  r = js(w.shell, :(withwin($(w.id), $(jsstring(code)))),
+  r = js(shell(w), :(withwin($(w.id), $(jsstring(code)))),
          callback = callback)
   return callback ? r : w
 end
@@ -44,7 +44,7 @@ end
 # Window management APIs
 
 active(win::Window) =
-  @js win.shell windows.hasOwnProperty($(win.id))
+  @js shell(win) windows.hasOwnProperty($(win.id))
 
 flashframe(win::Window, on = true) =
   @dot_ win flashFrame($on)

@@ -45,6 +45,6 @@ end
 function callback!(id, value = nothing)
   haskey(callbacks, id) || return
   notify(callbacks[id], value)
-  delete!(callback, id)
+  delete!(callbacks, id)
   return
 end
