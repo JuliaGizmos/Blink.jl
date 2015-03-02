@@ -64,7 +64,8 @@ end
 
 # JS calling stuff
 
-import ..Blink: js, jsexpr, callback!
+using Lazy, JSON
+import ..Blink: js, jsexpr, JSString, callback!
 
 function js(shell::Shell, js::JSString; callback = true)
   cmd = @d(:command => :eval,

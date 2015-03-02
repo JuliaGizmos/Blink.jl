@@ -1,4 +1,4 @@
-using JSON
+using Lazy, JSON
 export JSString
 
 jsexpr(io, x) = JSON.print(io, x)
