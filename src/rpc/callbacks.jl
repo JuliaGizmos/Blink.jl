@@ -27,3 +27,9 @@ function callback!(id, value = nothing)
   delete!(callbacks, id)
   return
 end
+
+function enable_callbacks!(o)
+  handle(o, "callback") do m
+    callback!(m["callback"], m["result"])
+  end
+end

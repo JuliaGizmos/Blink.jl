@@ -66,18 +66,15 @@ end
 # JS Communication
 
 using Lazy, JSON
-# import ..Blink: js, jsexpr, JSString, callback!, handlers, handle_message
 
-import ..Blink: msg, callback!, handlers, handle_message
+import ..Blink: msg, enable_callbacks!, handlers, handle_message
 
 msg(shell::Shell, m) = (JSON.print(shell.sock, m); println(shell.sock))
 
 handlers(shell::Shell) = shell.handlers
 
 function initcbs(shell)
-  handle(shell, "callback") do data
-    callback!(data["callback"], data["result"])
-  end
+  enable_callbacks!(shell)
   @schedule begin
     while active(shell)
       @errs handle_message(shell, JSON.parse(shell.sock))
