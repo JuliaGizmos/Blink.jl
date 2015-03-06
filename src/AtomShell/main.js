@@ -12,6 +12,17 @@ function arg(name) {
   }
 }
 
+var handlers = {};
+
+handlers.eval = function(data, c) {
+  var result = eval(data.code);
+  if (data.callback) {
+    result == undefined && (result = null);
+    result = {type: 'callback', callback: data.callback, result: result};
+    c.write(JSON.stringify(result));
+  }
+}
+
 var server = net.createServer(function(c) { //'connection' listener
   c.on('end', function() {
     app.quit();
@@ -31,14 +42,8 @@ var server = net.createServer(function(c) { //'connection' listener
 
   function line(s) {
     data = JSON.parse(s);
-    var result;
-    if (data.type == "eval") {
-      result = eval(data.code);
-      if (data.callback) {
-        result == undefined && (result = null);
-        result = {type: 'callback', callback: data.callback, result: result};
-        c.write(JSON.stringify(result));
-      }
+    if (handlers.hasOwnProperty(data.type)) {
+      handlers[data.type](data, c);
     } else {
       throw "No such command: " + data.type;
     }
