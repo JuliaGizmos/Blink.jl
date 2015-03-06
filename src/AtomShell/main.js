@@ -32,7 +32,7 @@ var server = net.createServer(function(c) { //'connection' listener
   function line(s) {
     data = JSON.parse(s);
     var result;
-    if (data.command == "eval") {
+    if (data.type == "eval") {
       result = eval(data.code);
       if (data.callback) {
         result == undefined && (result = null);
@@ -40,7 +40,7 @@ var server = net.createServer(function(c) { //'connection' listener
         c.write(JSON.stringify(result));
       }
     } else {
-      throw "No such command: " + data.command;
+      throw "No such command: " + data.type;
     }
   }
 });
