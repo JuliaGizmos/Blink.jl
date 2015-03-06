@@ -1,5 +1,3 @@
-# utils
-
 hascommand(c) =
   try readall(`which $c`); true catch e false end
 
@@ -31,7 +29,10 @@ export Shell
 type Shell
   proc::Process
   sock::TcpSocket
+  handlers
 end
+
+Shell(proc, sock) = Shell(proc, sock, Dict())
 
 @osx_only     const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Julia")
 @linux_only   const atom = Pkg.dir("Blink", "deps/atom/atom")
@@ -62,10 +63,10 @@ function init(; debug = false)
   return shell
 end
 
-# JS calling stuff
+# JS Communication
 
 using Lazy, JSON
-import ..Blink: js, jsexpr, JSString, callback!
+import ..Blink: js, jsexpr, JSString, callback!, handlers, handle_message
 
 function js(shell::Shell, js::JSString; callback = true)
   cmd = @d(:command => :eval,
@@ -79,11 +80,15 @@ function js(shell::Shell, js::JSString; callback = true)
   return callback ? wait(cond) : shell
 end
 
+handlers(shell::Shell) = shell.handlers
+
 function initcbs(shell)
+  handle(shell, "callback") do data
+    callback!(data["callback"], data["result"])
+  end
   @schedule begin
     while active(shell)
-      data = JSON.parse(shell.sock)
-      haskey(data, "callback") && callback!(data["callback"], data["result"])
+      @errs handle_message(shell, JSON.parse(shell.sock))
     end
   end
 end
