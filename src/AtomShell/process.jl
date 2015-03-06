@@ -1,3 +1,5 @@
+using Lazy, JSON
+
 hascommand(c) =
   try readall(`which $c`); true catch e false end
 
@@ -64,8 +66,6 @@ function init(; debug = false)
 end
 
 # JS Communication
-
-using Lazy, JSON
 
 import ..Blink: msg, enable_callbacks!, handlers, handle_message
 
