@@ -11,7 +11,7 @@ type Frame
   msg
 
   function Frame(init = nothing, msg = nothing)
-    f = new(id())
+    f = new(gen_id())
     f.init, f.msg = init, msg
     pool[f.id] = WeakRef(f)
     finalizer(f, f -> delete!(pool, f.id))
@@ -21,7 +21,7 @@ end
 
 const pool = Dict{Int, WeakRef}()
 
-function id()
+function gen_id()
   i = 1
   while haskey(pool, i) i += 1 end
   return i
@@ -29,11 +29,11 @@ end
 
 # Server Setup
 
-id(s::String) = parse(s[2:end])
+parse_id(s::String) = parse(s[2:end])
 
 function http_handler(req, res)
   try
-    pool[id(req.resource)] # Only valid if frame with the ID exists
+    pool[parse_id(req.resource)] # Only valid if frame with the ID exists
   catch e
     res = Response("Not found")
     res.status = 404
