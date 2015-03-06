@@ -2,8 +2,8 @@ module Blink
 
 using Reexport
 
-include("content/content.jl")
 include("rpc/rpc.jl")
+include("content/content.jl")
 include("browser.jl")
 
 include("AtomShell/AtomShell.jl")
