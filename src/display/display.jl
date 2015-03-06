@@ -30,6 +30,7 @@ function Graphics.render(view::WebView, x; options = @d())
   title(w, string(displaytitle(x), " (", id(w), ")",
                   isa(pinned(view), Window) ? pinstr : ""))
   view.last = w
+  front(w)
   return w
 end
 

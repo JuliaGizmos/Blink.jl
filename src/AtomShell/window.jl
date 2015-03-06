@@ -4,7 +4,7 @@ import Base: position, size
 
 export Window, flashframe, id, shell, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
-  body, loadhtml, loadfile, css
+  body, loadhtml, loadfile, css, front
 
 type Window
   id::Int
@@ -95,6 +95,9 @@ closetools(win::Window) =
 
 tools(win::Window) =
   @dot win toggleDevTools()
+
+front(win::Window) =
+  @dot win showInactive()
 
 # Window content APIs
 
