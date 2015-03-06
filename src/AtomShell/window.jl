@@ -25,6 +25,8 @@ function Window(a::Shell, opts::Associative = Dict())
   return Window(id, a)
 end
 
+Window(opts::Associative = Dict()) = Window(shell(), opts)
+
 function dot(w::Window, code; callback = true)
   r = js(shell(w), :(withwin($(w.id), $(jsstring(code)))),
          callback = callback)

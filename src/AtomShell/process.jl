@@ -91,3 +91,13 @@ export active
 active(shell::Shell) = process_running(shell.proc)
 
 quit(shell::Shell) = close(shell.sock)
+
+# Default process
+
+_shell = nothing
+
+function shell(; debug = false)
+  global _shell
+  _shell ≠ nothing && active(_shell) && return _shell
+  _shell = init(debug = debug)
+end

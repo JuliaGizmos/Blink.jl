@@ -25,7 +25,7 @@ function Graphics.render(view::WebView, x; options = @d())
   size = displaysize(x)
   html = tohtml(x)
   w = isa(pinned(view), Window) ? view.pinned :
-        window(@d(:width => size[1], :height => size[2]))
+        Window(@d(:width => size[1], :height => size[2]))
   loadhtml(w, html)
   title(w, string(displaytitle(x), " (", id(w), ")",
                   isa(pinned(view), Window) ? pinstr : ""))
