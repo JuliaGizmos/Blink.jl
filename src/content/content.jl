@@ -1,4 +1,4 @@
-using HttpServer, WebSockets
+using HttpServer, WebSockets, Lazy
 
 include("config.jl")
 
@@ -28,13 +28,6 @@ function id()
 end
 
 # Server Setup
-
-macro errs (ex)
-  :(try $ex
-    catch e
-      showerror(STDERR, e, catch_backtrace())
-    end)
-end
 
 id(s::String) = parse(s[2:end])
 
