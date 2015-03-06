@@ -11,21 +11,11 @@
 include("jsexprs.jl")
 include("callbacks.jl")
 
-# Message handling
-
-export handle
-
-handlers(o) = Dict()
-
-handle_message(o, m) = get(handlers(o), m["type"], identity)(m)
-
-handle(f, o, t) = (handlers(o)[t] = f)
-
 # RPC API
 
 export js, js_, @js, @js_, @var, @new
 
-# msg(o, )
+msg(o, m) = error("$(typeof(o)) object doesn't support JS messages")
 
 js(o, ::JSString; callback = true) = error("$(typeof(o)) object doesn't support JS calls")
 

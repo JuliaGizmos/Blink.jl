@@ -1,3 +1,15 @@
+# Message handling
+
+export handle
+
+handlers(o) = Dict()
+
+handle_message(o, m) = get(handlers(o), m["type"], identity)(m)
+
+handle(f, o, t) = (handlers(o)[t] = f)
+
+# Callback Tasks
+
 const callbacks = Dict{Int,Condition}()
 
 const counter = [0]
