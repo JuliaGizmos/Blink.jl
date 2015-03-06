@@ -1,4 +1,4 @@
-export pin, unpin
+export pin, top
 
 type WebView
   last
@@ -44,8 +44,13 @@ pintitle(::Nothing) = nothing
 unpintitle(::Nothing) = nothing
 
 function pin(w::Window)
-  unpin()
-  view().pinned = pintitle(w)
+  if view().pinned == w
+    pin(nothing)
+  else
+    pin(nothing)
+    view().pinned = pintitle(w)
+  end
+  return
 end
 
 pin(id) = pin(Window(id, shell()))
@@ -56,4 +61,12 @@ function pin(::Nothing)
   view().pinned = nothing
 end
 
-unpin() = pin(nothing)
+# Float API
+
+top(w::Window) = (floating(w, !floating(w)); nothing)
+
+top(id) = top(Window(id, shell()))
+
+top(::Nothing) = nothing
+
+top() = top(view().last)
