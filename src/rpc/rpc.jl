@@ -17,7 +17,16 @@ export js, js_, @js, @js_, @var, @new
 
 msg(o, m) = error("$(typeof(o)) object doesn't support JS messages")
 
-js(o, ::JSString; callback = true) = error("$(typeof(o)) object doesn't support JS calls")
+function js(o, js::JSString; callback = true)
+  cmd = @d(:command => :eval,
+           :code => js.s)
+  if callback
+    id, cond = callback!()
+    cmd[:callback] = id
+  end
+  msg(o, cmd)
+  return callback ? wait(cond) : o
+end
 
 js(o, s; callback = true) = js(o, jsexpr(s); callback = callback)
 

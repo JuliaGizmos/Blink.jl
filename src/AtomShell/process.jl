@@ -66,19 +66,11 @@ end
 # JS Communication
 
 using Lazy, JSON
-import ..Blink: js, jsexpr, JSString, callback!, handlers, handle_message
+# import ..Blink: js, jsexpr, JSString, callback!, handlers, handle_message
 
-function js(shell::Shell, js::JSString; callback = true)
-  cmd = @d(:command => :eval,
-           :code => js.s)
-  if callback
-    id, cond = callback!()
-    cmd[:callback] = id
-  end
-  JSON.print(shell.sock, cmd)
-  println(shell.sock)
-  return callback ? wait(cond) : shell
-end
+import ..Blink: msg, callback!, handlers, handle_message
+
+msg(shell::Shell, m) = (JSON.print(shell.sock, m); println(shell.sock))
 
 handlers(shell::Shell) = shell.handlers
 
