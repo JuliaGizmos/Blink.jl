@@ -1,30 +1,30 @@
 using HttpServer, WebSockets, JSON, Lazy
 
-export Frame
+export Page
 
 include("config.jl")
 
 # Content
 
-type Frame
+type Page
   id::Int
   sock::WebSocket
   handlers::Dict{ASCIIString, Any}
 
-  function Frame(init = nothing)
-    f = new(gen_id())
-    f.handlers = Dict()
-    init == nothing || (f.handlers["init"] = init)
-    enable_callbacks!(f)
-    pool[f.id] = WeakRef(f)
-    finalizer(f, f -> delete!(pool, f.id))
-    return f
+  function Page(init = nothing)
+    p = new(gen_id())
+    p.handlers = Dict()
+    init == nothing || (p.handlers["init"] = init)
+    enable_callbacks!(p)
+    pool[p.id] = WeakRef(p)
+    finalizer(p, p -> delete!(pool, p.id))
+    return p
   end
 end
 
-id(f::Frame) = f.id
-handlers(f::Frame) = f.handlers
-msg(f::Frame, m) = write(f.sock, json(m))
+id(p::Page) = p.id
+handlers(p::Page) = p.handlers
+msg(p::Page, m) = write(p.sock, json(m))
 
 const pool = Dict{Int, WeakRef}()
 
@@ -50,18 +50,18 @@ function http_handler(req, res)
 end
 
 function sock_handler(req, client)
-  local f
+  local p
   try
-    f = pool[parse_id(req.resource)].value
+    p = pool[parse_id(req.resource)].value
     # TODO: check if f already has a client, call init
   catch e
     close(client)
     return
   end
-  f.sock = client
+  p.sock = client
   while !client.is_closed
     data = read(client)
-    @errs handle_message(f, JSON.parse(ASCIIString(data)))
+    @errs handle_message(p, JSON.parse(ASCIIString(data)))
   end
 end
 
