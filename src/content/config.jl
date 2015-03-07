@@ -16,4 +16,6 @@ const ippat = r"([0-9]+\.){3}[0-9]+"
 @linux_only   launch(x) = run(`xdg-open $x`)
 @windows_only launch(x) = run(`cmd /C start $x`)
 
-launch(p::Page) = (launch("http://127.0.0.1:$port/$(id(p))"); p)
+localurl(p::Page) = "http://127.0.0.1:$port/$(id(p))"
+
+launch(p::Page) = (launch(localurl(page)); p)
