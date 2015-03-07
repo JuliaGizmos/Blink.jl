@@ -42,6 +42,7 @@ parse_id(s::String) = try parseint(s[2:end]) catch e nothing end
 function http_handler(req, res)
   id = parse_id(req.resource)
   haskey(pool, id) || @goto fail
+  active(pool[id].value) && @goto fail
 
   return readall(joinpath(dirname(@__FILE__), "main.html"))
 
@@ -55,6 +56,7 @@ function sock_handler(req, client)
   id = parse_id(req.resource)
   haskey(pool, id) || @goto fail
   p = pool[id].value
+  active(p) && @goto fail
 
   p.sock = client
   while active(p)
