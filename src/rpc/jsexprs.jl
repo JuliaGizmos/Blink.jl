@@ -22,7 +22,7 @@ jsexpr(io, x::Symbol) = print(io, x)
 jsexpr(io, x::QuoteNode) = jsexpr(io, x.value)
 jsexpr(io, x::LineNumberNode) = nothing
 
-function jsexpr_joined(io, xs, delim=",")
+function jsexpr_joined(io::IO, xs, delim=",")
   isempty(xs) && return
   for i = 1:length(xs)-1
     jsexpr(io, xs[i])
@@ -31,7 +31,11 @@ function jsexpr_joined(io, xs, delim=",")
   jsexpr(io, xs[end])
 end
 
+jsexpr_joined(xs, delim=",") = sprint(jsexpr_joined, xs, delim)
+
 function call_expr(io, f, args...)
+  f in [:(=), :+, :-, :*, :/, :%] &&
+    return print(io, "(", jsexpr_joined(args, string(f)), ")")
   jsexpr(io, f)
   print(io, "(")
   jsexpr_joined(io, args)
