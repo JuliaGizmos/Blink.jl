@@ -1,6 +1,6 @@
 using HttpServer, WebSockets, JSON, Lazy
 
-export Page, id
+export Page, id, active
 
 # Content
 
@@ -23,6 +23,7 @@ end
 include("config.jl")
 
 id(p::Page) = p.id
+active(p::Page) = isdefined(p, :sock) && isopen(p.sock) && isopen(p.sock.socket)
 handlers(p::Page) = p.handlers
 msg(p::Page, m) = write(p.sock, json(m))
 
@@ -59,7 +60,7 @@ function sock_handler(req, client)
     return
   end
   p.sock = client
-  while !client.is_closed
+  while active(p)
     data = read(client)
     @errs handle_message(p, JSON.parse(ASCIIString(data)))
   end

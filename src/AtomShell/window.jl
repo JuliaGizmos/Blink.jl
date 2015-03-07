@@ -107,11 +107,11 @@ front(win::Window) =
 
 # Window content APIs
 
-js(win::Window, js::JSString; callback = true) =
-  dot(win, :(this.webContents.executeJavaScript($(jsstring(js)))), callback = callback)
+active(::Nothing) = false
 
-css(win::Window, css::String) =
-  @dot_ win webContents.insertCSS($css)
+js(win::Window, s::JSString; callback = true) =
+  active(win.content) ? js(win.content, s, callback = callback) :
+    dot(win, :(this.webContents.executeJavaScript($(jsstring(s)))), callback = callback)
 
 body(win::Window, html::String) =
   @js win document.body.innerHTML = $html

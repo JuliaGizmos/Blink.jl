@@ -67,7 +67,7 @@ end
 
 # JS Communication
 
-import ..Blink: msg, enable_callbacks!, handlers, handle_message
+import ..Blink: msg, enable_callbacks!, handlers, handle_message, active
 
 msg(shell::Shell, m) = (JSON.print(shell.sock, m); println(shell.sock))
 
