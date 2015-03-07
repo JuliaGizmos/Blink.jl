@@ -66,6 +66,7 @@ function sock_handler(req, client)
 end
 
 function __init__()
+  get(ENV, "BLINK_SERVE", "true") in ("1", "true") || return
   http = HttpHandler(http_handler)
   http.events["error"]  = (client, err) -> println(err)
   http.events["listen"] = (port)        -> println("Listening on $port...")
