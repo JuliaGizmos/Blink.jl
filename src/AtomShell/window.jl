@@ -4,7 +4,7 @@ import Base: position, size
 
 export Window, flashframe, shell, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
-  body, loadhtml, loadfile, css, front
+  loadhtml, loadfile, css, front
 
 type Window
   id::Int
@@ -112,9 +112,6 @@ active(::Nothing) = false
 js(win::Window, s::JSString; callback = true) =
   active(win.content) ? js(win.content, s, callback = callback) :
     dot(win, :(this.webContents.executeJavaScript($(jsstring(s)))), callback = callback)
-
-body(win::Window, html::String) =
-  @js win document.body.innerHTML = $html
 
 const initcss = """
   <style>html,body{margin:0;padding:0;border:0;text-align:center;}</style>

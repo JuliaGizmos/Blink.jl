@@ -2,6 +2,8 @@ using HttpServer, WebSockets, JSON, Lazy
 
 export Page, id, active
 
+include("api.jl")
+
 # Content
 
 type Page
