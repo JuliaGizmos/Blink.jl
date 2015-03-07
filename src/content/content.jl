@@ -1,6 +1,6 @@
 using HttpServer, WebSockets, JSON, Lazy
 
-export Page
+export Page, id
 
 # Content
 
