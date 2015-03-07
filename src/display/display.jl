@@ -20,7 +20,7 @@ end
 displaysize(x) = (500, 400)
 displaytitle(x) = "Julia"
 
-function Graphics.render(view::WebView, x; options = @d())
+function Media.render(view::WebView, x; options = @d())
   size = displaysize(x)
   html = tohtml(x)
   w = isa(pinned(view), Window) ? view.pinned :

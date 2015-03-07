@@ -1,6 +1,6 @@
 module BlinkDisplay
 
-using Blink, Graphics, Lazy, Requires
+using Blink, Media, Lazy, Requires
 
 include("display.jl")
 include("objects.jl")

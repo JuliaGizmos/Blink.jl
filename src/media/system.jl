@@ -45,9 +45,6 @@ end
 # output types. Displayable types are associated with a media
 # type as a trait.
 
-module Media
-using ..Graphics
-
 @media Graphical
 @media Plot <: Graphical
 @media Image <: Graphical
@@ -61,13 +58,11 @@ using ..Graphics
 @media List <: Tabular
 @media Dataset <: Tabular
 
-end
-
 """
 `media(T)` gives the media type of the type `T`.
 The default is `Textual`.
 
-    media(Gadfly.Plot) == Graphics.Plot
+    media(Gadfly.Plot) == Media.Plot
 """
 media(x) = media(typeof(x))
 
@@ -132,7 +127,7 @@ current_input() = input[]
 
 # e.g.
 
-# @dynamic let Graphics.input = REPL
+# @dynamic let Media.input = REPL
 #   eval(:(render(x)))
 # end
 
