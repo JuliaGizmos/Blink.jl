@@ -37,33 +37,34 @@ end
 
 # Server Setup
 
-parse_id(s::String) = parseint(s[2:end])
+parse_id(s::String) = try parseint(s[2:end]) catch e nothing end
 
 function http_handler(req, res)
-  try
-    pool[parse_id(req.resource)] # Only valid if frame with the ID exists
-  catch e
-    res = Response("Not found")
-    res.status = 404
-    return res
-  end
+  id = parse_id(req.resource)
+  haskey(pool, id) || @goto fail
+
   return readall(joinpath(dirname(@__FILE__), "main.html"))
+
+  @label fail
+  res = Response("Not found")
+  res.status = 404
+  return res
 end
 
 function sock_handler(req, client)
-  local p
-  try
-    p = pool[parse_id(req.resource)].value
-    # TODO: check if f already has a client, call init
-  catch e
-    close(client)
-    return
-  end
+  id = parse_id(req.resource)
+  haskey(pool, id) || @goto fail
+  p = pool[id].value
+
   p.sock = client
   while active(p)
     data = read(client)
     @errs handle_message(p, JSON.parse(ASCIIString(data)))
   end
+  return
+
+  @label fail
+  close(client)
 end
 
 function __init__()
