@@ -59,7 +59,7 @@ function sock_handler(req, client)
   active(p) && @goto fail
 
   p.sock = client
-  get(handlers(p), "init", identity)(p)
+  @errs get(handlers(p), "init", identity)(p)
   while active(p)
     data = read(client)
     @errs handle_message(p, JSON.parse(ASCIIString(data)))
