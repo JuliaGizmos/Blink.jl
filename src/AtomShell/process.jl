@@ -31,7 +31,7 @@ export Shell
 type Shell
   proc::Process
   sock::TcpSocket
-  handlers
+  handlers::Dict{ASCIIString, Any}
 end
 
 Shell(proc, sock) = Shell(proc, sock, Dict())

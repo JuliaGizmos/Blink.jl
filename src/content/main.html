@@ -5,8 +5,22 @@
             var ws = location.href.replace("http", "ws");
             var sock = new WebSocket(ws);
 
+            var handlers = {};
+
+            handlers.eval = function(msg) {
+                var result = eval(msg.code);
+                if (msg.callback) {
+                    result == undefined && (result = null);
+                    result = {type: 'callback', callback: msg.callback, result: result};
+                    sock.send(JSON.stringify(result));
+                }
+            }
+
             sock.onmessage = function (event) {
-                window.eval(event.data);
+                msg = JSON.parse(event.data);
+                if (handlers.hasOwnProperty(msg.type)) {
+                    handlers[msg.type](msg);
+                }
             };
         </script>
     </head>
