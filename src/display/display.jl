@@ -25,7 +25,7 @@ function Media.render(view::WebView, x; options = @d())
   html = tohtml(x)
   w = isa(pinned(view), Window) ? view.pinned :
         Window(@d(:width => size[1], :height => size[2]))
-  loadhtml(w, html)
+  body(w, html)
   title(w, string(displaytitle(x), " (", id(w), ")",
                   isa(pinned(view), Window) ? pinstr : ""))
   view.last = w
@@ -46,14 +46,15 @@ unpintitle(::Nothing) = nothing
 function pin(w::Window)
   if view().pinned == w
     pin(nothing)
-  else
+  elseif active(w)
     pin(nothing)
-    view().pinned = pintitle(w)
+    pintitle(w)
+    view().pinned = w
   end
   return
 end
 
-pin(id) = pin(Window(id, shell()))
+# pin(id) = pin(Window(id, shell()))
 pin() = pin(view().last)
 
 function pin(::Nothing)
@@ -67,7 +68,7 @@ end
 
 top(w::Window) = (floating(w, !floating(w)); nothing)
 
-top(id) = top(Window(id, shell()))
+# top(id) = top(Window(id, shell()))
 
 top(::Nothing) = nothing
 
