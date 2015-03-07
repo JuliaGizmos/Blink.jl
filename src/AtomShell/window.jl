@@ -21,17 +21,20 @@ const window_defaults = @d(:url => "about:blank",
                            "use-content-size" => true,
                            :icon => Pkg.dir("Blink", "deps", "julia.png"))
 
+raw_window(a::Shell, opts) = @js a createWindow($(merge(window_defaults, opts)))
+
 function Window(a::Shell, opts::Associative = Dict())
-  content = nothing
-  if !haskey(opts, :url)
-    content = Page()
-    opts[:url] = Blink.localurl(content)
-  end
-  id = @js a createWindow($(merge(window_defaults, opts)))
-  return Window(id, a, content)
+  return haskey(opts, :url) ?
+    Window(raw_window(a, opts), a, nothing) :
+    Window(a, Page(), opts)
 end
 
-Window(opts::Associative = Dict()) = Window(shell(), opts)
+function Window(a::Shell, content::Page, opts::Associative = Dict())
+  opts[:url] = Blink.localurl(content)
+  return Window(raw_window(a, opts), a, content)
+end
+
+Window(args...) = Window(shell(), args...)
 
 function dot(w::Window, code; callback = true)
   r = js(shell(w), :(withwin($(w.id), $(jsstring(code)))),
