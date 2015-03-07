@@ -30,3 +30,5 @@ end
   run(`unzip $shell -d atom`)
   rm(shell)
 end
+
+info("Successfully built Blink.jl")
