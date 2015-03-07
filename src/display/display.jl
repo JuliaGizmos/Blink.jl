@@ -14,7 +14,6 @@ const _display = WebView()
 view() = _display
 
 function init()
-#   shell()
   setdisplay(Media.Graphical, view())
 end
 
@@ -58,8 +57,10 @@ pin(id) = pin(Window(id, shell()))
 pin() = pin(view().last)
 
 function pin(::Nothing)
-  unpintitle(view().pinned)
-  view().pinned = nothing
+  if view().pinned ≠ nothing
+    unpintitle(view().pinned)
+    view().pinned = nothing
+  end
 end
 
 # Float API
