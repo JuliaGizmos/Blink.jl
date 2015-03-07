@@ -1,4 +1,8 @@
-port() = get(ENV, "BLINK_PORT", 8000)
+export localips
+
+const _port = rand(2_000:10_000)
+
+port() = get(ENV, "BLINK_PORT", _port)
 
 const ippat = r"([0-9]+\.){3}[0-9]+"
 
@@ -7,3 +11,11 @@ const ippat = r"([0-9]+\.){3}[0-9]+"
                       `grep -Eo $("inet (addr:)?$(ippat.pattern)")` |>
                       `grep -Eo $(ippat.pattern)` |>
                       `grep -v $("127.0.0.1")`))
+
+# Browser Window
+
+@osx_only     launch(x) = run(`open $x`)
+@linux_only   launch(x) = run(`xdg-open $x`)
+@windows_only launch(x) = run(`cmd /C start $x`)
+
+launch(p::Page) = (launch("http://127.0.0.1:$(port())/$(id(p))"); p)
