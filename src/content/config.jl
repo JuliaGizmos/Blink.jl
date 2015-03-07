@@ -1,8 +1,6 @@
-export localips
+export localips, launch
 
-const _port = rand(2_000:10_000)
-
-port() = get(ENV, "BLINK_PORT", _port)
+const port = get(ENV, "BLINK_PORT", rand(2_000:10_000))
 
 const ippat = r"([0-9]+\.){3}[0-9]+"
 
@@ -18,4 +16,4 @@ const ippat = r"([0-9]+\.){3}[0-9]+"
 @linux_only   launch(x) = run(`xdg-open $x`)
 @windows_only launch(x) = run(`cmd /C start $x`)
 
-launch(p::Page) = (launch("http://127.0.0.1:$(port())/$(id(p))"); p)
+launch(p::Page) = (launch("http://127.0.0.1:$port/$(id(p))"); p)

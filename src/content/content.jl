@@ -2,8 +2,6 @@ using HttpServer, WebSockets, JSON, Lazy
 
 export Page
 
-include("config.jl")
-
 # Content
 
 type Page
@@ -21,6 +19,8 @@ type Page
     return p
   end
 end
+
+include("config.jl")
 
 id(p::Page) = p.id
 handlers(p::Page) = p.handlers
@@ -71,5 +71,5 @@ function __init__()
   http.events["listen"] = (port)        -> println("Listening on $port...")
 
   const server = Server(http, WebSocketHandler(sock_handler))
-  @schedule @errs run(server, port())
+  @schedule @errs run(server, port)
 end
