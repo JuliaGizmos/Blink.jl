@@ -13,6 +13,12 @@ function last(view::WebView)
   isempty(view.ws) ? nothing : view.ws[end]
 end
 
+function byid(view::WebView, i)
+  for w in view.ws
+    id(w) == i && return w
+  end
+end
+
 WebView() = WebView(c(), nothing)
 
 const _display = WebView()
@@ -60,7 +66,7 @@ function pin(w::Window)
   return
 end
 
-# pin(id) = pin(Window(id, shell()))
+pin(id) = pin(byid(view(), id))
 pin() = pin(last(view()))
 
 function pin(::Nothing)
@@ -74,7 +80,7 @@ end
 
 top(w::Window) = (floating(w, !floating(w)); nothing)
 
-# top(id) = top(Window(id, shell()))
+top(id) = top(byid(view(), id))
 
 top(::Nothing) = nothing
 
