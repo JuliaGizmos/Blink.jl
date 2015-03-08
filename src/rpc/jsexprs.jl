@@ -49,9 +49,35 @@ function ref_expr(io, x, args...)
   print(io, "]")
 end
 
+function func_expr(io, args, body)
+  named = isexpr(args, :call)
+  named || print(io, "(")
+  print(io, "function ")
+  if named
+    print(io, args.args[1])
+    args = args.args[2]
+  end
+  print(io, "(")
+  isexpr(args, Symbol) ? print(io, args) : print_joined(io, args.args, ",")
+  print(io, ")")
+  print(io, "{")
+  jsexpr(io, body)
+  print(io, "}")
+  named || print(io, ")")
+end
+
+function dict_expr(io, xs)
+  print(io, "{")
+  xs = ["$(x.args[1]::String):"*jsexpr(x.args[2]).s for x in xs]
+  print_joined(io, xs, ",")
+  print(io, "}")
+end
+
 jsexpr(io, x::Expr) =
   @switch isexpr(x, _),
     :call -> call_expr(io, x.args...),
+    :-> -> func_expr(io, x.args...),
+    :function -> func_expr(io, x.args...),
     :. -> jsexpr_joined(io, x.args, "."),
     :(=) -> jsexpr_joined(io, x.args, "="),
     :block -> jsexpr_joined(io, x.args, ";"),
@@ -60,6 +86,8 @@ jsexpr(io, x::Expr) =
     :ref -> ref_expr(io, x.args...),
     :macrocall -> jsexpr(io, macroexpand(x)),
     :line -> nothing,
+    :return -> (print(io, "return "); jsexpr(io, x.args[1])),
+    :dict -> dict_expr(io, x.args),
     error("Unsupported JS expression `$(x.head)`")
 
 macro new (x) esc(Expr(:new, x)) end
