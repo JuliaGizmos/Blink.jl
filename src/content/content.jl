@@ -61,7 +61,16 @@ function ws_handler(req)
   p.sock = client
   @errs get(handlers(p), "init", identity)(p)
   while active(p)
-    data = read(client)
+    try
+      data = read(client)
+    catch e
+      if isa(e, ErrorException) && contains(e.msg, "closed WebSocket")
+        handle_message(p, @d("type"=>"close"))
+        break
+      else
+        rethrow()
+      end
+    end
     @errs handle_message(p, JSON.parse(ASCIIString(data)))
   end
   return
