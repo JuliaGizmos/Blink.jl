@@ -39,6 +39,6 @@ end
 
 include("server.jl")
 
-for r in ["blink.js", "blink.css", "spinner.css"]
+for r in ["blink.js", "blink.css", "reset.css", "spinner.css"]
   resource(Pkg.dir("Blink", "res", r))
 end
