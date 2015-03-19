@@ -9,7 +9,7 @@ Pkg.add("Blink")
 using Blink
 a = Blink.init() # initialise the atom-shell process
 w = Window(a) # Open a new window
-body(w, "<h1>Hello World</h1>") # Set the body content
+body!(w, "<h1>Hello World</h1>") # Set the body content
 loadurl(w, "http://julialang.org") # Load a web page
 ```
 

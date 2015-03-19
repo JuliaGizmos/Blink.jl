@@ -37,7 +37,7 @@ function Media.render(view::WebView, x; options = @d())
   html = tohtml(x)
   w = @or(pinned(view), Window(@d(:width => size[1], :height => size[2])))
   front(w)
-  body(w, html)
+  body!(w, html)
   title(w, string(displaytitle(x), " (", id(w), ")",
                   isa(pinned(view), Window) ? pinstr : ""))
   push!(view.ws, w)
