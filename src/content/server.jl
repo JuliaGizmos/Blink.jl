@@ -1,3 +1,16 @@
+# Resources
+
+const resources = Dict{UTF8String, UTF8String}()
+
+resource(f, name = basename(f)) = (resources[name] = f)
+
+resroute() =
+  branch(req -> length(req[:path]) == 1 && haskey(resources, req[:path][1]),
+         req -> @d(:body => open(readbytes, resources[req[:path][1]]),
+                   :headers => Mux.fileheaders(req[:path][1])))
+
+# Server setup
+
 function page_handler(req)
   id = try parse(req[:params][:id]) catch e @goto fail end
   haskey(pool, id) || @goto fail
@@ -40,6 +53,7 @@ end
 
 @app http_default =
   (Mux.defaults,
+   resroute(),
    page(":id", page_handler),
    Mux.notfound())
 
