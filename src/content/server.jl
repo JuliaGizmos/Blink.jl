@@ -33,6 +33,7 @@ function ws_handler(req)
   p.sock = client
   @errs get(handlers(p), "init", identity)(p)
   while active(p)
+    local data
     try
       data = read(client)
     catch e
