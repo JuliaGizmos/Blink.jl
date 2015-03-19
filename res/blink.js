@@ -1,5 +1,9 @@
 (function() {
 
+  Blink = {};
+
+  // Comms stuff
+
   var ws = location.href.replace("http", "ws");
   var sock = new WebSocket(ws);
 
@@ -30,9 +34,32 @@
     }
   };
 
-  Blink = {
-    sock: sock,
-    msg: msg,
-    handlers: handlers
+  Blink.sock = sock;
+  Blink.msg = msg;
+  Blink.handlers = handlers;
+
+  // HTML
+
+  function callback(t, f) {
+    if (f === undefined) {
+      f = t;
+      t = 0;
+    }
+    t *= 1000;
+    setTimeout(f, t);
   }
+
+  function fill(node, html) {
+    node.classList.add('blink-show');
+    callback(function () {
+      node.classList.add('blink-fade');
+      callback(0.2, function() {
+        node.innerHTML = html;
+        node.classList.remove('blink-fade');
+      });
+    });
+  }
+
+  Blink.fill = fill;
+
 })();
