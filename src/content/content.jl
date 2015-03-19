@@ -1,4 +1,4 @@
-using HttpServer, WebSockets, JSON, Lazy
+using Mux, WebSockets, JSON, Lazy
 
 export Page, id, active
 
@@ -39,23 +39,21 @@ end
 
 # Server Setup
 
-parse_id(s::String) = try parseint(s[2:end]) catch e nothing end
-
-function http_handler(req, res)
-  id = parse_id(req.resource)
+function page_handler(req)
+  id = try parse(req[:params][:id]) catch e @goto fail end
   haskey(pool, id) || @goto fail
   active(pool[id].value) && @goto fail
 
   return readall(joinpath(dirname(@__FILE__), "main.html"))
 
   @label fail
-  res = Response("Not found")
-  res.status = 404
-  return res
+  return @d(:body => "Not found",
+            :status => 404)
 end
 
-function sock_handler(req, client)
-  id = parse_id(req.resource)
+function ws_handler(req)
+  id = try parse(req[:params][:id]) catch e @goto fail end
+  client = req[:socket]
   haskey(pool, id) || @goto fail
   p = pool[id].value
   active(p) && @goto fail
@@ -72,12 +70,17 @@ function sock_handler(req, client)
   close(client)
 end
 
+@app http_default =
+  (Mux.defaults,
+   page(":id", page_handler),
+   Mux.notfound())
+
+@app ws_default =
+  (Mux.wdefaults,
+   page(":id", ws_handler),
+   Mux.wclose)
+
 function __init__()
   get(ENV, "BLINK_SERVE", "true") in ("1", "true") || return
-  http = HttpHandler(http_handler)
-  http.events["error"]  = (client, err) -> println(err)
-  http.events["listen"] = (port)        -> println("Listening on $port...")
-
-  const server = Server(http, WebSocketHandler(sock_handler))
-  @schedule @errs run(server, port)
+  serve(http_default, ws_default, port)
 end
