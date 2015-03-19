@@ -1,0 +1,3 @@
+.vcentre { display:table; position:absolute; width:100%; height:100%; }
+.vcentre > :first-child { display: table-cell; vertical-align: middle; }
+.hcentre { margin-left: auto; margin-right: auto; }
