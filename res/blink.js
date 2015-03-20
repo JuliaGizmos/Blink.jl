@@ -18,6 +18,13 @@
 
   var handlers = {};
 
+  sock.onmessage = function (event) {
+    var msg = JSON.parse(event.data);
+    if (handlers.hasOwnProperty(msg.type)) {
+      handlers[msg.type](msg);
+    }
+  };
+
   handlers.eval = function(data) {
     var result = eval(data.code);
     if (data.callback) {
@@ -26,13 +33,6 @@
       sock.send(JSON.stringify(result));
     }
   }
-
-  sock.onmessage = function (event) {
-    var msg = JSON.parse(event.data);
-    if (handlers.hasOwnProperty(msg.type)) {
-      handlers[msg.type](msg);
-    }
-  };
 
   Blink.sock = sock;
   Blink.msg = msg;
