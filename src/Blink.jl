@@ -10,6 +10,3 @@ export AtomShell
 @reexport using .AtomShell
 
 end # module
-
-include("display/BlinkDisplay.jl")
-using BlinkDisplay
