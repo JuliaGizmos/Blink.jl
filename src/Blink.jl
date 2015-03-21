@@ -11,8 +11,5 @@ export AtomShell
 
 end # module
 
-include("media/Media.jl")
-using Media
-
 include("display/BlinkDisplay.jl")
 using BlinkDisplay
