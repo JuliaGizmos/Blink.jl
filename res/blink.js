@@ -29,8 +29,7 @@
     var result = eval(data.code);
     if (data.callback) {
       result == undefined && (result = null);
-      result = {type: 'callback', callback: data.callback, result: result};
-      sock.send(JSON.stringify(result));
+      msg('callback', {callback: data.callback, result: result});
     }
   }
 
