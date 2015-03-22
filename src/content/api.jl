@@ -35,9 +35,9 @@ function load!(w, file)
   resource(file)
   ext = Mux.extension(file)
   if ext == "js"
-    loadjs!(w, file)
+    loadjs!(w, basename(file))
   elseif ext == "css"
-    loadcss!(file)
+    loadcss!(w, basename(file))
   else
     error("Blink: Unsupported file type")
   end
