@@ -1,4 +1,4 @@
-export body!, content!, loadcss!, loadjs!
+export body!, content!, loadcss!, loadjs!, load!
 
 content!(o, sel, html::String; fade = true) =
   fade ?
@@ -29,4 +29,16 @@ function loadjs!(w, url)
     document.head.appendChild(script)
   end
   return wait(cb, 1)
+end
+
+function load!(w, file)
+  resource(file)
+  ext = Mux.extension(file)
+  if ext == "js"
+    loadjs!(w, file)
+  elseif ext == "css"
+    loadcss!(file)
+  else
+    error("Blink: Unsupported file type")
+  end
 end
