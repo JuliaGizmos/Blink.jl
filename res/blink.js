@@ -25,16 +25,21 @@
     }
   };
 
+  function cb(id, data) {
+    msg('callback', {callback: id, result: data});
+  }
+
   handlers.eval = function(data) {
     var result = eval(data.code);
     if (data.callback) {
       result == undefined && (result = null);
-      msg('callback', {callback: data.callback, result: result});
+      cb(data.callback, result);
     }
   }
 
   Blink.sock = sock;
   Blink.msg = msg;
+  Blink.cb = cb;
   Blink.handlers = handlers;
 
   // JS eval
