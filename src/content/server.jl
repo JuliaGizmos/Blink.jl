@@ -2,7 +2,7 @@
 
 const resources = Dict{UTF8String, UTF8String}()
 
-resource(f, name = basename(f)) = (resources[name] = f)
+resource(f, name = basename(f)) = (@assert isfile(f); resources[name] = f)
 
 resroute() =
   branch(req -> length(req[:path]) == 1 && haskey(resources, req[:path][1]),
