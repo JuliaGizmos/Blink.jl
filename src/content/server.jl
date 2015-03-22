@@ -37,7 +37,7 @@ function ws_handler(req)
     try
       data = read(client)
     catch e
-      if isa(e, ErrorException) && contains(e.msg, "closed WebSocket")
+      if isa(e, ErrorException) && contains(e.msg, "closed")
         handle_message(p, @d("type"=>"close"))
         break
       else
