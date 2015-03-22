@@ -28,5 +28,5 @@ function loadjs!(w, url)
     script.onload = e -> Blink.cb($id)
     document.head.appendChild(script)
   end
-  return wait(cb)
+  return wait(cb, 1)
 end
