@@ -1,12 +1,14 @@
 export body!, content!, loadcss!, loadjs!
 
-content!(o, sel, html::String) =
-  @js_ o Blink.fill($sel, $html)
+content!(o, sel, html::String; fade = true) =
+  fade ?
+    @js_(o, Blink.fill($sel, $html)) :
+    @js_ o document.querySelector($sel).innerHTML = $html
 
-content!(o, sel, html) =
-  content!(o, sel, stringmime(MIME"text/html"(), html))
+content!(o, sel, html; fade = true) =
+  content!(o, sel, stringmime(MIME"text/html"(), html), fade = fade)
 
-body!(w, html) = content!(w, "body", html)
+body!(w, html; fade = true) = content!(w, "body", html, fade = fade)
 
 function loadcss!(w, url)
   @js_ w begin
