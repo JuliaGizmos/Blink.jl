@@ -26,6 +26,7 @@
   };
 
   function cb(id, data) {
+    data === undefined && (data = null);
     msg('callback', {callback: id, result: data});
   }
 
