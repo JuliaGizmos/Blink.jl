@@ -84,11 +84,11 @@ jsexpr(io, x::Expr) =
     :new -> (print(io, "new "); jsexpr(io, x.args[1])),
     :var -> (print(io, "var "); jsexpr(io, x.args[1])),
     :ref -> ref_expr(io, x.args...),
-    :macrocall -> jsexpr(io, macroexpand(x)),
+    :macrocall -> jsexpr(io, macroexpand(Blink, x)),
     :line -> nothing,
     :return -> (print(io, "return "); jsexpr(io, x.args[1])),
     :dict -> dict_expr(io, x.args),
-    error("Unsupported JS expression `$(x.head)`")
+    error("JSExpr: Unsupported `$(x.head)` expression, $x")
 
 macro new (x) esc(Expr(:new, x)) end
 macro var (x) esc(Expr(:var, x)) end
