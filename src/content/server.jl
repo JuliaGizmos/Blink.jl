@@ -52,18 +52,21 @@ function ws_handler(req)
   close(client)
 end
 
-@app http_default =
-  (Mux.defaults,
-   resroute(),
-   page(":id", page_handler),
-   Mux.notfound())
+http_default =
+  mux(Mux.defaults,
+      resroute(),
+      page(":id", page_handler),
+      Mux.notfound())
 
-@app ws_default =
-  (Mux.wdefaults,
-   page(":id", ws_handler),
-   Mux.wclose)
+ws_default =
+  mux(Mux.wdefaults,
+      page(":id", ws_handler),
+      Mux.wclose)
 
 function __init__()
   get(ENV, "BLINK_SERVE", "true") in ("1", "true") || return
-  serve(http_default, ws_default, port)
+  http = Mux.http_handler(Mux.App(http_default))
+  delete!(http.events, "listen")
+  ws = Mux.ws_handler(Mux.App(ws_default))
+  serve(Mux.Server(http, ws), port)
 end
