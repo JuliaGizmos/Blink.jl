@@ -97,4 +97,28 @@
 
   Blink.fill = fill;
 
+  // JS Utils
+
+  function hypot(x, y) {
+    return Math.sqrt(x*x + y*y);
+  }
+
+  function click(node, f) {
+    var startX = 0;
+    var startY = 0;
+    node.onmousedown = function(e) {
+      if (e.which == 1) {
+        startX = e.clientX;
+        startY = e.clientY;
+      }
+    };
+    node.onmouseup = function(e) {
+      if (e.which == 1 && hypot(e.clientX - startX, e.clientY - startY) < 5) {
+        f(e);
+      }
+    };
+  }
+
+  Blink.click = click;
+
 })();
