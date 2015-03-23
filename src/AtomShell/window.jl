@@ -114,6 +114,8 @@ active(::Nothing) = false
 
 handlers(w::Window) = handlers(w.content)
 
+msg(win::Window, m) = msg(win.content, m)
+
 js(win::Window, s::JSString; callback = true) =
   active(win.content) ? js(win.content, s, callback = callback) :
     dot(win, :(this.webContents.executeJavaScript($(jsstring(s)))), callback = callback)
