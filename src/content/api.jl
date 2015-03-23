@@ -28,7 +28,7 @@ function loadjs!(w, url)
     script.onload = e -> Blink.cb($id)
     document.head.appendChild(script)
   end
-  return wait(cb, 1)
+  return wait(cb, 5, msg = "JS load timed out")
 end
 
 function load!(w, file)
