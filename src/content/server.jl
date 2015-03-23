@@ -32,6 +32,7 @@ function ws_handler(req)
 
   p.sock = client
   @schedule @errs get(handlers(p), "init", identity)(p)
+  notify(p.cb)
   while active(p)
     local data
     try

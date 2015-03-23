@@ -10,10 +10,12 @@ type Page
   id::Int
   sock::WebSocket
   handlers::Dict{ASCIIString, Any}
+  cb::Condition
 
   function Page(init = nothing)
     p = new(gen_id())
     p.handlers = Dict()
+    p.cb = Condition()
     init == nothing || (p.handlers["init"] = init)
     enable_callbacks!(p)
     pool[p.id] = WeakRef(p)
@@ -27,7 +29,11 @@ include("config.jl")
 id(p::Page) = p.id
 active(p::Page) = isdefined(p, :sock) && isopen(p.sock) && isopen(p.sock.socket)
 handlers(p::Page) = p.handlers
-msg(p::Page, m) = write(p.sock, json(m))
+
+function msg(p::Page, m)
+  active(p) || wait(p.cb, 5, msg = "Connection to page timed out")
+  write(p.sock, json(m))
+end
 
 const pool = Dict{Int, WeakRef}()
 
