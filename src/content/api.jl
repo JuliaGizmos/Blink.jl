@@ -31,13 +31,18 @@ function loadjs!(w, url)
   return wait(cb, 5, msg = "JS load timed out")
 end
 
+isurl(f) = ismatch(r"^https?://", f)
+
 function load!(w, file)
-  resource(file)
+  if !isurl(file)
+    resource(file)
+    file = basename(file)
+  end
   ext = Mux.extension(file)
   if ext == "js"
-    loadjs!(w, basename(file))
+    loadjs!(w, file)
   elseif ext == "css"
-    loadcss!(w, basename(file))
+    loadcss!(w, file)
   else
     error("Blink: Unsupported file type")
   end
