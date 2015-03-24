@@ -11,12 +11,14 @@ resroute() =
 
 # Server setup
 
+const maintp = Mustache.template_from_file(joinpath(dirname(@__FILE__), "main.html"))
+
 function page_handler(req)
   id = try parse(req[:params][:id]) catch e @goto fail end
   haskey(pool, id) || @goto fail
   active(pool[id].value) && @goto fail
 
-  return readall(joinpath(dirname(@__FILE__), "main.html"))
+  return render(maintp, ["id"=>id])
 
   @label fail
   return @d(:body => "Not found",

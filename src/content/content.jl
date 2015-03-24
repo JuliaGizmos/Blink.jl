@@ -1,4 +1,4 @@
-using Mux, WebSockets, JSON, Lazy
+using Mux, WebSockets, JSON, Lazy, Mustache
 
 export Page, id, active
 
