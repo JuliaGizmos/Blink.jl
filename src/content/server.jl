@@ -4,7 +4,7 @@ const resources = Dict{UTF8String, UTF8String}()
 
 resource(f, name = basename(f)) = (@assert isfile(f); resources[name] = f)
 
-resroute() =
+const resroute =
   branch(req -> length(req[:path]) == 1 && haskey(resources, req[:path][1]),
          req -> @d(:body => open(readbytes, resources[req[:path][1]]),
                    :headers => Mux.fileheaders(req[:path][1])))
@@ -59,7 +59,7 @@ end
 
 http_default =
   mux(Mux.defaults,
-      resroute(),
+      resroute,
       page(":id", page_handler),
       Mux.notfound())
 
