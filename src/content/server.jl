@@ -13,6 +13,8 @@ resroute() =
 
 const maintp = Mustache.template_from_file(joinpath(dirname(@__FILE__), "main.html"))
 
+app(f) = req -> render(maintp, ["id"=>Page(f).id])
+
 function page_handler(req)
   id = try parse(req[:params][:id]) catch e @goto fail end
   haskey(pool, id) || @goto fail

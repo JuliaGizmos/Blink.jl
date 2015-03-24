@@ -5,6 +5,9 @@
   // Comms stuff
 
   var ws = location.href.replace("http", "ws");
+  if (!/\/\d+$/.test(ws)) {
+    ws += '/' + id;
+  }
   var sock = new WebSocket(ws);
 
   function msg(t, m) {
