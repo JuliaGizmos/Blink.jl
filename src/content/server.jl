@@ -24,7 +24,7 @@ function page_handler(req)
 end
 
 function ws_handler(req)
-  id = try parse(req[:params][:id]) catch e @goto fail end
+  id = try parse(req[:path][end]) catch e @goto fail end
   client = req[:socket]
   haskey(pool, id) || @goto fail
   p = pool[id].value
@@ -61,8 +61,7 @@ http_default =
 
 ws_default =
   mux(Mux.wdefaults,
-      page(":id", ws_handler),
-      Mux.wclose)
+      ws_handler)
 
 function __init__()
   get(ENV, "BLINK_SERVE", "true") in ("1", "true") || return
