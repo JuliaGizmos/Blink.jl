@@ -18,4 +18,4 @@ const ippat = r"([0-9]+\.){3}[0-9]+"
 
 localurl(p::Page) = "http://127.0.0.1:$port/$(id(p))"
 
-launch(p::Page) = (launch(localurl(page)); p)
+launch(p::Page) = (launch(localurl(p)); p)
