@@ -1,4 +1,4 @@
-using Lazy, JSON
+using Lazy, JSON, MacroTools
 export JSString
 
 jsexpr(io, x) = JSON.print(io, x)

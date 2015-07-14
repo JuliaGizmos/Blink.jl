@@ -1,4 +1,4 @@
-using Lazy, JSON
+using Lazy, JSON, MacroTools
 
 hascommand(c) =
   try readall(`which $c`); true catch e false end
