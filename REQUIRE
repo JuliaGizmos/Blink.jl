@@ -1,3 +1,5 @@
+julia 0.3
 Lazy
 JSON
 Requires
+MacroTools

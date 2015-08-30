@@ -1,4 +1,4 @@
-using Requires, Lazy
+using Requires, Lazy, MacroTools
 
 export render, setdisplay, unsetdisplay, getdisplay, current_input, Media, @media, media
 

@@ -3,7 +3,7 @@ using Graphics
 
 module Blink
 
-using Lazy
+using Lazy, MacroTools
 
 include("process.jl")
 include("jsexprs.jl")
