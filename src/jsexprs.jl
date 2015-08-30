@@ -57,5 +57,5 @@ jsexpr(io, x::Expr) =
     :line -> nothing,
     error("Unsupported JS expression `$(x.head)`")
 
-macro new (x) esc(Expr(:new, x)) end
-macro var (x) esc(Expr(:var, x)) end
+macro new(x) esc(Expr(:new, x)) end
+macro var(x) esc(Expr(:var, x)) end
