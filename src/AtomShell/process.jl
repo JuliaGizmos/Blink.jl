@@ -24,13 +24,13 @@ end
 
 # atom-shell
 
-import Base: Process, TcpSocket
+import Base: Process, TCPSocket
 
 export Shell
 
 type Shell
   proc::Process
-  sock::TcpSocket
+  sock::TCPSocket
   handlers::Dict{ASCIIString, Any}
 end
 

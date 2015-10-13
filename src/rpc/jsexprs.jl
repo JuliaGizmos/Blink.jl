@@ -68,7 +68,7 @@ end
 
 function dict_expr(io, xs)
   print(io, "{")
-  xs = ["$(x.args[1]::String):"*jsexpr(x.args[2]).s for x in xs]
+  xs = ["$(x.args[1]::AbstractString):"*jsexpr(x.args[2]).s for x in xs]
   print_joined(io, xs, ",")
   print(io, "}")
 end

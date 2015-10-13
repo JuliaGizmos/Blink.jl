@@ -6,25 +6,25 @@ resource(f, name = basename(f)) = (@assert isfile(f); resources[name] = f)
 
 const resroute =
   branch(req -> length(req[:path]) == 1 && haskey(resources, req[:path][1]),
-         req -> @d(:body => open(readbytes, resources[req[:path][1]]),
-                   :headers => Mux.fileheaders(req[:path][1])))
+         req -> d(:body => open(readbytes, resources[req[:path][1]]),
+                  :headers => Mux.fileheaders(req[:path][1])))
 
 # Server setup
 
 const maintp = Mustache.template_from_file(joinpath(dirname(@__FILE__), "main.html"))
 
-app(f) = req -> render(maintp, ["id"=>Page(f).id])
+app(f) = req -> render(maintp, d("id"=>Page(f).id))
 
 function page_handler(req)
   id = try parse(req[:params][:id]) catch e @goto fail end
   haskey(pool, id) || @goto fail
   active(pool[id].value) && @goto fail
 
-  return render(maintp, ["id"=>id])
+  return render(maintp, d("id"=>id))
 
   @label fail
-  return @d(:body => "Not found",
-            :status => 404)
+  return d(:body => "Not found",
+           :status => 404)
 end
 
 function ws_handler(req)
@@ -43,7 +43,7 @@ function ws_handler(req)
       data = read(client)
     catch e
       if isa(e, ErrorException) && contains(e.msg, "closed")
-        handle_message(p, @d("type"=>"close"))
+        handle_message(p, d("type"=>"close"))
         break
       else
         rethrow()

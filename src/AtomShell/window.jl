@@ -78,6 +78,9 @@ position(win::Window, x, y) =
 position(win::Window) =
   @dot win getPosition()
 
+size(win::Window, w::Integer, h::Integer) =
+  invoke(size, (Window, Any, Any), win, w, h)
+
 size(win::Window, w, h) =
   @dot_ win setSize($w, $h)
 
@@ -110,7 +113,7 @@ front(win::Window) =
 
 # Window content APIs
 
-active(::Nothing) = false
+active(::Void) = false
 
 handlers(w::Window) = handlers(w.content)
 
@@ -124,7 +127,7 @@ const initcss = """
   <style>html,body{margin:0;padding:0;border:0;text-align:center;}</style>
   """
 
-function loadhtml(win::Window, html::String)
+function loadhtml(win::Window, html::AbstractString)
   tmp = string(tempname(), ".html")
   open(tmp, "w") do io
     println(io, initcss)
