@@ -44,11 +44,11 @@ end
 
 dot_(args...) = dot(args..., callback = false)
 
-macro dot (win, code)
+macro dot(win, code)
   :(dot($(esc(win)), $(Expr(:quote, Expr(:., :this, code)))))
 end
 
-macro dot_ (win, code)
+macro dot_(win, code)
   :(dot_($(esc(win)), $(Expr(:quote, Expr(:., :this, code)))))
 end
 

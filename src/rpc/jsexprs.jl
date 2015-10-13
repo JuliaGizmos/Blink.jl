@@ -90,5 +90,5 @@ jsexpr(io, x::Expr) =
     :dict -> dict_expr(io, x.args),
     error("JSExpr: Unsupported `$(x.head)` expression, $x")
 
-macro new (x) esc(Expr(:new, x)) end
-macro var (x) esc(Expr(:var, x)) end
+macro new(x) esc(Expr(:new, x)) end
+macro var(x) esc(Expr(:var, x)) end
