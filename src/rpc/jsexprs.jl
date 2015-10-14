@@ -73,22 +73,23 @@ function dict_expr(io, xs)
   print(io, "}")
 end
 
-jsexpr(io, x::Expr) =
-  @switch isexpr(x, _),
-    :call -> call_expr(io, x.args...),
-    :-> -> func_expr(io, x.args...),
-    :function -> func_expr(io, x.args...),
-    :. -> jsexpr_joined(io, x.args, "."),
-    :(=) -> jsexpr_joined(io, x.args, "="),
-    :block -> jsexpr_joined(io, x.args, ";"),
-    :new -> (print(io, "new "); jsexpr(io, x.args[1])),
-    :var -> (print(io, "var "); jsexpr(io, x.args[1])),
-    :ref -> ref_expr(io, x.args...),
-    :macrocall -> jsexpr(io, macroexpand(Blink, x)),
-    :line -> nothing,
-    :return -> (print(io, "return "); jsexpr(io, x.args[1])),
-    :dict -> dict_expr(io, x.args),
-    error("JSExpr: Unsupported `$(x.head)` expression, $x")
+function jsexpr(io, x::Expr)
+  isexpr(x, :block) && return jsexpr_joined(io, x.args, ";")
+  @match x begin
+    d(xs__) => dict_expr(io, xs)
+    f_(xs__) => call_expr(io, f, xs...)
+    (x_ -> y_) => func_expr(io, x, y)
+    a_.b_ | a_.(b_) => jsexpr_joined(io, [a, b], ".")
+    (x_ = y_) => jsexpr_joined(io, [x, y], "=")
+    x_[i__] => ref_expr(io, x, i...)
+    (@m_ xs__) => jsexpr(io, macroexpand(Blink, x))
+    (return x_) => (print(io, "return "); jsexpr(io, x))
+    $(Expr(:function, :__)) => func_expr(io, x.args...)
+    $(Expr(:new, :_)) => (print(io, "new "); jsexpr(io, x.args[1]))
+    $(Expr(:var, :_)) => (print(io, "var "); jsexpr(io, x.args[1]))
+    _ => error("JSExpr: Unsupported `$(x.head)` expression, $x")
+  end
+end
 
 macro new(x) esc(Expr(:new, x)) end
 macro var(x) esc(Expr(:var, x)) end
