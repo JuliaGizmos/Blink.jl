@@ -1,4 +1,4 @@
-export body!, content!, loadcss!, loadjs!, load!
+export body!, content!, loadcss!, loadjs!, load!, importhtml!
 
 content!(o, sel, html::AbstractString; fade = true) =
   fade ?
@@ -16,6 +16,19 @@ function loadcss!(w, url)
     link.type = "text/css"
     link.rel = "stylesheet"
     link.href = $url
+    document.head.appendChild(link)
+  end
+end
+
+function importhtml!(w, file)
+  if !isurl(file)
+    resource(file)
+    file = basename(file)
+  end
+  @js_ w begin
+    @var link = document.createElement("link")
+    link.rel = "import"
+    link.href = $file
     document.head.appendChild(link)
   end
 end
