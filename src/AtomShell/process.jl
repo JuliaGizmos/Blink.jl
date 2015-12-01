@@ -36,7 +36,7 @@ end
 
 Shell(proc, sock) = Shell(proc, sock, Dict())
 
-@osx_only     const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Julia")
+@osx_only     const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Electron")
 @linux_only   const atom = Pkg.dir("Blink", "deps/atom/atom")
 @windows_only const atom = Pkg.dir("Blink", "deps", "atom", "atom.exe")
 const mainjs = Pkg.dir("Blink", "src", "AtomShell", "main.js")
