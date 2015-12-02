@@ -18,7 +18,7 @@ julia> body!(w, "Hello World") # Set the body content
 julia> loadurl(w, "http://julialang.org") # Load a web page
 ```
 
-For options see the functions defined in [window.jl](src/window.jl), which closely follow [electron's API](https://github.com/atom/electron/blob/master/docs/api/browser-window.md).
+For options see the functions defined in [window.jl](src/AtomShell/window.jl), which closely follow [electron's API](https://github.com/atom/electron/blob/master/docs/api/browser-window.md).
 
 You can also use the JS API to interact with the window. For example:
 
@@ -32,7 +32,6 @@ If that's not convincing enough, open the console (`Cmd-Alt-I` on OS X) and eval
 ```julia
 @js w console.log("hello, web-scale world")
 ```
-
 
 ## Issues & Caveats
 
