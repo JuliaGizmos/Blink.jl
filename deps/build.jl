@@ -2,7 +2,8 @@ rm′(f) = (isdir(f) || isfile(f)) && rm(f, recursive = true)
 
 version = "0.35.2"
 
-download(x) = run(`curl -LO $x`)
+import BinDeps
+download(x) = run(BinDeps.download_cmd(x, basename(x)))
 
 download("http://junolab.s3.amazonaws.com/blink/julia.png")
 
