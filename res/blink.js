@@ -30,7 +30,7 @@
 
   function cb(id, data) {
     data === undefined && (data = null);
-    if (data.constructor == Promise) {
+    if (data && data.constructor == Promise) {
       data.then(data => cb(id, data));
     } else {
       msg('callback', {callback: id, result: data});
