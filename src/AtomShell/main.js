@@ -78,9 +78,14 @@ function createWindow(opts) {
   return win.id;
 }
 
+function evalwith(obj, code) {
+  return (function() {
+    return eval(code);
+  }).call(obj);
+}
+
 function withwin(id, code) {
   if (windows[id]) {
-    return eval('(function() { return (' + code + ')});')
-             .call(windows[id]);
+    return evalwith(windows[id], code);
   }
 }

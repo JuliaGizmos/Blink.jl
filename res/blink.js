@@ -61,6 +61,12 @@
     }
   }
 
+  function evalwith(obj, code) {
+    return (function() {
+      return eval(code);
+    }).call(obj);
+  }
+
   function evalscripts(dom) {
     var scripts = dom.querySelectorAll("script");
     Array.prototype.forEach.call(scripts, function(s) {
@@ -68,6 +74,7 @@
     });
   }
 
+  Blink.evalwith = evalwith;
   Blink.evalscripts = evalscripts;
 
   // HTML utils
