@@ -33,6 +33,12 @@ end
 
 jsexpr_joined(xs, delim=",") = sprint(jsexpr_joined, xs, delim)
 
+function block_expr(io, args)
+  print(io, "{")
+  jsexpr_joined(io, rmlines(args), ";")
+  print(io, "}")
+end
+
 function call_expr(io, f, args...)
   f in [:(=), :+, :-, :*, :/, :%] &&
     return print(io, "(", jsexpr_joined(args, string(f)), ")")
@@ -74,7 +80,7 @@ function dict_expr(io, xs)
 end
 
 function jsexpr(io, x::Expr)
-  isexpr(x, :block) && return jsexpr_joined(io, x.args, ";")
+  isexpr(x, :block) && return block_expr(io, x.args)
   @match x begin
     d(xs__) => dict_expr(io, xs)
     f_(xs__) => call_expr(io, f, xs...)
