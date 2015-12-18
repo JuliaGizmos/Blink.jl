@@ -30,7 +30,11 @@
 
   function cb(id, data) {
     data === undefined && (data = null);
-    msg('callback', {callback: id, result: data});
+    if (data.constructor == Promise) {
+      data.then(data => cb(id, data));
+    } else {
+      msg('callback', {callback: id, result: data});
+    }
   }
 
   handlers.eval = function(data) {
