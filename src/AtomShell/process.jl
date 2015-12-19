@@ -38,7 +38,7 @@ Shell(proc, sock) = Shell(proc, sock, Dict())
 
 @osx_only     const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Electron")
 @linux_only   const atom = Pkg.dir("Blink", "deps/atom/electron")
-@windows_only const atom = Pkg.dir("Blink", "deps", "atom", "atom.exe")
+@windows_only const atom = Pkg.dir("Blink", "deps", "atom", "electron.exe")
 const mainjs = Pkg.dir("Blink", "src", "AtomShell", "main.js")
 
 port() = rand(2_000:10_000)
