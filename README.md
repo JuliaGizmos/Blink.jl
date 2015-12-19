@@ -10,7 +10,7 @@ julia> Pkg.add("Blink")
 
 julia> using Blink
 
-julia> w = Window(a) # Open a new window
+julia> w = Window() # Open a new window
 Blink.AtomShell.Window(...)
 
 julia> body!(w, "Hello World") # Set the body content
