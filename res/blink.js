@@ -4,13 +4,14 @@
 
   // Comms stuff
 
-  var sock = {};
-  if (location.href.slice(0,16) == "http://127.0.0.1") {
-    var ws = location.href.replace("http", "ws");
-    if (!/\/\d+$/.test(ws)) {
-      ws += '/' + id;
-    }
-    var sock = new WebSocket(ws);
+  var ws = "ws://127.0.0.1:"+port;
+  if (!/\/\d+$/.test(ws)) {
+    ws += '/' + id;
+  }
+  var sock = new WebSocket(ws);
+
+  function setsock(s) {
+      sock = s;
   }
 
   function msg(t, m) {
@@ -49,6 +50,7 @@
   }
 
   Blink.sock = sock;
+  Blink.setsock = setsock;
   Blink.msg = msg;
   Blink.cb = cb;
   Blink.handlers = handlers;
