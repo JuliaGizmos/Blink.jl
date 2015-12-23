@@ -47,3 +47,20 @@ function load!(w, file)
     error("Blink: Unsupported file type")
   end
 end
+
+function addblink!(w)
+    varid = "var id = $(w.id)"
+    ws = "ws://127.0.0.1:$(Blink.port)/$(w.id)"
+    src = "http://127.0.0.1:$(Blink.port)/blink.js"
+    @js_ w begin
+        varid = document.createElement("script")
+        varid.type = "text/javascript";
+        varid.innerText = $varid
+        document.head.appendChild(varid);
+        blinkjs = document.createElement("script");
+        blinkjs.type = "text/javascript";
+        blinkjs.src = $src
+        blinkjs.onload = e -> (Blink.sock = @new WebSocket($ws))
+        document.head.appendChild(blinkjs);
+    end
+end
