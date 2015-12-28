@@ -1,6 +1,6 @@
 using ..Blink
 import Blink: js, jsstring, id
-import Base: position, size
+import Base: position, size, close
 
 export Window, flashframe, shell, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
@@ -110,6 +110,9 @@ tools(win::Window) =
 
 front(win::Window) =
   @dot win showInactive()
+
+close(win::Window) =
+  @dot win close()
 
 # Window content APIs
 
