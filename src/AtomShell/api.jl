@@ -1,4 +1,6 @@
-export body!, content!, loadcss!, loadjs!, load!
+import WebSockets: close
+
+export body!, content!, loadcss!, loadjs!, load!, close
 
 content!(o, sel, html::AbstractString; fade = true) =
   fade ?
@@ -47,3 +49,5 @@ function load!(w, file)
     error("Blink: Unsupported file type")
   end
 end
+
+close(w::Window) = @dot w close()
