@@ -2,8 +2,6 @@ using Mux, WebSockets, JSON, Lazy, Mustache
 
 export Page, id, active
 
-include("api.jl")
-
 # Content
 
 type Page

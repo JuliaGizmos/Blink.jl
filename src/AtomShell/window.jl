@@ -1,5 +1,5 @@
 using ..Blink
-import Blink: js, jsstring, id
+import Blink: js, jsstring, id, callback!
 import Base: position, size
 
 export Window, flashframe, shell, progress, title,
@@ -21,7 +21,12 @@ const window_defaults = @d(:url => "about:blank",
                            "use-content-size" => true,
                            :icon => Pkg.dir("Blink", "deps", "julia.png"))
 
-raw_window(a::Shell, opts) = @js a createWindow($(merge(window_defaults, opts)))
+function raw_window(a::Shell, opts)
+    id,cb = callback!()
+    opts["callback"] = id
+    @js a createWindow($(merge(window_defaults, opts)))
+    wait(cb,10,msg = "createWindow timed out")
+end
 
 function Window(a::Shell, opts::Associative = Dict())
   return haskey(opts, :url) ?
