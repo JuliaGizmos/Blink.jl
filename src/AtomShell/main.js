@@ -23,7 +23,10 @@ handlers.eval = function(data, c) {
   }
 }
 
+var connection = {};
+
 var server = net.createServer(function(c) { //'connection' listener
+  connection = c;
   c.on('end', function() {
     app.quit();
   });
@@ -70,6 +73,15 @@ function createWindow(opts) {
   if (opts.url) {
     win.loadURL(opts.url);
   }
+
+  win.webContents.on('dom-ready', function(opts) {
+    var browserOpts = opts.sender.browserWindowOptions;
+    if (browserOpts.hasOwnProperty("callback")) {
+      var callback = browserOpts.callback;
+      result = {type: 'callback', callback: callback, result: callback};
+      connection.write(JSON.stringify(result));
+    }
+  });
 
   win.on('closed', function() {
     delete windows[win.id];
