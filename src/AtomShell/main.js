@@ -1,8 +1,8 @@
 var app = require("app");
 var net = require("net");
 
-console.log('Args:');
-console.log(process.argv);
+// console.log('Args:');
+// console.log(process.argv);
 
 function arg(name) {
   for (var i = 0; i < process.argv.length; i++) {
@@ -52,7 +52,7 @@ var server = net.createServer(function(c) { //'connection' listener
 
 var port = parseInt(arg('port'));
 server.listen(port, function() { //'listening' listener
-  console.log('server bound: ' + port);
+  console.log('Electron server listening on port ' + port);
 });
 
 app.on("ready", function() {
@@ -68,7 +68,7 @@ function createWindow(opts) {
   var win = new Window(opts);
   windows[win.id] = win;
   if (opts.url) {
-    win.loadUrl(opts.url);
+    win.loadURL(opts.url);
   }
 
   win.on('closed', function() {

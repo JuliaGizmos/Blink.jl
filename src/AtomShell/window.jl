@@ -94,7 +94,7 @@ floating(win::Window) =
   @dot win isAlwaysOnTop()
 
 loadurl(win::Window, url) =
-  @dot win loadUrl($url)
+  @dot win loadURL($url)
 
 loadfile(win::Window, f) =
   loadurl(win, "file://$f")
