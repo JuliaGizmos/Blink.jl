@@ -76,7 +76,7 @@ function createWindow(opts) {
     var browserOpts = opts.sender.browserWindowOptions;
     if (browserOpts.hasOwnProperty("callback")) {
       var callback = browserOpts.callback;
-      result = {type: 'callback', callback: callback, result: callback};
+      var result = {type: 'callback', callback: callback, result: callback};
       connection.write(JSON.stringify(result));
     }
   });
@@ -86,6 +86,15 @@ function createWindow(opts) {
   });
 
   return win.id;
+}
+
+function load(opts) {
+  var win = windows[opts.id];
+  win.loadURL(opts.url);
+  win.webContents.on("dom-ready", function() {
+    var result = {type: 'callback', callback: opts.callback, result: opts.callback};
+    connection.write(JSON.stringify(result));
+  });
 }
 
 function evalwith(obj, code) {

@@ -99,8 +99,12 @@ floating(win::Window, flag) =
 floating(win::Window) =
   @dot win isAlwaysOnTop()
 
-loadurl(win::Window, url) =
-  @dot win loadURL($url)
+function loadurl(win::Window, url)
+  id,cb = callback!()
+  opts = @d(:callback=>id,:id=>win.id,:url=>url)
+  @js_ shell(win) load($opts)
+  wait(cb,5,msg="Loading URL timed out")
+end
 
 loadfile(win::Window, f) =
   loadurl(win, "file://$f")
