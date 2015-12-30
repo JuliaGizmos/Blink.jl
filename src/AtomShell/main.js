@@ -13,8 +13,10 @@ function arg(name) {
 }
 
 var handlers = {};
+var connection = {};
 
 handlers.eval = function(data, c) {
+  connection = c; // Make the connection available to the code to be eval'ed
   var result = eval(data.code);
   if (data.callback) {
     result == undefined && (result = null);
@@ -35,7 +37,6 @@ var server = net.createServer(function(c) { //'connection' listener
     buffer[0] += lines[0];
     for (var i = 1; i < lines.length; i++)
       buffer[buffer.length] = lines[i];
-
     while (buffer.length > 1)
       line(buffer.shift());
   });
@@ -70,6 +71,15 @@ function createWindow(opts) {
   if (opts.url) {
     win.loadURL(opts.url);
   }
+
+  win.webContents.on('dom-ready', function(opts) {
+    var browserOpts = opts.sender.browserWindowOptions;
+    if (browserOpts.hasOwnProperty("callback")) {
+      var callback = browserOpts.callback;
+      result = {type: 'callback', callback: callback, result: callback};
+      connection.write(JSON.stringify(result));
+    }
+  });
 
   win.on('closed', function() {
     delete windows[win.id];
