@@ -4,7 +4,7 @@
 
   // Comms stuff
 
-  var ws = location.href.replace("http", "ws");
+  var ws = "ws://127.0.0.1:"+port;
   if (!/\/\d+$/.test(ws)) {
     ws += '/' + id;
   }

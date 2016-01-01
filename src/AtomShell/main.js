@@ -78,6 +78,12 @@ function createWindow(opts) {
   return win.id;
 }
 
+function addblink(opts) {
+  var win = windows[opts.id];
+  win.webContents.executeJavaScript(`var id = ${opts.id}, port = ${opts.port}`);
+  win.webContents.executeJavaScript(`${opts.script}`);
+}
+
 function evalwith(obj, code) {
   return (function() {
     return eval(code);

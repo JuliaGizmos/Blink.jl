@@ -13,14 +13,14 @@ const resroute =
 
 const maintp = Mustache.template_from_file(joinpath(dirname(@__FILE__), "main.html"))
 
-app(f) = req -> render(maintp, d("id"=>Page(f).id))
+app(f) = req -> render(maintp, d("id"=>Page(f).id,"port"=>Blink.port))
 
 function page_handler(req)
   id = try parse(req[:params][:id]) catch e @goto fail end
   haskey(pool, id) || @goto fail
   active(pool[id].value) && @goto fail
 
-  return render(maintp, d("id"=>id))
+  return render(maintp, d("id"=>id,"port"=>Blink.port))
 
   @label fail
   return d(:body => "Not found",

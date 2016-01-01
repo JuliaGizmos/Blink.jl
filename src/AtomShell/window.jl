@@ -3,7 +3,7 @@ import Blink: js, jsstring, id
 import Base: position, size, close
 
 export Window, flashframe, shell, progress, title,
-  centre, floating, loadurl, opentools, closetools, tools,
+  centre, floating, addblink, loadurl, opentools, closetools, tools,
   loadhtml, loadfile, css, front
 
 type Window
@@ -92,6 +92,12 @@ floating(win::Window, flag) =
 
 floating(win::Window) =
   @dot win isAlwaysOnTop()
+
+function addblink(win::Window)
+  script = open(readall,Pkg.dir("Blink","res","blink.js"))
+  opts = @d(:id=>win.id,:port=>Blink.port,:script=>script)
+  @js_ shell(win) addblink($opts)
+end
 
 loadurl(win::Window, url) =
   @dot win loadURL($url)
