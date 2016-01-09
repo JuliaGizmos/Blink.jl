@@ -1,17 +1,20 @@
-language: cpp
-compiler:
-  - clang
+language: julia
 notifications:
   email: false
-env:
-  matrix:
-    - JULIAVERSION="juliareleases"
-    - JULIAVERSION="julianightlies"
-before_install:
-  - sudo add-apt-repository ppa:staticfloat/julia-deps -y
-  - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
-  - sudo apt-get update -qq -y
-  - sudo apt-get install libpcre3-dev julia -y
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+matrix:
+  include:
+    - os: linux
+      julia: release
+      env: TESTCMD="xvfb-run julia"
+    - os: linux
+      julia: nightly
+      env: TESTCMD="xvfb-run julia"
+    - os: osx
+      julia: release
+      env: TESTCMD="julia"
+    - os: osx
+      julia: nightly
+      env: TESTCMD="julia"
 script:
-  - julia --check-bounds=yes -e 'versioninfo(); Pkg.init(); Pkg.clone(pwd()); Pkg.build("Blink"); Pkg.test("Blink")'
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - $TESTCMD -e 'Pkg.clone(pwd()); Pkg.build("Blink"); Pkg.test("Blink"; coverage=true)'
