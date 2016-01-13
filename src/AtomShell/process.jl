@@ -36,10 +36,16 @@ end
 
 Shell(proc, sock) = Shell(proc, sock, Dict())
 
-@osx_only     const atom = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Electron")
-@linux_only   const atom = Pkg.dir("Blink", "deps/atom/electron")
-@windows_only const atom = Pkg.dir("Blink", "deps", "atom", "electron.exe")
+@osx_only     const _electron = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Electron")
+@linux_only   const _electron = Pkg.dir("Blink", "deps/atom/electron")
+@windows_only const _electron = Pkg.dir("Blink", "deps", "atom", "electron.exe")
 const mainjs = Pkg.dir("Blink", "src", "AtomShell", "main.js")
+
+function electron()
+  path = get(ENV, "ELECTRON_PATH", _electron)
+  isfile(path) || error("Cannot find Electron")
+  return path
+end
 
 port() = rand(2_000:10_000)
 
@@ -58,7 +64,7 @@ function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  proc = (debug ? spawn_rdr : spawn)(`$atom $dbg $mainjs port $p`)
+  proc = (debug ? spawn_rdr : spawn)(`$(electron()) $dbg $mainjs port $p`)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Shell(proc, conn)
   initcbs(shell)
