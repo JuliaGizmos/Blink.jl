@@ -68,7 +68,9 @@ ws_default =
   mux(Mux.wdefaults,
       ws_handler)
 
-function __init__()
+isprecompiling() = ccall(:jl_generating_output, Cint, ()) == 1
+
+@init if !isprecompiling()
   get(ENV, "BLINK_SERVE", "true") in ("1", "true") || return
   http = Mux.http_handler(Mux.App(http_default))
   delete!(http.events, "listen")

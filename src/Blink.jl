@@ -1,6 +1,8 @@
+__precompile__()
+
 module Blink
 
-using Reexport
+using Reexport, Requires
 
 include("rpc/rpc.jl")
 include("content/content.jl")

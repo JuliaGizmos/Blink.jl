@@ -51,9 +51,7 @@ var server = net.createServer(function(c) { //'connection' listener
 });
 
 var port = parseInt(arg('port'));
-server.listen(port, function() { //'listening' listener
-  console.log('Electron server listening on port ' + port);
-});
+server.listen(port);
 
 app.on("ready", function() {
   app.on('window-all-closed', function(e) {
