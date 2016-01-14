@@ -8,7 +8,7 @@ export Window, flashframe, shell, progress, title,
 
 type Window
   id::Int
-  shell::Shell
+  shell::Electron
   content
 end
 
@@ -21,15 +21,15 @@ const window_defaults = @d(:url => "about:blank",
                            "use-content-size" => true,
                            :icon => Pkg.dir("Blink", "deps", "julia.png"))
 
-raw_window(a::Shell, opts) = @js a createWindow($(merge(window_defaults, opts)))
+raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
-function Window(a::Shell, opts::Associative = Dict())
+function Window(a::Electron, opts::Associative = Dict())
   return haskey(opts, :url) ?
     Window(raw_window(a, opts), a, nothing) :
     Window(a, Page(), opts)
 end
 
-function Window(a::Shell, content::Page, opts::Associative = Dict())
+function Window(a::Electron, content::Page, opts::Associative = Dict())
   opts[:url] = Blink.localurl(content)
   return Window(raw_window(a, opts), a, content)
 end

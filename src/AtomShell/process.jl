@@ -26,15 +26,15 @@ end
 
 import Base: Process, TCPSocket
 
-export Shell
+export Electron
 
-type Shell
+type Electron <: Shell
   proc::Process
   sock::TCPSocket
   handlers::Dict{ASCIIString, Any}
 end
 
-Shell(proc, sock) = Shell(proc, sock, Dict())
+Electron(proc, sock) = Electron(proc, sock, Dict())
 
 @osx_only     const _electron = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Electron")
 @linux_only   const _electron = Pkg.dir("Blink", "deps/atom/electron")
@@ -66,7 +66,7 @@ function init(; debug = false)
   dbg = debug ? "--debug=$dp" : []
   proc = (debug ? spawn_rdr : spawn)(`$(electron()) $dbg $mainjs port $p`)
   conn = try_connect(ip"127.0.0.1", p)
-  shell = Shell(proc, conn)
+  shell = Electron(proc, conn)
   initcbs(shell)
   return shell
 end
@@ -75,9 +75,9 @@ end
 
 import ..Blink: msg, enable_callbacks!, handlers, handle_message, active
 
-msg(shell::Shell, m) = (JSON.print(shell.sock, m); println(shell.sock))
+msg(shell::Electron, m) = (JSON.print(shell.sock, m); println(shell.sock))
 
-handlers(shell::Shell) = shell.handlers
+handlers(shell::Electron) = shell.handlers
 
 function initcbs(shell)
   enable_callbacks!(shell)
@@ -94,9 +94,9 @@ import Base: quit
 
 export active
 
-active(shell::Shell) = process_running(shell.proc)
+active(shell::Electron) = process_running(shell.proc)
 
-quit(shell::Shell) = close(shell.sock)
+quit(shell::Electron) = close(shell.sock)
 
 # Default process
 
