@@ -100,8 +100,6 @@ quit(shell::Electron) = close(shell.sock)
 
 # Default process
 
-_shell = nothing
-
 function shell(; debug = false)
   global _shell
   _shell ≠ nothing && active(_shell) && return _shell

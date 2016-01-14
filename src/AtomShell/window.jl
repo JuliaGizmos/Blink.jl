@@ -8,7 +8,7 @@ export Window, flashframe, shell, progress, title,
 
 type Window
   id::Int
-  shell::Electron
+  shell::Shell
   content
 end
 
@@ -23,24 +23,25 @@ const window_defaults = @d(:url => "about:blank",
 
 raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
-function Window(a::Electron, opts::Associative = Dict())
+function Window(a::Shell, opts::Associative = Dict())
   return haskey(opts, :url) ?
     Window(raw_window(a, opts), a, nothing) :
     Window(a, Page(), opts)
 end
 
-function Window(a::Electron, content::Page, opts::Associative = Dict())
+function Window(a::Shell, content::Page, opts::Associative = Dict())
   opts[:url] = Blink.localurl(content)
   return Window(raw_window(a, opts), a, content)
 end
 
 Window(args...) = Window(shell(), args...)
 
-function dot(w::Window, code; callback = true)
-  r = js(shell(w), :(withwin($(w.id), $(jsstring(code)))),
-         callback = callback)
-  return callback ? r : w
-end
+dot(a::Electron, win::Integer, code; callback = true) =
+  js(a, :(withwin($(win), $(jsstring(code)))),
+     callback = callback)
+
+dot(w::Window, code; callback = true) =
+  ifelse(callback, dot(shell(w), id(w), code, callback = callback), w)
 
 dot_(args...) = dot(args..., callback = false)
 
