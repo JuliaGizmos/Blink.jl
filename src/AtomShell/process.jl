@@ -5,6 +5,9 @@ hascommand(c) =
 
 spawn_rdr(cmd) = spawn(cmd, Base.spawn_opts_inherit()...)
 
+resolve(pkg, path...) =
+  joinpath(Base.find_in_path(pkg, nothing), "..","..", path...) |> normpath
+
 # node-inspector
 
 _inspector = nothing
@@ -36,10 +39,10 @@ end
 
 Electron(proc, sock) = Electron(proc, sock, Dict())
 
-@osx_only     const _electron = Pkg.dir("Blink", "deps/Julia.app/Contents/MacOS/Electron")
-@linux_only   const _electron = Pkg.dir("Blink", "deps/atom/electron")
-@windows_only const _electron = Pkg.dir("Blink", "deps", "atom", "electron.exe")
-const mainjs = Pkg.dir("Blink", "src", "AtomShell", "main.js")
+@osx_only     const _electron = resolve("Blink", "deps/Julia.app/Contents/MacOS/Electron")
+@linux_only   const _electron = resolve("Blink", "deps/atom/electron")
+@windows_only const _electron = resolve("Blink", "deps", "atom", "electron.exe")
+const mainjs = resolve("Blink", "src", "AtomShell", "main.js")
 
 function electron()
   path = get(ENV, "ELECTRON_PATH", _electron)

@@ -46,5 +46,5 @@ end
 include("server.jl")
 
 @init for r in ["blink.js", "blink.css", "reset.css", "spinner.css"]
-  resource(Pkg.dir("Blink", "res", r))
+  resource(resolve("Blink", "res", r))
 end

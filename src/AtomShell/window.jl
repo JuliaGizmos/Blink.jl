@@ -19,7 +19,7 @@ const window_defaults = @d(:url => "about:blank",
                            :title => "Julia",
                            "node-integration" => false,
                            "use-content-size" => true,
-                           :icon => Pkg.dir("Blink", "deps", "julia.png"))
+                           :icon => resolve("Blink", "deps", "julia.png"))
 
 raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
