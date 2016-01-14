@@ -43,7 +43,7 @@ const mainjs = Pkg.dir("Blink", "src", "AtomShell", "main.js")
 
 function electron()
   path = get(ENV, "ELECTRON_PATH", _electron)
-  isfile(path) || error("Cannot find Electron")
+  isfile(path) || error("Cannot find Electron. Try `AtomShell.install()`.")
   return path
 end
 
@@ -61,6 +61,7 @@ function try_connect(args...; interval = 0.01, attempts = 100)
 end
 
 function init(; debug = false)
+  electron() # Check path exists
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
