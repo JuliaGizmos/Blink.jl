@@ -68,6 +68,7 @@ function createWindow(opts) {
   if (opts.url) {
     win.loadURL(opts.url);
   }
+  win.setMenu(null);
 
   win.on('closed', function() {
     delete windows[win.id];
