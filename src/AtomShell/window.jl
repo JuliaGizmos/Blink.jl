@@ -55,8 +55,10 @@ end
 
 # Window management APIs
 
-active(win::Window) =
-  @js shell(win) windows.hasOwnProperty($(win.id))
+active(s::Electron, win::Integer) =
+  @js s windows.hasOwnProperty($win)
+
+active(win::Window) = active(shell(win), id(win))
 
 flashframe(win::Window, on = true) =
   @dot_ win flashFrame($on)
