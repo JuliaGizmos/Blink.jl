@@ -28,7 +28,7 @@ function loadjs!(w, url)
     script.onload = e -> Blink.cb($id)
     document.head.appendChild(script)
   end
-  return wait(cb, 10, msg = "JS load timed out")
+  return wait(cb)
 end
 
 isurl(f) = ismatch(r"^https?://", f)

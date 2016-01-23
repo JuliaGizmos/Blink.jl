@@ -25,7 +25,7 @@ function js(o, js::JSString; callback = true)
     cmd[:callback] = id
   end
   msg(o, cmd)
-  return callback ? wait(cond, 1, msg = "Callback timed out") : o
+  return callback ? wait(cond) : o
 end
 
 js(o, s; callback = true) = js(o, jsexpr(s); callback = callback)
