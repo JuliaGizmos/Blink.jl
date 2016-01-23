@@ -1,6 +1,6 @@
 export localips, launch
 
-const port = get(ENV, "BLINK_PORT", rand(2_000:10_000))
+@init global const port = get(ENV, "BLINK_PORT", rand(2_000:10_000))
 
 const ippat = r"([0-9]+\.){3}[0-9]+"
 
