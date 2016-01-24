@@ -31,7 +31,7 @@ active(p::Page) = isdefined(p, :sock) && isopen(p.sock) && isopen(p.sock.socket)
 handlers(p::Page) = p.handlers
 
 function msg(p::Page, m)
-  active(p) || wait(p.cb, 10, msg = "Connection to page timed out")
+  active(p) || wait(p.cb)
   write(p.sock, json(m))
 end
 

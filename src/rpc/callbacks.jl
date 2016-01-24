@@ -1,13 +1,3 @@
-import Base: wait
-
-function wait(c::Condition, timeout; msg = "Operation timed out")
-  @schedule begin
-    sleep(timeout)
-    notify(c, ErrorException(msg), error=true)
-  end
-  wait(c)
-end
-
 # Message handling
 
 export handle
