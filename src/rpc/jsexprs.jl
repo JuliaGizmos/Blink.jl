@@ -18,7 +18,7 @@ end
 # Expressions
 
 jsexpr(io, x::JSString) = print(io, x.s)
-jsexpr(io, x::Symbol) = print(io, x)
+jsexpr(io, x::Symbol) = (x==:nothing ? print(io, "null") : print(io, x))
 jsexpr(io, x::QuoteNode) = jsexpr(io, x.value)
 jsexpr(io, x::LineNumberNode) = nothing
 
@@ -35,7 +35,7 @@ jsexpr_joined(xs, delim=",") = sprint(jsexpr_joined, xs, delim)
 
 function block_expr(io, args)
   print(io, "{")
-  jsexpr_joined(io, rmlines(args), ";")
+  jsexpr_joined(io, rmlines(args), "; ")
   print(io, "}")
 end
 
@@ -79,18 +79,34 @@ function dict_expr(io, xs)
   print(io, "}")
 end
 
+function if_expr(io, xs)
+    if length(xs) >= 2  # we have an if
+        print(io, "if (")
+        jsexpr(io, xs[1])
+        print(io, ") ")
+        jsexpr(io, xs[2])
+    end
+
+    if length(xs) == 3  # Also have an else
+        print(io, "else")
+        jsexpr(io, xs[3])
+    end
+end
+
 function jsexpr(io, x::Expr)
   isexpr(x, :block) && return block_expr(io, x.args)
   @match x begin
     d(xs__) => dict_expr(io, xs)
     f_(xs__) => call_expr(io, f, xs...)
-    (x_ -> y_) => func_expr(io, x, y)
+    (a_ -> b_) => func_expr(io, a, b)
     a_.b_ | a_.(b_) => jsexpr_joined(io, [a, b], ".")
-    (x_ = y_) => jsexpr_joined(io, [x, y], "=")
-    x_[i__] => ref_expr(io, x, i...)
+    (a_ = b_) => jsexpr_joined(io, [a, b], "=")
+    $(Expr(:comparison, :_, :(==), :_)) => jsexpr_joined(io, [x.args[1], x.args[3]], "==")
+    $(Expr(:if, :__)) => if_expr(io, x.args)
+    a_[i__] => ref_expr(io, a, i...)
     (@m_ xs__) => jsexpr(io, macroexpand(Blink, x))
     (c_ ? t_ : f_) => (jsexpr(io, c); print(io, "?"); jsexpr(io, t); print(io, ":"); jsexpr(io, f))
-    (return x_) => (print(io, "return "); jsexpr(io, x))
+    (return a_) => (print(io, "return "); jsexpr(io, a))
     $(Expr(:function, :__)) => func_expr(io, x.args...)
     $(Expr(:new, :_)) => (print(io, "new "); jsexpr(io, x.args[1]))
     $(Expr(:var, :_)) => (print(io, "var "); jsexpr(io, x.args[1]))
