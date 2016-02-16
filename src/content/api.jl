@@ -20,15 +20,11 @@ function loadcss!(w, url)
   end
 end
 
-function importhtml!(w, file)
-  if !isurl(file)
-    resource(file)
-    file = basename(file)
-  end
+function importhtml!(w, url)
   @js_ w begin
     @var link = document.createElement("link")
     link.rel = "import"
-    link.href = $file
+    link.href = $url
     document.head.appendChild(link)
   end
 end
@@ -56,6 +52,8 @@ function load!(w, file)
     loadjs!(w, file)
   elseif ext == "css"
     loadcss!(w, file)
+  elseif ext == "html"
+    importhtml!(w, file)
   else
     error("Blink: Unsupported file type")
   end
