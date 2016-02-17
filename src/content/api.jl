@@ -1,4 +1,4 @@
-export body!, content!, loadcss!, loadjs!, load!
+export body!, content!, loadcss!, loadjs!, load!, importhtml!
 
 content!(o, sel, html::AbstractString; fade = true) =
   fade ?
@@ -15,6 +15,15 @@ function loadcss!(w, url)
     @var link = document.createElement("link")
     link.type = "text/css"
     link.rel = "stylesheet"
+    link.href = $url
+    document.head.appendChild(link)
+  end
+end
+
+function importhtml!(w, url)
+  @js_ w begin
+    @var link = document.createElement("link")
+    link.rel = "import"
     link.href = $url
     document.head.appendChild(link)
   end
@@ -43,6 +52,8 @@ function load!(w, file)
     loadjs!(w, file)
   elseif ext == "css"
     loadcss!(w, file)
+  elseif ext == "html"
+    importhtml!(w, file)
   else
     error("Blink: Unsupported file type")
   end
