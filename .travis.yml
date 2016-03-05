@@ -17,4 +17,4 @@ matrix:
       env: TESTCMD="julia"
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - $TESTCMD -e 'Pkg.clone(pwd()); Pkg.build("Blink"); Pkg.test("Blink"; coverage=true)'
+  - $TESTCMD -e 'Pkg.clone(pwd()); Pkg.build("Blink"); import Blink; Blink.AtomShell.install(); Pkg.test("Blink"; coverage=true)'
