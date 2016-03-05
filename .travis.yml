@@ -6,15 +6,15 @@ matrix:
     - os: linux
       julia: release
       env: TESTCMD="xvfb-run julia"
-    - os: linux
-      julia: nightly
-      env: TESTCMD="xvfb-run julia"
+    # - os: linux
+    #   julia: nightly
+    #   env: TESTCMD="xvfb-run julia"
     - os: osx
       julia: release
       env: TESTCMD="julia"
-    - os: osx
-      julia: nightly
-      env: TESTCMD="julia"
+    # - os: osx
+    #   julia: nightly
+    #   env: TESTCMD="julia"
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - $TESTCMD -e 'Pkg.clone(pwd()); Pkg.build("Blink"); import Blink; Blink.AtomShell.install(); Pkg.test("Blink"; coverage=true)'
