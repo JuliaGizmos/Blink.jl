@@ -50,7 +50,7 @@ function ws_handler(req)
         rethrow()
       end
     end
-    @errs handle_message(p, JSON.parse(ASCIIString(data)))
+    @errs handle_message(p, JSON.parse(UTF8String(data)))
   end
   return
 
