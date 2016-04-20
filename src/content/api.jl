@@ -20,12 +20,25 @@ function loadcss!(w, url)
   end
 end
 
-function importhtml!(w, url)
-  @js_ w begin
-    @var link = document.createElement("link")
-    link.rel = "import"
-    link.href = $url
-    document.head.appendChild(link)
+function importhtml!(w, url; async=false)
+  if async
+    @js_ w begin
+      @var link = document.createElement("link")
+      link.rel = "import"
+      link.href = $url
+      document.head.appendChild(link)
+    end
+  else
+    @js w begin
+      @new Promise((resolve, reject) -> begin
+          @var link = document.createElement("link")
+          link.rel = "import"
+          link.href = $url
+          link.onload = (e) -> resolve(true)
+          link.onerror = (e) -> reject(false)
+          document.head.appendChild(link)
+      end)
+    end
   end
 end
 
