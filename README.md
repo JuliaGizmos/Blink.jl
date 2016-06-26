@@ -5,6 +5,12 @@ Linux, OSX: [![Build Status](https://travis-ci.org/JunoLab/Blink.jl.svg?branch=m
 
 Blink.jl provides a API for communicating with web pages from Julia. Pages may be served over the internet and controlled from the browser, or served locally via an [Electron](https://github.com/atom/Electron) window. Blink can therefore be used as a GUI toolkit – [DevTools.jl](https://github.com/JunoLab/DevTools.jl) for an example use.
 
+To install, do:
+```julia
+Pkg.add("Blink")
+Blink.Atomshell.Install()
+```
+
 Basic usage:
 
 ```julia
