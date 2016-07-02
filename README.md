@@ -8,7 +8,7 @@ Blink.jl provides a API for communicating with web pages from Julia. Pages may b
 To install, do:
 ```julia
 Pkg.add("Blink")
-Blink.Atomshell.Install()
+Blink.AtomShell.install()
 ```
 
 Basic usage:
