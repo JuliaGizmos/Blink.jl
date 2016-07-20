@@ -34,14 +34,18 @@ export Electron
 type Electron <: Shell
   proc::Process
   sock::TCPSocket
-  handlers::Dict{ASCIIString, Any}
+  handlers::Dict{String, Any}
 end
 
 Electron(proc, sock) = Electron(proc, sock, Dict())
 
-@osx_only     const _electron = resolve("Blink", "deps/Julia.app/Contents/MacOS/Electron")
-@linux_only   const _electron = resolve("Blink", "deps/atom/electron")
-@windows_only const _electron = resolve("Blink", "deps", "atom", "electron.exe")
+@static if is_apple()
+  const _electron = resolve("Blink", "deps/Julia.app/Contents/MacOS/Electron")
+elseif is_linux()
+  const _electron = resolve("Blink", "deps/atom/electron")
+elseif is_windows()
+  const _electron = resolve("Blink", "deps", "atom", "electron.exe")
+end
 const mainjs = resolve("Blink", "src", "AtomShell", "main.js")
 
 function electron()

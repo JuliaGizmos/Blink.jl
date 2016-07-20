@@ -4,7 +4,7 @@ export JSString
 jsexpr(io, x) = JSON.print(io, x)
 
 type JSString
-  s::UTF8String
+  s::String
 end
 
 jsexpr(x) = JSString(sprint(jsexpr, x))
