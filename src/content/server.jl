@@ -1,12 +1,12 @@
 # Resources
 
-const resources = Dict{UTF8String, UTF8String}()
+const resources = Dict{String, String}()
 
 resource(f, name = basename(f)) = (@assert isfile(f); resources[name] = f)
 
 const resroute =
   branch(req -> length(req[:path]) == 1 && haskey(resources, req[:path][1]),
-         req -> d(:body => open(readbytes, resources[req[:path][1]]),
+         req -> d(:body => open(read, resources[req[:path][1]]),
                   :headers => Mux.fileheaders(req[:path][1])))
 
 # Server setup
@@ -50,7 +50,7 @@ function ws_handler(req)
         rethrow()
       end
     end
-    @errs handle_message(p, JSON.parse(UTF8String(data)))
+    @errs handle_message(p, JSON.parse(String(data)))
   end
   return
 

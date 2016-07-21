@@ -1,5 +1,7 @@
 module AtomShell
 
+using Compat; import Compat.String
+
 abstract Shell
 
 _shell = nothing

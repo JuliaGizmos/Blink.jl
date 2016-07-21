@@ -9,7 +9,7 @@ include("api.jl")
 type Page
   id::Int
   sock::WebSocket
-  handlers::Dict{ASCIIString, Any}
+  handlers::Dict{String, Any}
   cb::Condition
 
   function Page(init = nothing)

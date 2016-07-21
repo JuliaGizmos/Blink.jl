@@ -12,7 +12,7 @@ function install()
 
     download("http://junolab.s3.amazonaws.com/blink/julia.png")
 
-    @osx_only begin
+    if is_apple()
       rm′("Julia.app")
       shell = "electron-v$version-darwin-x64.zip"
       download("https://junolab.s3.amazonaws.com/blink/$shell")
@@ -20,7 +20,7 @@ function install()
       rm(shell)
     end
 
-    @windows_only begin
+    if is_windows()
       rm′("atom")
       arch = Int == Int64 ? "x64" : "ia32"
       shell = "electron-v$version-win32-$arch.zip"
@@ -29,7 +29,7 @@ function install()
       rm(shell)
     end
 
-    @linux_only begin
+    if is_linux()
       rm′("atom")
       arch = Int == Int64 ? "x64" : "ia32"
       shell = "electron-v$version-linux-$arch.zip"
