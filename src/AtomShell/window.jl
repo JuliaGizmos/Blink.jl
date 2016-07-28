@@ -46,11 +46,11 @@ dot(w::Window, code; callback = true) =
 dot_(args...) = dot(args..., callback = false)
 
 macro dot(win, code)
-  :(dot($(esc(win)), $(Expr(:quote, Expr(:., :this, code)))))
+  :(dot($(esc(win)), $(Expr(:quote, Expr(:., :this, QuoteNode(code))))))
 end
 
 macro dot_(win, code)
-  :(dot_($(esc(win)), $(Expr(:quote, Expr(:., :this, code)))))
+  :(dot_($(esc(win)), $(Expr(:quote, Expr(:., :this, QuoteNode(code))))))
 end
 
 # Window management APIs
