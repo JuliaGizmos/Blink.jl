@@ -94,7 +94,7 @@ function if_expr(io, xs)
 end
 
 function jsexpr(io, x::Expr)
-  isexpr(x, :block) && return block_expr(io, x.args)
+  isexpr(x, :block) && return block_expr(io, rmlines(x).args)
   @match x begin
     d(xs__) => dict_expr(io, xs)
     f_(xs__) => call_expr(io, f, xs...)
