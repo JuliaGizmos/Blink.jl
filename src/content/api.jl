@@ -43,14 +43,12 @@ function importhtml!(w, url; async=false)
 end
 
 function loadjs!(w, url)
-  id, cb = callback!()
-  @js_ w begin
+  @js w @new Promise(function (resolve)
     @var script = document.createElement("script")
     script.src = $url
-    script.onload = e -> Blink.cb($id)
+    script.onload = resolve
     document.head.appendChild(script)
-  end
-  return wait(cb)
+  end)
 end
 
 isurl(f) = ismatch(r"^https?://", f)
