@@ -30,6 +30,6 @@ end
 
 function enable_callbacks!(o)
   handle(o, "callback") do m
-    callback!(m["callback"], m["result"])
+    callback!(m["callback"], get(m, "result", nothing))
   end
 end
