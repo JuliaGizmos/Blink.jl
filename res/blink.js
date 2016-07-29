@@ -21,7 +21,7 @@
 
   var handlers = {};
 
-  sock.onmessage = function (event) {
+  sock.onmessage = function(event) {
     var msg = JSON.parse(event.data);
     if (handlers.hasOwnProperty(msg.type)) {
       handlers[msg.type](msg);
@@ -30,11 +30,9 @@
 
   function cb(id, data) {
     data === undefined && (data = null);
-    if (data && data.constructor == Promise) {
-      data.then(data => cb(id, data));
-    } else {
+    Promise.resolve(data).then(data => {
       msg('callback', {callback: id, result: data});
-    }
+    });
   }
 
   handlers.eval = function(data) {

@@ -30,7 +30,7 @@ function importhtml!(w, url; async=false)
     end
   else
     @js w begin
-      @new Promise((resolve, reject) -> begin
+      @new Promise(function (resolve, reject)
           @var link = document.createElement("link")
           link.rel = "import"
           link.href = $url
