@@ -64,7 +64,7 @@ function func_expr(io, args, body)
     args = args.args[2]
   end
   print(io, "(")
-  isexpr(args, Symbol) ? print(io, args) : print_joined(io, args.args, ",")
+  isexpr(args, Symbol) ? print(io, args) : join(io, args.args, ",")
   print(io, ")")
   print(io, "{")
   jsexpr(io, body)
@@ -75,7 +75,7 @@ end
 function dict_expr(io, xs)
   print(io, "{")
   xs = ["$(x.args[1]::AbstractString):"*jsexpr(x.args[2]).s for x in xs]
-  print_joined(io, xs, ",")
+  join(io, xs, ",")
   print(io, "}")
 end
 
