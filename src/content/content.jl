@@ -30,8 +30,13 @@ id(p::Page) = p.id
 active(p::Page) = isdefined(p, :sock) && isopen(p.sock) && isopen(p.sock.socket)
 handlers(p::Page) = p.handlers
 
+function Base.wait(p::Page)
+  wait(p.cb)
+  return p
+end
+
 function msg(p::Page, m)
-  active(p) || wait(p.cb)
+  active(p) || wait(p)
   write(p.sock, json(m))
 end
 
