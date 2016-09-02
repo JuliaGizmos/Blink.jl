@@ -30,7 +30,7 @@ function Window(a::Shell, opts::Associative = Dict())
 end
 
 function Window(a::Shell, content::Page, opts::Associative = Dict())
-  opts[:url] = Blink.localurl(content)
+  opts = merge(opts, Dict(:url => Blink.localurl(content)))
   return Window(raw_window(a, opts), a, content)
 end
 
