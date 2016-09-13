@@ -1,7 +1,7 @@
 using Lazy, JSON, MacroTools
 
 hascommand(c) =
-  try readall(`which $c`); true catch e false end
+  try readstring(`which $c`); true catch e false end
 
 spawn_rdr(cmd) = spawn(cmd, Base.spawn_opts_inherit()...)
 
