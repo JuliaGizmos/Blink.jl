@@ -75,5 +75,5 @@ isprecompiling() = ccall(:jl_generating_output, Cint, ()) == 1
   http = Mux.http_handler(Mux.App(http_default))
   delete!(http.events, "listen")
   ws = Mux.ws_handler(Mux.App(ws_default))
-  serve(Mux.Server(http, ws), port)
+  serve(Mux.Server(http, ws), port, host = ip"127.0.0.1")
 end
