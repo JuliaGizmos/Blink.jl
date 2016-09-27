@@ -2,7 +2,7 @@ __precompile__()
 
 module Blink
 
-using Reexport, Requires
+using Reexport
 using Compat; import Compat.String
 
 include("rpc/rpc.jl")

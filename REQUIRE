@@ -3,7 +3,6 @@ WebSockets
 HttpServer
 Lazy
 JSON
-Requires
 Reexport
 Mustache
 MacroTools
