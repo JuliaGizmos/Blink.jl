@@ -13,6 +13,7 @@ type Page
   cb::Condition
 
   function Page(init = nothing)
+    serve()
     p = new(gen_id())
     p.handlers = Dict()
     p.cb = Condition()

@@ -70,10 +70,14 @@ ws_default =
 
 isprecompiling() = ccall(:jl_generating_output, Cint, ()) == 1
 
-@init if !isprecompiling()
-  get(ENV, "BLINK_SERVE", "true") in ("1", "true") || return
+serving = false
+
+function serve()
+  global serving
+  serving && return
+  serving = true
   http = Mux.http_handler(Mux.App(http_default))
   delete!(http.events, "listen")
   ws = Mux.ws_handler(Mux.App(ws_default))
-  serve(Mux.Server(http, ws), port)
+  Mux.serve(Mux.Server(http, ws), port)
 end
