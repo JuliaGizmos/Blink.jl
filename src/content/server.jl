@@ -79,5 +79,5 @@ function serve()
   http = Mux.http_handler(Mux.App(http_default))
   delete!(http.events, "listen")
   ws = Mux.ws_handler(Mux.App(ws_default))
-  Mux.serve(Mux.Server(http, ws), port)
+  Mux.serve(Mux.Server(http, ws), port, host = ip"127.0.0.1")
 end
