@@ -1,6 +1,8 @@
 using Blink
 using Base.Test
 
+AtomShell.install()
+
 # open window and wait for it to initialize
 w = Window(Blink.@d(:show => false)); sleep(5.0)
 
