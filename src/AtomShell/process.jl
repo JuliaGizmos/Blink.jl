@@ -50,7 +50,7 @@ const mainjs = resolve("Blink", "src", "AtomShell", "main.js")
 
 function electron()
   path = get(ENV, "ELECTRON_PATH", _electron)
-  isfile(path) || error("Cannot find Electron. Try `AtomShell.install()`.")
+  isfile(path) || error("Cannot find Electron. Try `Blink.AtomShell.install()`.")
   return path
 end
 
