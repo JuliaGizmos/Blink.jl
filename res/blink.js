@@ -4,11 +4,14 @@
 
   // Comms stuff
 
-  var ws = location.href.replace("http", "ws");
-  if (!/\/\d+$/.test(ws)) {
-    ws += '/' + id;
+  var sock = {};
+  if (location.href.slice(0,16) == "http://127.0.0.1") {
+    var ws = location.href.replace("http", "ws");
+    if (!/\/\d+$/.test(ws)) {
+      ws += '/' + id;
+    }
+    var sock = new WebSocket(ws);
   }
-  var sock = new WebSocket(ws);
 
   function msg(t, m) {
     if (m === undefined) {
