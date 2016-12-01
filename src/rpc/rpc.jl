@@ -11,6 +11,14 @@
 include("jsexprs.jl")
 include("callbacks.jl")
 
+type JSError <: Exception
+    name::String
+    msg::String
+end
+
+Base.showerror(io::IO, e::JSError) =
+    print(io, "Javascript error\t$(e.name): $(e.msg)")
+
 # RPC API
 
 export js, js_, @js, @js_, @var, @new
@@ -25,7 +33,17 @@ function js(o, js::JSString; callback = true)
     cmd[:callback] = id
   end
   msg(o, cmd)
-  return callback ? wait(cond) : o
+
+  if callback
+      val = wait(cond)
+      if isa(val, Associative) && get(val, "type", "") == "error"
+          err = JSError(get(val, "name", "unknown"), get(val, "message", "blank"))
+          throw(err)
+      end
+      return val
+  else
+      return o
+  end
 end
 
 js(o, s; callback = true) = js(o, jsexpr(s); callback = callback)

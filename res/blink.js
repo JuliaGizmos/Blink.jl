@@ -31,16 +31,21 @@
   function cb(id, data) {
     data === undefined && (data = null);
     Promise.resolve(data).then(data => {
-      msg('callback', {callback: id, result: data});
+      var err = data != null ? data.type == 'error' : false;
+      msg('callback', {callback: id, result: data, error: err});
     });
   }
 
   handlers.eval = function(data) {
-    var result = eval(data.code);
-    if (data.callback) {
-      result == undefined && (result = null);
-      cb(data.callback, result);
-    }
+    new Promise(resolve => resolve(eval(data.code)))
+      .catch(e => {
+        return ({type: 'error', name: e.name, message: e.message})
+      })
+      .then(result => {
+        if (data.callback) {
+          cb(data.callback, result);
+        }
+      });
   }
 
   Blink.sock = sock;
