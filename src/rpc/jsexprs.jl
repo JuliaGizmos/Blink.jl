@@ -97,11 +97,14 @@ function jsexpr(io, x::Expr)
   isexpr(x, :block) && return block_expr(io, rmlines(x).args)
   @match x begin
     d(xs__) => dict_expr(io, xs)
+    $(Expr(:comparison, :_, :(==), :_)) => jsexpr_joined(io, [x.args[1], x.args[3]], "==")  # 0.4
+
+    # must include this particular `:call` expr before the catchall below
+    $(Expr(:call, :(==), :_, :_)) => jsexpr_joined(io, [x.args[2], x.args[3]], "==")  # 0.5+
     f_(xs__) => call_expr(io, f, xs...)
     (a_ -> b_) => func_expr(io, a, b)
     a_.b_ | a_.(b_) => jsexpr_joined(io, [a, b], ".")
     (a_ = b_) => jsexpr_joined(io, [a, b], "=")
-    $(Expr(:comparison, :_, :(==), :_)) => jsexpr_joined(io, [x.args[1], x.args[3]], "==")
     $(Expr(:if, :__)) => if_expr(io, x.args)
     a_[i__] => ref_expr(io, a, i...)
     (@m_ xs__) => jsexpr(io, macroexpand(Blink, x))
