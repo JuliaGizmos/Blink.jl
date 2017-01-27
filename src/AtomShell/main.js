@@ -18,7 +18,13 @@ handlers.eval = function(data, c) {
   var result = eval(data.code);
   if (data.callback) {
     result == undefined && (result = null);
-    result = {type: 'callback', callback: data.callback, result: result};
+    result = {
+      type: 'callback',
+      data: {
+        callback: data.callback,
+        result: result
+      }
+    }
     c.write(JSON.stringify(result));
   }
 }

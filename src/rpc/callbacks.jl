@@ -4,7 +4,7 @@ export handle
 
 handlers(o) = Dict()
 
-handle_message(o, m) = get(handlers(o), m["type"], identity)(m)
+handle_message(o, m) = get(handlers(o), m["type"], identity)(m["data"])
 
 handle(f, o, t) = (handlers(o)[t] = f)
 
