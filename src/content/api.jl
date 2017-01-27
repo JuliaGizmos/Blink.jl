@@ -43,10 +43,13 @@ function importhtml!(w, url; async=false)
 end
 
 function loadjs!(w, url)
-  @js w @new Promise(function (resolve)
+  @js w @new Promise(function (resolve, reject)
     @var script = document.createElement("script")
     script.src = $url
     script.onload = resolve
+    script.onerror = (e) -> reject(
+                               d("name"=>"JSLoadError",
+                                 "message"=>"failed to load " + this.src))
     document.head.appendChild(script)
   end)
 end
