@@ -11,12 +11,10 @@
   var sock = new WebSocket(ws);
 
   function msg(t, m) {
-    if (m === undefined) {
-      m = t;
-    } else {
-      m.type = t;
-    }
-    sock.send(JSON.stringify(m));
+    var msg = (m === undefined) ?
+      { type: t.type, data: t } :
+      { type: t, data: m }
+    sock.send(JSON.stringify(msg))
   }
 
   var handlers = {};
