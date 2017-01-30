@@ -12,10 +12,10 @@ handle(f, o, t) = (handlers(o)[t] = f)
 
 const callbacks = Dict{Int,Condition}()
 
-const counter = [0]
+const counter = Ref(0)
 
 function callback!()
-  id = (counter[1] += 1)
+  id = (counter[] += 1)
   cb = Condition()
   callbacks[id] = cb
   return id, cb
