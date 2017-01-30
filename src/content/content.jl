@@ -10,13 +10,13 @@ type Page
   id::Int
   sock::WebSocket
   handlers::Dict{String, Any}
-  cb::Condition
+  cb::Future
 
   function Page(init = nothing)
     serve()
     p = new(gen_id())
     p.handlers = Dict()
-    p.cb = Condition()
+    p.cb = Future()
     init == nothing || (p.handlers["init"] = init)
     enable_callbacks!(p)
     pool[p.id] = WeakRef(p)
