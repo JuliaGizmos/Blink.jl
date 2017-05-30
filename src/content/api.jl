@@ -48,8 +48,9 @@ function loadjs!(w, url)
     script.src = $url
     script.onload = resolve
     script.onerror = (e) -> reject(
-                               d("name"=>"JSLoadError",
-                                 "message"=>"failed to load " + this.src))
+                               Dict("name"=>"JSLoadError",
+                                    "message"=>"failed to load " + this.src)
+                                    )
     document.head.appendChild(script)
   end)
 end
