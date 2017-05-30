@@ -58,14 +58,23 @@ function ws_handler(req)
   close(client)
 end
 
+const user_middleware = Dict(:http=>(x,y)->x(y), :ws=>(x,y)->x(y))
+
+set_user_middleware!(m; websocket=false) =
+    user_middleware[websocket ? :ws : :http] = m
+
+make_user_middleware(typ) = (x, y) -> user_middleware[typ](x, y)
+
 http_default =
   mux(Mux.defaults,
       resroute,
+      make_user_middleware(:http),
       page(":id", page_handler),
       Mux.notfound())
 
 ws_default =
   mux(Mux.wdefaults,
+      make_user_middleware(:ws),
       ws_handler)
 
 isprecompiling() = ccall(:jl_generating_output, Cint, ()) == 1
