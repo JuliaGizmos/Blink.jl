@@ -1,5 +1,5 @@
 using ..Blink
-import Blink: js, jsstring, id
+import Blink: js, JSString, id
 import Base: position, size, close
 
 export Window, flashframe, shell, progress, title,
@@ -37,7 +37,7 @@ end
 Window(args...) = Window(shell(), args...)
 
 dot(a::Electron, win::Integer, code; callback = true) =
-  js(a, :(withwin($(win), $(jsstring(code)))),
+  js(a, :(withwin($win, ()->$code)),
      callback = callback)
 
 dot(w::Window, code; callback = true) =
@@ -127,7 +127,7 @@ msg(win::Window, m) = msg(win.content, m)
 
 js(win::Window, s::JSString; callback = true) =
   active(win.content) ? js(win.content, s, callback = callback) :
-    dot(win, :(this.webContents.executeJavaScript($(jsstring(s)))), callback = callback)
+    dot(win, :(this.webContents.executeJavaScript($(s.s))), callback = callback)
 
 const initcss = """
   <style>html,body{margin:0;padding:0;border:0;text-align:center;}</style>

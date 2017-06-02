@@ -1,3 +1,9 @@
+using Lazy, JSON, MacroTools
+
+import WebIO: @js, @js_str, JSString, jsexpr
+
+export JSString
+
 # This basically just defines an API and utilities for
 # JS RPCs – the implementation is left to specific objects.
 
@@ -8,7 +14,6 @@
 
 # Convert Julia `Expr`s to strings of JS
 
-include("jsexprs.jl")
 include("callbacks.jl")
 
 type JSError <: Exception
