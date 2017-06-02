@@ -22,7 +22,7 @@ end
 
 function inspector(port)
   inspector()
-  run(`open http://localhost:8080/debug?port=$port`)
+  run(`open http://localhost:8080/debug\?port=$port`)
 end
 
 # atom-shell
