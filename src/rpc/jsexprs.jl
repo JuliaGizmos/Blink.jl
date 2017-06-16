@@ -74,16 +74,9 @@ end
 
 function dict_expr(io, xs)
   print(io, "{")
-  xs = ["$(string(x.args[1])):"*jsexpr(x.args[2]).s for x in xs]
+  xs = [jsexpr(x).s for x in xs]
   join(io, xs, ",")
   print(io, "}")
-end
-
-function dict_expr_06(io, xs)
-    print(io, "{")
-    xs = ["$(string(x.args[2])):"*jsexpr(x.args[3]).s for x in xs]
-    join(io, xs, ",")
-    print(io, "}")
 end
 
 function if_expr(io, xs)
@@ -104,7 +97,12 @@ function jsexpr(io, x::Expr)
   isexpr(x, :block) && return block_expr(io, rmlines(x).args)
   @match x begin
     d(xs__) => dict_expr(io, xs)
-    $(Expr(:call, :Dict, :__)) => dict_expr_06(io, x.args[2:end])
+    Dict(xs__) => dict_expr(io, xs)
+    # Pairs on 0.5
+    $(Expr(:(=>), :_, :_)) => print(io, jsexpr(x.args[1]).s, ":", jsexpr(x.args[2]).s)
+
+    # Pairs on 0.6
+    $(Expr(:call, :(=>), :_, :_)) => print(io, jsexpr(x.args[2]).s, ":", jsexpr(x.args[3]).s)
     $(Expr(:comparison, :_, :(==), :_)) => jsexpr_joined(io, [x.args[1], x.args[3]], "==")  # 0.4
 
     # must include this particular `:call` expr before the catchall below
