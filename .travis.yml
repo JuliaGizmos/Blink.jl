@@ -4,13 +4,13 @@ notifications:
 matrix:
   include:
     - os: linux
-      julia: release
+      julia: 0.5
       env: TESTCMD="xvfb-run julia"
     # - os: linux
     #   julia: nightly
     #   env: TESTCMD="xvfb-run julia"
     - os: osx
-      julia: release
+      julia: 0.5
       env: TESTCMD="julia"
     # - os: osx
     #   julia: nightly
