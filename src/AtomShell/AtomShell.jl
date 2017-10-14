@@ -2,7 +2,7 @@ module AtomShell
 
 using Compat; import Compat.String
 
-abstract Shell
+abstract type Shell end
 
 _shell = nothing
 
