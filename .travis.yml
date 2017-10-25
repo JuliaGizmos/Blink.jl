@@ -4,17 +4,25 @@ notifications:
 matrix:
   include:
     - os: linux
-      julia: release
+      julia: 0.5
       env: TESTCMD="xvfb-run julia"
-    # - os: linux
-    #   julia: nightly
-    #   env: TESTCMD="xvfb-run julia"
+    - os: linux
+      julia: 0.6
+      env: TESTCMD="xvfb-run julia"
+    - os: linux
+      julia: nightly
+      env: TESTCMD="xvfb-run julia"
     - os: osx
-      julia: release
+      julia: 0.5
       env: TESTCMD="julia"
-    # - os: osx
-    #   julia: nightly
-    #   env: TESTCMD="julia"
+    - os: osx
+      julia: 0.6
+      env: TESTCMD="julia"
+    - os: osx
+      julia: nightly
+      env: TESTCMD="julia"
+  allow_failures:
+    - julia: nightly
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - $TESTCMD -e 'Pkg.clone(pwd()); Pkg.build("Blink"); import Blink; Pkg.test("Blink"; coverage=true)'
