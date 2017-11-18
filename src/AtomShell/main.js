@@ -1,4 +1,4 @@
-var app = require("app");
+const {app, BrowserWindow} = require('electron')
 var net = require("net");
 
 // console.log('Args:');
@@ -65,11 +65,10 @@ app.on("ready", function() {
 });
 
 // Window creation
-var Window = require("browser-window");
 var windows = {};
 
 function createWindow(opts) {
-  var win = new Window(opts);
+  var win = new BrowserWindow(opts);
   windows[win.id] = win;
   if (opts.url) {
     win.loadURL(opts.url);
