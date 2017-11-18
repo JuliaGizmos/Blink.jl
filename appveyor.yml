@@ -17,7 +17,7 @@ notifications:
 install:
 # Download most recent Julia Windows binary
   - ps: (new-object net.webclient).DownloadFile(
-        $env:JULIA_URL,,
+        $env:JULIA_URL,
         "C:\projects\julia-binary.exe")
 # Run installer silently, output to C:\projects\julia
   - C:\projects\julia-binary.exe /S /D=C:\projects\julia
