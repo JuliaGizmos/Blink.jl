@@ -40,7 +40,7 @@ end
 Electron(proc, sock) = Electron(proc, sock, Dict())
 
 @static if is_apple()
-  const _electron = resolve("Blink", "deps/Julia.app/Contents/MacOS/Electron")
+  const _electron = resolve("Blink", "deps/Julia.app/Contents/MacOS/Julia")
 elseif is_linux()
   const _electron = resolve("Blink", "deps/atom/electron")
 elseif is_windows()
