@@ -49,7 +49,7 @@ function install()
   end
 end
 
-folder() = resolve("Blink", "deps", is_apple() ? "Julia.app" : "atom")
+folder() = resolve("Blink", "deps")
 
 isinstalled() = isdir(folder())
 
