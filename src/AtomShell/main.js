@@ -75,8 +75,14 @@ function createWindow(opts) {
   }
   win.setMenu(null);
 
+  // Create a local variable that we'll use in
+  // the closed event handler because the property
+  // .id won't be accessible anymore when the window
+  // has been closed.
+  var win_id = win.id
+
   win.on('closed', function() {
-    delete windows[win.id];
+    delete windows[win_id];
   });
 
   return win.id;
