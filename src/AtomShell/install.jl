@@ -2,7 +2,7 @@ import BinDeps
 
 rm′(f) = (isdir(f) || isfile(f)) && rm(f, recursive = true)
 
-const version = "1.6.15"
+const version = "1.7.10"
 
 
 function install()
