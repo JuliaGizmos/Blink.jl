@@ -1,9 +1,7 @@
 export body!, content!, loadcss!, loadjs!, load!, importhtml!
 
 content!(o, sel, html::AbstractString; fade = true) =
-  fade ?
-    @js_(o, Blink.fill($sel, $html)) :
-    @js_ o document.querySelector($sel).innerHTML = $html
+    @js_(o, Blink.fill($sel, $html, $fade))
 
 content!(o, sel, html; fade = true) =
   content!(o, sel, stringmime(MIME"text/html"(), html), fade = fade)
