@@ -33,3 +33,48 @@ using Base.Test
         @test (@js w testJS) == "test"
     end
 end
+
+@testset "Sync/Async content reload tests" begin
+    w = Window(Blink.@d(:show => false)); sleep(5.0)
+    sleep_content(seconds) = """
+        <script>
+            function spinsleep(ms) {
+                var start = new Date().getTime(), expire = start + ms;
+                while (new Date().getTime() < expire) { }
+                return;
+            }
+            spinsleep($(seconds * 1000));
+        </script>
+      """
+
+    @timed sleep(0.1);   # Throw-away statement to warm-up @sync and @async
+
+    x, t = @timed body!(w, sleep_content(3); fade=true, async=false)
+    #@test x == true  # TODO: What should it return?
+    @test t >= 3.0 # seconds
+
+    x, t = @timed body!(w, sleep_content(3); fade=false, async=false)
+    @test t >= 3.0 # seconds
+
+    x, t = @timed body!(w, sleep_content(3); fade=true, async=true);
+    @test t < 3.0 # seconds
+    sleep(3)  # (Wait until the end of the previous body! call.)
+
+    x, t = @timed body!(w, sleep_content(3); fade=false, async=true);
+    @test t < 3.0 # seconds
+    sleep(3)  # (Wait until the end of the previous body! call.)
+
+
+    @sync begin  # Throw-away block to warm-up @sync and @async
+        @async sleep(0.1)
+        @async sleep(0.1)
+    end
+    # Test using Julia's async mechanisms with synchronous `content!`.
+    _, t = @timed @sync begin
+      @async body!(w, sleep_content(4); async=false);
+      sleep(4)
+    end
+
+    @test t >= 4.0
+    @test t < 8
+end
