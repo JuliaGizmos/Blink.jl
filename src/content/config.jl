@@ -1,4 +1,4 @@
-export localips, launch
+export localips
 
 @init global const port = get(ENV, "BLINK_PORT", rand(2_000:10_000))
 
