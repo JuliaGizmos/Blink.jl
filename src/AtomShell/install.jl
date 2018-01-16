@@ -53,4 +53,4 @@ folder() = resolve("Blink", "deps")
 
 isinstalled() = isdir(folder())
 
-remove() = rm(folder(), recursive = true)
+uninstall() = rm(folder(), recursive = true)
