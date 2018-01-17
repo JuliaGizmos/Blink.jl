@@ -97,17 +97,26 @@
     }
   }
 
-  function fill(node, html) {
+  function fill(node, html, fade) {
+    node = select(node);
+    fade ?
+      fillfade(node, html) :
+      fillnofade(node, html)
+  }
+  function fillfade(node, html) {
     node = select(node);
     node.classList.add('blink-show');
     callback(function () {
       node.classList.add('blink-fade');
       callback(0.2, function() {
-        node.innerHTML = html;
-        evalscripts(node);
+        fillnofade(node, html);
         node.classList.remove('blink-fade');
       });
     });
+  }
+  function fillnofade(node, html) {
+    node.innerHTML = html;
+    evalscripts(node);
   }
 
   Blink.fill = fill;
