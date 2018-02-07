@@ -1,5 +1,2 @@
-/deps/Julia.app
-/deps/atom
-/deps/*.zip
-
-deps/julia.png
+/deps
+!/deps/build.jl

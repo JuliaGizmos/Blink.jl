@@ -4,20 +4,32 @@ rm′(f) = (isdir(f) || isfile(f)) && rm(f, recursive = true)
 
 const version = "1.7.10"
 
+folder() = normpath(joinpath(@__FILE__, "../../../deps"))
+
+@static if is_apple()
+    uninstall() = map(rm′, filter(x -> !endswith(x, "build.jl"), readdir(folder())))
+else
+    uninstall() = rm′(joinpath(folder(), "atom"))
+end
+
+isinstalled() = is_apple() ?
+    isfile(joinpath(folder(), "version")) :
+    isdir(joinpath(folder(), "atom"))
+
 
 function install()
-  dir = resolve("Blink", "deps")
+  dir = folder()
   if is_apple()
-    const _icons = resolve("Blink", "res/julia-icns.icns")
+    const _icons = normpath(joinpath(@__FILE__, "../../../res/julia-icns.icns"))
   end
-  mkpath(dir)
+  !isdir(dir) && mkpath(dir)
+  uninstall()
   cd(dir) do
     download(x) = run(BinDeps.download_cmd(x, basename(x)))
 
     download("http://junolab.s3.amazonaws.com/blink/julia.png")
 
     if is_apple()
-      rm′("Julia.app")
       file = "electron-v$version-darwin-x64.zip"
       download("https://github.com/electron/electron/releases/download/v$version/$file")
       run(`unzip -q $file`)
@@ -30,7 +42,6 @@ function install()
     end
 
     if is_windows()
-      rm′("atom")
       arch = Int == Int64 ? "x64" : "ia32"
       file = "electron-v$version-win32-$arch.zip"
       download("https://github.com/electron/electron/releases/download/v$version/$file")
@@ -39,7 +50,6 @@ function install()
     end
 
     if is_linux()
-      rm′("atom")
       arch = Int == Int64 ? "x64" : "ia32"
       file = "electron-v$version-linux-$arch.zip"
       download("https://github.com/electron/electron/releases/download/v$version/$file")
@@ -48,9 +58,3 @@ function install()
     end
   end
 end
-
-folder() = resolve("Blink", "deps")
-
-isinstalled() = isdir(folder())
-
-uninstall() = rm(folder(), recursive = true)
