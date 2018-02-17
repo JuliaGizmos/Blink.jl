@@ -11,7 +11,7 @@ function get_installed_version()
 end
 
 if isinstalled() && !(version == get_installed_version())
-    Blink.AtomShell.install()
+    install()
 end
 
 end
