@@ -82,7 +82,7 @@ position(win::Window) =
   @dot win getPosition()
 
 size(win::Window, w::Integer, h::Integer) =
-  invoke(size, (Window, Any, Any), win, w, h)
+  invoke(size, Tuple{Window, Any, Any}, win, w, h)
 
 size(win::Window, w, h) =
   @dot_ win setSize($w, $h)
