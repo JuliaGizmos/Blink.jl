@@ -38,7 +38,7 @@ end
 Window(args...) = Window(shell(), args...)
 
 dot(a::Electron, win::Integer, code; callback = true) =
-  js(a, :(withwin($(win), $(jsstring(code)))),
+  js(a, :(withwin($(win), $(jsstring(code)...))),
      callback = callback)
 
 dot(w::Window, code; callback = true) =

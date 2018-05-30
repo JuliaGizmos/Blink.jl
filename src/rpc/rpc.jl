@@ -1,4 +1,4 @@
-import JSExpr: @js, @js_str, JSString, jsexpr, @var, @new
+import JSExpr: @js, @js_str, JSString, jsstring, jsexpr, @var, @new
 using Lazy: @d
 
 export js, @js, @js_, @var, @new
@@ -42,14 +42,13 @@ function js(o, js::JSString; callback = true)
   end
 end
 
-js(o, s; callback = true) = js(o, jsexpr(s); callback = callback)
-
-js_(args...) = js(args..., callback = false)
+js(o, j; callback=true) = js(o, JSString(string(jsstring(j)...)); callback=callback)
 
 macro js(o, ex)
-  :(js($(esc(o)), $(Expr(:quote, ex))))
+    :(js($(esc(o)), $(Expr(:quote, ex))))
 end
 
 macro js_(o, ex)
-  :(js_($(esc(o)), $(Expr(:quote, ex))))
+    :(js($(esc(o)), $(Expr(:quote, ex)), callback=false))
 end
+
