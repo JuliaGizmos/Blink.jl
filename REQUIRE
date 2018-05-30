@@ -9,3 +9,5 @@ MacroTools
 Mux
 BinDeps
 Compat 0.8.6
+WebIO
+JSExpr

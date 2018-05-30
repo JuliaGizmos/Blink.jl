@@ -1,5 +1,6 @@
 using ..Blink
-import Blink: js, jsstring, id
+import Blink: js, id
+import JSExpr: JSString, jsstring
 import Base: position, size, close
 
 export Window, flashframe, shell, progress, title,
