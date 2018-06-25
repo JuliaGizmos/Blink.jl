@@ -6,7 +6,7 @@ export Window, flashframe, shell, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
   loadhtml, loadfile, css, front
 
-type Window
+mutable struct Window
   id::Int
   shell::Shell
   content
