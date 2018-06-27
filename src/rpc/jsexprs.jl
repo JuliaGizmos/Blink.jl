@@ -3,7 +3,7 @@ export JSString
 
 jsexpr(io, x) = JSON.print(io, x)
 
-type JSString
+mutable struct JSString
   s::String
 end
 

@@ -31,7 +31,7 @@ import Base: Process, TCPSocket
 
 export Electron
 
-type Electron <: Shell
+mutable struct Electron <: Shell
   proc::Process
   sock::TCPSocket
   handlers::Dict{String, Any}

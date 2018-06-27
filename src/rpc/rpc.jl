@@ -11,7 +11,7 @@
 include("jsexprs.jl")
 include("callbacks.jl")
 
-type JSError <: Exception
+mutable struct JSError <: Exception
     name::String
     msg::String
 end

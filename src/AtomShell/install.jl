@@ -2,7 +2,7 @@ import BinDeps
 
 rm′(f) = (isdir(f) || isfile(f)) && rm(f, recursive = true)
 
-const version = "1.8.6"
+const version = "2.0.3"
 
 folder() = normpath(joinpath(@__FILE__, "../../../deps"))
 
@@ -20,7 +20,7 @@ isinstalled() = is_apple() ?
 function install()
   dir = folder()
   if is_apple()
-    const _icons = normpath(joinpath(@__FILE__, "../../../res/julia-icns.icns"))
+    _icons = normpath(joinpath(@__FILE__, "../../../res/julia-icns.icns"))
   end
   !isdir(dir) && mkpath(dir)
   uninstall()
