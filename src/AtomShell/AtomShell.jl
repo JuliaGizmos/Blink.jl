@@ -1,6 +1,8 @@
 module AtomShell
 
-using Compat; import Compat.String
+using Compat
+using Compat.Sockets
+using Compat.Sys: isapple, isunix, islinux, iswindows
 
 abstract type Shell end
 
