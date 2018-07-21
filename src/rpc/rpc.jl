@@ -11,7 +11,7 @@
 include("jsexprs.jl")
 include("callbacks.jl")
 
-type JSError <: Exception
+mutable struct JSError <: Exception
     name::String
     msg::String
 end
@@ -36,7 +36,7 @@ function js(o, js::JSString; callback = true)
 
   if callback
       val = wait(cond)
-      if isa(val, Associative) && get(val, "type", "") == "error"
+      if isa(val, AbstractDict) && get(val, "type", "") == "error"
           err = JSError(get(val, "name", "unknown"), get(val, "message", "blank"))
           throw(err)
       end

@@ -6,7 +6,7 @@ include("api.jl")
 
 # Content
 
-type Page
+mutable struct Page
   id::Int
   sock::WebSocket
   handlers::Dict{String, Any}
@@ -52,5 +52,5 @@ end
 include("server.jl")
 
 @init for r in ["blink.js", "blink.css", "reset.css", "spinner.css"]
-  resource(resolve("Blink", "res", r))
+  resource(resolve_blink_asset("res", r))
 end
