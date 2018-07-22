@@ -1,5 +1,6 @@
 using ..Blink
-import Blink: js, jsstring, id
+import Blink: js, id
+import JSExpr: JSString, jsstring
 import Base: position, size, close
 
 export Window, flashframe, shell, progress, title,
@@ -37,7 +38,7 @@ end
 Window(args...) = Window(shell(), args...)
 
 dot(a::Electron, win::Integer, code; callback = true) =
-  js(a, :(withwin($(win), $(jsstring(code)))),
+  js(a, :(withwin($(win), $(jsstring(code)...))),
      callback = callback)
 
 dot(w::Window, code; callback = true) =

@@ -11,7 +11,7 @@ w = Window(Blink.@d(:show => false)); sleep(5.0)
 # make sure the window is really active
 @test @js(w, Math.log(10)) ≈ log(10)
 
-@test sprint(Blink.jsexpr, :(Dict("a" => 1, :b => 10))) == "{\"a\":1,b:10}"
+@test string(Blink.jsstring(:(Dict("a" => 1, :b => 10)))...) == "{\"a\":1,\"b\":10}"
 
 # check that <!DOCTYPE html> was declared
 @test  startswith(Blink.maintp.tokens[1][2], "<!DOCTYPE html>\n")

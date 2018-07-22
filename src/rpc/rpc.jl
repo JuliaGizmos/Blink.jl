@@ -1,14 +1,10 @@
-# This basically just defines an API and utilities for
-# JS RPCs – the implementation is left to specific objects.
+import JSExpr: @js, @js_str, JSString, jsstring, jsexpr, @var, @new
+using Lazy: @d
 
-# Note that this API is very limited. Although it would
-# be perfectly possible to have full interop with references
-# to JS objects etc., it would be an enormously leaky
-# abstraction over a TCP connection with any latency.
+export js, @js, @js_, @var, @new
 
-# Convert Julia `Expr`s to strings of JS
+# include("jsexprs.jl")
 
-include("jsexprs.jl")
 include("callbacks.jl")
 
 type JSError <: Exception
@@ -46,14 +42,13 @@ function js(o, js::JSString; callback = true)
   end
 end
 
-js(o, s; callback = true) = js(o, jsexpr(s); callback = callback)
-
-js_(args...) = js(args..., callback = false)
+js(o, j; callback=true) = js(o, JSString(string(jsstring(j)...)); callback=callback)
 
 macro js(o, ex)
-  :(js($(esc(o)), $(Expr(:quote, ex))))
+    :(js($(esc(o)), $(Expr(:quote, ex))))
 end
 
 macro js_(o, ex)
-  :(js_($(esc(o)), $(Expr(:quote, ex))))
+    :(js($(esc(o)), $(Expr(:quote, ex)), callback=false))
 end
+
