@@ -2,7 +2,7 @@ using Blink
 using Test
 
 @testset "size Tests" begin
-    w = Window(Blink.@d(:show => false, :width=>150, :height=>100)) ; sleep(5.0);
+    w = Window(Blink.@d(:show => false, :width=>150, :height=>100, :async=>false));
     @test size(w) == [150,100]
 
     size(w, 200,200)

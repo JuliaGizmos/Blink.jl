@@ -147,4 +147,8 @@
 
   Blink.click = click;
 
+  // Window creation callback: Mark this window as done loading.
+  if (typeof callback_id !== 'undefined') {
+    Blink.sock.onopen = ()=>{ cb(callback_id, true); }
+  }
 })();

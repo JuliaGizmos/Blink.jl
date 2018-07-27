@@ -20,7 +20,10 @@ function page_handler(req)
   haskey(pool, id) || @goto fail
   active(pool[id].value) && @goto fail
 
-  return render(maintp, d("id"=>id))
+  callback_id = try split(req[:query], "=")[2] catch e nothing end
+  callback_script = callback_id != nothing ? """var callback_id = $callback_id""" : ""
+  return render(maintp, d("id"=>id,
+                          "optional_create_window_callback"=>callback_script))
 
   @label fail
   return d(:body => "Not found",
