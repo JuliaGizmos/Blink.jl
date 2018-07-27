@@ -33,3 +33,13 @@ using Base.Test
         @test (@js w testJS) == "test"
     end
 end
+
+module WrappedModuleTest
+    # Test for https://github.com/JunoLab/Blink.jl/issues/134#issuecomment-408218020
+    import Blink
+    w = Blink.Window(Blink.@d(:show => false)); sleep(5.0)
+    html = """<div id="a">hi world</div><div id="b">bye</div>"""
+    Blink.body!(w, html); sleep(1.0)
+end
+
+

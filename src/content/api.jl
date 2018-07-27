@@ -9,8 +9,9 @@ content!(o, sel, html; fade = true) =
 body!(w, html; fade = true) = content!(w, "body", html, fade = fade)
 
 function loadcss!(w, url)
+  # Uses Expr(:var, ...) instead of @var to work around issue #134
   @js_ w begin
-    @var link = document.createElement("link")
+    $(Expr(:var, :(link = document.createElement("link"))))
     link.type = "text/css"
     link.rel = "stylesheet"
     link.href = $url
@@ -19,30 +20,32 @@ function loadcss!(w, url)
 end
 
 function importhtml!(w, url; async=false)
+  # Uses Expr(:var, ...) instead of @var to work around issue #134
   if async
     @js_ w begin
-      @var link = document.createElement("link")
+      $(Expr(:var, :(link = document.createElement("link"))))
       link.rel = "import"
       link.href = $url
       document.head.appendChild(link)
     end
   else
     @js w begin
-      @new Promise(function (resolve, reject)
-          @var link = document.createElement("link")
+      $(Expr(:new, :(Promise(function (resolve, reject)
+          $(Expr(:var, :(link = document.createElement("link"))))
           link.rel = "import"
           link.href = $url
           link.onload = (e) -> resolve(true)
           link.onerror = (e) -> reject(false)
           document.head.appendChild(link)
-      end)
+      end))))
     end
   end
 end
 
 function loadjs!(w, url)
-  @js w @new Promise(function (resolve, reject)
-    @var script = document.createElement("script")
+  # Uses Expr(:var, ...) instead of @var to work around issue #134
+  @js w $(Expr(:new, :(Promise(function (resolve, reject)
+    $(Expr(:var, :(script = document.createElement("script"))))
     script.src = $url
     script.onload = resolve
     script.onerror = (e) -> reject(
@@ -50,7 +53,7 @@ function loadjs!(w, url)
                                     "message"=>"failed to load " + this.src)
                                     )
     document.head.appendChild(script)
-  end)
+  end))))
 end
 
 isurl(f) = ismatch(r"^https?://", f)
