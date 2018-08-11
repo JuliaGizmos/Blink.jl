@@ -20,17 +20,17 @@ const window_defaults = @d(:url => "about:blank",
                            :title => "Julia",
                            "node-integration" => false,
                            "use-content-size" => true,
-                           :icon => resolve("Blink", "deps", "julia.png"))
+                           :icon => resolve_blink_asset("deps", "julia.png"))
 
 raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
-function Window(a::Shell, opts::Associative = Dict())
+function Window(a::Shell, opts::AbstractDict = Dict())
   return haskey(opts, :url) ?
     Window(raw_window(a, opts), a, nothing) :
     Window(a, Page(), opts)
 end
 
-function Window(a::Shell, content::Page, opts::Associative = Dict())
+function Window(a::Shell, content::Page, opts::AbstractDict = Dict())
   opts = merge(opts, Dict(:url => Blink.localurl(content)))
   return Window(raw_window(a, opts), a, content)
 end
@@ -120,7 +120,7 @@ close(win::Window) =
 
 # Window content APIs
 
-active(::Void) = false
+active(::Nothing) = false
 
 handlers(w::Window) = handlers(w.content)
 
