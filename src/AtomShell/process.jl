@@ -103,9 +103,17 @@ handlers(shell::Electron) = shell.handlers
 
 function initcbs(shell)
   enable_callbacks!(shell)
-  @schedule begin
-    while active(shell)
-      @errs handle_message(shell, JSON.parse(shell.sock))
+  @static if VERSION < v"0.7.0-alpha.0"
+    @schedule begin
+      while active(shell)
+        @errs handle_message(shell, JSON.parse(shell.sock))
+      end
+    end
+  else
+    @async begin
+      while active(shell)
+        @errs handle_message(shell, JSON.parse(shell.sock))
+      end
     end
   end
 end
