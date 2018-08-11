@@ -20,7 +20,9 @@ mutable struct Page
     init == nothing || (p.handlers["init"] = init)
     enable_callbacks!(p)
     pool[p.id] = WeakRef(p)
-    finalizer(p, p -> delete!(pool, p.id))
+    finalizer(p) do p
+      delete!(pool, p.id)
+    end
     return p
   end
 end
