@@ -39,11 +39,11 @@ end
 
 Electron(proc, sock) = Electron(proc, sock, Dict())
 
-@static if is_apple()
+@static if Sys.isapple()
   const _electron = resolve("Blink", "deps/Julia.app/Contents/MacOS/Julia")
-elseif is_linux()
+elseif Sys.islinux()
   const _electron = resolve("Blink", "deps/atom/electron")
-elseif is_windows()
+elseif Sys.iswindows()
   const _electron = resolve("Blink", "deps", "atom", "electron.exe")
 end
 const mainjs = resolve("Blink", "src", "AtomShell", "main.js")
