@@ -3,7 +3,7 @@ using Lazy, JSON, MacroTools
 hascommand(c) =
   try read(`which $c`, String); true catch e false end
 
-spawn_rdr(cmd) = spawn(cmd, Base.spawn_opts_inherit()...)
+spawn_rdr(cmd) = run(cmd, Base.spawn_opts_inherit()...; wait=false)
 
 """
   resolve_blink_asset(path...)
