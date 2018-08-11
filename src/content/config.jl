@@ -4,7 +4,7 @@ export localips
 
 const ippat = r"([0-9]+\.){3}[0-9]+"
 
-@static if is_unix()
+@static if Sys.isunix()
     localips() = map(IPv4, readlines(`ifconfig` |>
                       `grep -Eo $("inet (addr:)?$(ippat.pattern)")` |>
                       `grep -Eo $(ippat.pattern)` |>
@@ -13,11 +13,11 @@ end
 
 # Browser Window
 
-@static if is_apple()
+@static if Sys.isapple()
     launch(x) = run(`open $x`)
-elseif is_linux()
+elseif Sys.islinux()
     launch(x) = run(`xdg-open $x`)
-elseif is_windows()
+elseif Sys.iswindows()
     launch(x) = run(`cmd /C start $x`)
 end
 
