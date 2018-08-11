@@ -7,7 +7,7 @@ export Window, flashframe, shell, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
   loadhtml, loadfile, css, front
 
-type Window
+mutable struct Window
   id::Int
   shell::Shell
   content
@@ -141,6 +141,10 @@ function loadhtml(win::Window, html::AbstractString)
     println(io, html)
   end
   loadfile(win, tmp)
-  @schedule (sleep(1); rm(tmp))
+  @static if VERSION < v"0.7.0-alpha.0"
+    @schedule (sleep(1); rm(tmp))
+  else
+    @async (sleep(1); rm(tmp))
+  end
   return
 end

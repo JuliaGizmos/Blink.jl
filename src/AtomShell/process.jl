@@ -3,7 +3,7 @@ using Lazy, JSON, MacroTools
 hascommand(c) =
   try read(`which $c`, String); true catch e false end
 
-spawn_rdr(cmd) = spawn(cmd, Base.spawn_opts_inherit()...)
+spawn_rdr(cmd) = run(cmd, Base.spawn_opts_inherit()...; wait=false)
 
 """
   resolve_blink_asset(path...)
@@ -81,7 +81,12 @@ function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  proc = (debug ? spawn_rdr : spawn)(`$(electron()) $dbg $mainjs port $p`)
+  electron_cmd = `$(electron()) $dbg $mainjs port $p`
+  proc = if debug
+    spawn_rdr(electron_cmd)
+  else
+    run(electron_cmd; wait=false)
+  end
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
@@ -98,9 +103,17 @@ handlers(shell::Electron) = shell.handlers
 
 function initcbs(shell)
   enable_callbacks!(shell)
-  @schedule begin
-    while active(shell)
-      @errs handle_message(shell, JSON.parse(shell.sock))
+  @static if VERSION < v"0.7.0-alpha.0"
+    @schedule begin
+      while active(shell)
+        @errs handle_message(shell, JSON.parse(shell.sock))
+      end
+    end
+  else
+    @async begin
+      while active(shell)
+        @errs handle_message(shell, JSON.parse(shell.sock))
+      end
     end
   end
 end
