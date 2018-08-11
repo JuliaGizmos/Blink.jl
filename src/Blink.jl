@@ -7,6 +7,7 @@ using Compat
 using Compat.Distributed: Future
 using Compat.Sys: isunix, islinux, isapple, iswindows
 using Compat.Sockets
+using Compat.Base64: stringmime
 
 include("rpc/rpc.jl")
 include("content/content.jl")
