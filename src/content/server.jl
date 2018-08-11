@@ -35,7 +35,7 @@ function ws_handler(req)
   active(p) && @goto fail
 
   p.sock = client
-  @schedule @errs get(handlers(p), "init", identity)(p)
+  @async @errs get(handlers(p), "init", identity)(p)
   put!(p.cb, true)
   while active(p)
     local data
@@ -79,5 +79,5 @@ function serve()
   http = Mux.http_handler(Mux.App(http_default))
   #delete!(http.events, "listen")
   ws = Mux.ws_handler(Mux.App(ws_default))
-  @async WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port, false)
+  @async WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port[], false)
 end
