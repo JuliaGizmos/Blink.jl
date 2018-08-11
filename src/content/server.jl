@@ -79,5 +79,5 @@ function serve()
   http = Mux.http_handler(Mux.App(http_default))
   #delete!(http.events, "listen")
   ws = Mux.ws_handler(Mux.App(ws_default))
-  @async WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", 8080, false)
+  @async WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port, false)
 end
