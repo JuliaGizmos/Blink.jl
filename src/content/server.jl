@@ -16,7 +16,7 @@ const maintp = Mustache.template_from_file(joinpath(dirname(@__FILE__), "main.ht
 app(f) = req -> render(maintp, d("id"=>Page(f).id))
 
 function page_handler(req)
-  id = try parse(req[:params][:id]) catch e @goto fail end
+  id = try parse(Int, req[:params][:id]) catch e @goto fail end
   haskey(pool, id) || @goto fail
   active(pool[id].value) && @goto fail
 
@@ -28,7 +28,7 @@ function page_handler(req)
 end
 
 function ws_handler(req)
-  id = try parse(req[:path][end]) catch e @goto fail end
+  id = try parse(Int, req[:path][end]) catch e @goto fail end
   client = req[:socket]
   haskey(pool, id) || @goto fail
   p = pool[id].value
