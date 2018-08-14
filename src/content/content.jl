@@ -6,7 +6,7 @@ include("api.jl")
 
 # Content
 
-type Page
+mutable struct Page
   id::Int
   sock::WebSocket
   handlers::Dict{String, Any}
