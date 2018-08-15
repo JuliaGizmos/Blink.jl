@@ -97,26 +97,28 @@
     }
   }
 
-  function fill(node, html, fade) {
+  function fill(node, html, fade, resolve, reject) {
     node = select(node);
     fade ?
-      fillfade(node, html) :
-      fillnofade(node, html)
+      fillfade(node, html, resolve, reject) :
+      fillnofade(node, html, resolve, reject)
   }
-  function fillfade(node, html) {
+  function fillfade(node, html, resolve, reject) {
     node = select(node);
     node.classList.add('blink-show');
     callback(function () {
       node.classList.add('blink-fade');
       callback(0.2, function() {
-        fillnofade(node, html);
+        fillnofade(node, html, null, null);
         node.classList.remove('blink-fade');
+        if (resolve) resolve(true);
       });
     });
   }
-  function fillnofade(node, html) {
+  function fillnofade(node, html, resolve, reject) {
     node.innerHTML = html;
     evalscripts(node);
+    if (resolve) resolve(true);
   }
 
   Blink.fill = fill;

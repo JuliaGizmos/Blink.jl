@@ -1,12 +1,22 @@
 export body!, content!, loadcss!, loadjs!, load!, importhtml!
 
-content!(o, sel, html::AbstractString; fade = true) =
-    @js_(o, Blink.fill($sel, $html, $fade))
+function content!(o, sel, html::AbstractString; fade = true, async = true)
+  if async
+    @js_(o, Blink.fill($sel, $html, $fade, null, null))
+  else
+    @js o begin  # Use `@js` to wait until the below Promise is resolved.
+      @new Promise(function (resolve, reject)
+        Blink.fill($sel, $html, $fade, resolve, reject)
+      end)
+    end
+    return o  # But still return `o` for chaining.
+  end
+end
 
-content!(o, sel, html; fade = true) =
-  content!(o, sel, stringmime(MIME"text/html"(), html), fade = fade)
+content!(o, sel, html; fade = true, async = true) =
+  content!(o, sel, stringmime(MIME"text/html"(), html), fade=fade, async=async)
 
-body!(w, html; fade = true) = content!(w, "body", html, fade = fade)
+body!(w, html; fade = true, async = true) = content!(w, "body", html, fade=fade, async=async)
 
 function loadcss!(w, url)
   @js_ w begin
@@ -55,7 +65,7 @@ end
 
 isurl(f) = ismatch(r"^https?://", f)
 
-function load!(w, file)
+function load!(w, file; async=false)
   if !isurl(file)
     resource(file)
     file = basename(file)
@@ -66,7 +76,7 @@ function load!(w, file)
   elseif ext == "css"
     loadcss!(w, file)
   elseif ext == "html"
-    importhtml!(w, file)
+    importhtml!(w, file; async)
   else
     error("Blink: Unsupported file type")
   end
