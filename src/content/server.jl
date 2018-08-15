@@ -16,7 +16,7 @@ const maintp = Mustache.template_from_file(joinpath(dirname(@__FILE__), "main.ht
 app(f) = req -> render(maintp, d("id"=>Page(f).id))
 
 function page_handler(req)
-  id = try parse(req[:params][:id]) catch e @goto fail end
+  id = try parse(Int, req[:params][:id]) catch e @goto fail end
   haskey(pool, id) || @goto fail
   active(pool[id].value) && @goto fail
 
@@ -28,14 +28,14 @@ function page_handler(req)
 end
 
 function ws_handler(req)
-  id = try parse(req[:path][end]) catch e @goto fail end
+  id = try parse(Int, req[:path][end]) catch e @goto fail end
   client = req[:socket]
   haskey(pool, id) || @goto fail
   p = pool[id].value
   active(p) && @goto fail
 
   p.sock = client
-  @schedule @errs get(handlers(p), "init", identity)(p)
+  @async @errs get(handlers(p), "init", identity)(p)
   put!(p.cb, true)
   while active(p)
     local data
@@ -77,7 +77,7 @@ function serve()
   serving && return
   serving = true
   http = Mux.http_handler(Mux.App(http_default))
-  delete!(http.events, "listen")
+  #delete!(http.events, "listen")
   ws = Mux.ws_handler(Mux.App(ws_default))
-  Mux.serve(Mux.Server(http, ws), port, host = ip"127.0.0.1")
+  @async WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port[], false)
 end

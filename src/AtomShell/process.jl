@@ -1,12 +1,21 @@
 using Lazy, JSON, MacroTools
 
 hascommand(c) =
-  try readstring(`which $c`); true catch e false end
+  try read(`which $c`, String); true catch e false end
 
-spawn_rdr(cmd) = spawn(cmd, Base.spawn_opts_inherit()...)
+spawn_rdr(cmd) = run(cmd, Base.spawn_opts_inherit()...; wait=false)
 
-resolve(pkg, path...) =
-  joinpath(Base.find_in_path(pkg, nothing), "..","..", path...) |> normpath
+"""
+  resolve_blink_asset(path...)
+
+Find a file, expressed as a relative path from the Blink package
+folder. Example:
+
+  resolve_blink_asset("src", "Blink.jl") -> /home/<user>/.julia/v0.6/Blink/src/Blink.jl
+"""
+resolve_blink_asset(path...) = joinpath(@__DIR__, "..", "..", path...)
+
+@deprecate resolve(pkg, path...) resolve_blink_asset(path...)
 
 # node-inspector
 
@@ -27,11 +36,11 @@ end
 
 # atom-shell
 
-import Base: Process, TCPSocket
+import Base: Process
 
 export Electron
 
-type Electron <: Shell
+mutable struct Electron <: Shell
   proc::Process
   sock::TCPSocket
   handlers::Dict{String, Any}
@@ -39,14 +48,14 @@ end
 
 Electron(proc, sock) = Electron(proc, sock, Dict())
 
-@static if is_apple()
-  const _electron = resolve("Blink", "deps/Julia.app/Contents/MacOS/Julia")
-elseif is_linux()
-  const _electron = resolve("Blink", "deps/atom/electron")
-elseif is_windows()
-  const _electron = resolve("Blink", "deps", "atom", "electron.exe")
+@static if isapple()
+  const _electron = resolve_blink_asset("deps/Julia.app/Contents/MacOS/Julia")
+elseif islinux()
+  const _electron = resolve_blink_asset("deps/atom/electron")
+elseif iswindows()
+  const _electron = resolve_blink_asset("deps", "atom", "electron.exe")
 end
-const mainjs = resolve("Blink", "src", "AtomShell", "main.js")
+const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
 
 function electron()
   path = get(ENV, "ELECTRON_PATH", _electron)
@@ -72,7 +81,12 @@ function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  proc = (debug ? spawn_rdr : spawn)(`$(electron()) $dbg $mainjs port $p`)
+  electron_cmd = `$(electron()) $dbg $mainjs port $p`
+  proc = if debug
+    spawn_rdr(electron_cmd)
+  else
+    run(electron_cmd; wait=false)
+  end
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
@@ -89,9 +103,17 @@ handlers(shell::Electron) = shell.handlers
 
 function initcbs(shell)
   enable_callbacks!(shell)
-  @schedule begin
-    while active(shell)
-      @errs handle_message(shell, JSON.parse(shell.sock))
+  @static if VERSION < v"0.7.0-alpha.0"
+    @schedule begin
+      while active(shell)
+        @errs handle_message(shell, JSON.parse(shell.sock))
+      end
+    end
+  else
+    @async begin
+      while active(shell)
+        @errs handle_message(shell, JSON.parse(shell.sock))
+      end
     end
   end
 end
