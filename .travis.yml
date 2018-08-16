@@ -7,10 +7,22 @@ matrix:
       julia: 0.6
       env: TESTCMD="xvfb-run julia"
     - os: linux
+      julia: 0.7
+      env: TESTCMD="xvfb-run julia"
+    - os: linux
+      julia: 1.0
+      env: TESTCMD="xvfb-run julia"
+    - os: linux
       julia: nightly
       env: TESTCMD="xvfb-run julia"
     - os: osx
       julia: 0.6
+      env: TESTCMD="julia"
+    - os: osx
+      julia: 0.7
+      env: TESTCMD="julia"
+    - os: osx
+      julia: 1.0
       env: TESTCMD="julia"
     - os: osx
       julia: nightly
