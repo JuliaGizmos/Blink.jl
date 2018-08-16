@@ -3,7 +3,15 @@ using Lazy, JSON, MacroTools
 hascommand(c) =
   try read(`which $c`, String); true catch e false end
 
-spawn_rdr(cmd) = run(cmd, Base.spawn_opts_inherit()...; wait=false)
+# TODO: when we drop Julia v0.6, we can remove the _spawn(args...)
+# function and just call run(args...; wait=false)
+if VERSION < v"0.7-"
+  _spawn(args...) = spawn(args...)
+else
+  _spawn(args...) = run(args...; wait=false)
+end
+
+spawn_rdr(cmd) = _spawn(cmd, Base.spawn_opts_inherit())
 
 """
   resolve_blink_asset(path...)
@@ -85,7 +93,7 @@ function init(; debug = false)
   proc = if debug
     spawn_rdr(electron_cmd)
   else
-    run(electron_cmd; wait=false)
+    _spawn(electron_cmd)
   end
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
