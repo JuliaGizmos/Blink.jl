@@ -85,6 +85,7 @@ function try_connect(args...; interval = 0.01, attempts = 3000)
     try
       return connect(args...)
     catch e
+      @show e
       i == attempts && rethrow()
     end
     sleep(interval)
