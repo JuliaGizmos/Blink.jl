@@ -56,6 +56,7 @@ elseif Sys.iswindows()
   const _electron = resolve_blink_asset("deps", "atom", "electron.exe")
 end
 const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
+isfile(mainjs) || error("Cannot find main.js")
 
 function electron()
   path = get(ENV, "ELECTRON_PATH", _electron)
@@ -96,6 +97,8 @@ function init(; debug = false)
   @show p
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
+  @assert isfile(electron())
+  @assert isfile(mainjs)
   proc = (debug ? run_rdr : run)(pipeline(`$(electron()) $dbg $mainjs port $p`, stdout=stdout, stderr=stderr))
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
