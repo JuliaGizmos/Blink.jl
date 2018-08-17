@@ -29,6 +29,8 @@ matrix:
       env: TESTCMD="julia"
   allow_failures:
     - julia: nightly
+before_script:
+  - julia -e 'if VERSION >= v"0.7"; using Pkg; Pkg.add("WebIO"); Pkg.develop("WebIO"); Pkg.build("WebIO"); end'
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - $TESTCMD -e 'Pkg.clone(pwd()); Pkg.build("Blink"); import Blink; Pkg.test("Blink"; coverage=true)'
