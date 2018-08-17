@@ -56,6 +56,7 @@ elseif Sys.iswindows()
   const _electron = resolve_blink_asset("deps", "atom", "electron.exe")
 end
 const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
+@show mainjs
 
 function electron()
   path = get(ENV, "ELECTRON_PATH", _electron)
@@ -95,7 +96,11 @@ function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
+  @show p
+  close(listen(p))
+  sleep(1)
   proc = (debug ? run_rdr : run)(`$(electron()) $dbg $mainjs port $p`; wait=false)
+  sleep(1)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
