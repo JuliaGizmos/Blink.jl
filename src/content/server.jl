@@ -68,13 +68,33 @@ ws_default =
   mux(Mux.wdefaults,
       ws_handler)
 
-serving = false
+const serving = Ref(false)
 
-function serve()
-  global serving
-  serving && return
-  serving = true
+function blink_server_port(max_attempts=300)
+  if haskey(ENV, "BLINK_PORT")
+    return parse(Int, get(ENV, "BLINK_PORT"))
+  else
+    for i in 1:max_attempts
+      p = rand(2_000:10_000)
+      temporary_server = try
+        listen(p)
+      catch e
+        if e isa Base.IOError
+          # port is in use, try another
+          continue
+        end
+      end
+      close(temporary_server)
+      return p
+    end
+  end
+end
+
+function serve(;max_port_attempts=300)
+  serving[] && return
+  serving[] = true
   http = Mux.http_handler(Mux.App(http_default))
   ws = Mux.ws_handler(Mux.App(ws_default))
+  port[] = blink_server_port(max_port_attempts)
   @async WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port[], false)
 end
