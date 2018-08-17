@@ -13,7 +13,7 @@ folder. Example:
 
   resolve_blink_asset("src", "Blink.jl") -> /home/<user>/.julia/v0.6/Blink/src/Blink.jl
 """
-resolve_blink_asset(path...) = joinpath(@__DIR__, "..", "..", path...)
+resolve_blink_asset(path...) = abspath(joinpath(@__DIR__, "..", "..", path...))
 
 @deprecate resolve(pkg, path...) resolve_blink_asset(path...)
 
@@ -56,7 +56,6 @@ elseif Sys.iswindows()
   const _electron = resolve_blink_asset("deps", "atom", "electron.exe")
 end
 const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
-isfile(mainjs) || error("Cannot find main.js")
 
 function electron()
   path = get(ENV, "ELECTRON_PATH", _electron)
@@ -99,7 +98,9 @@ function init(; debug = false)
   dbg = debug ? "--debug=$dp" : []
   @assert isfile(electron())
   @assert isfile(mainjs)
-  proc = (debug ? run_rdr : run)(pipeline(`$(electron()) $dbg $mainjs port $p`, stdout=stdout, stderr=stderr))
+  cmd = `$(electron()) $dbg $mainjs port $p`
+  @show cmd
+  proc = (debug ? run_rdr : run)(cmd)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
