@@ -63,7 +63,21 @@ function electron()
   return path
 end
 
-port() = rand(2_000:10_000)
+function port(max_attempts=300)
+  for i in 1:max_attempts
+    p = rand(2_000:10_000)
+    temporary_server = try
+      listen(p)
+    catch e
+      if e isa Base.IOError
+        # port is in use, try another
+        continue
+      end
+    end
+    close(temporary_server)
+    return p
+  end
+end
 
 function try_connect(args...; interval = 0.01, attempts = 300)
   for i = 1:attempts
