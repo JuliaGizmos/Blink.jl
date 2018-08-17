@@ -33,7 +33,7 @@ branches:
   only:
     - master
 before_script:
-  - julia -e 'if VERSION >= v"0.7"; using Pkg; Pkg.add("WebIO"); Pkg.develop("WebIO"); Pkg.build("WebIO"); end'
+  - julia -e 'if VERSION >= v"0.7"; using Pkg; Pkg.add("WebIO#master"); end'
 
 after_success:
   - julia -e 'if VERSION >= v"0.7"; import Pkg; end; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
