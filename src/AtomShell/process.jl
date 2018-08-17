@@ -96,7 +96,7 @@ function init(; debug = false)
   @show p
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  proc = (debug ? run_rdr : run)(pipeline(`$(electron()) $dbg $mainjs port $p`, stdout=stdout, stderr=stderr); wait=false)
+  proc = (debug ? run_rdr : run)(pipeline(`$(electron()) $dbg $mainjs port $p`, stdout=stdout, stderr=stderr))
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
