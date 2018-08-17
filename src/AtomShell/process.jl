@@ -56,7 +56,6 @@ elseif Sys.iswindows()
   const _electron = resolve_blink_asset("deps", "atom", "electron.exe")
 end
 const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
-@show mainjs
 
 function electron()
   path = get(ENV, "ELECTRON_PATH", _electron)
@@ -80,12 +79,11 @@ function port(max_attempts=300)
   end
 end
 
-function try_connect(args...; interval = 0.01, attempts = 3000)
+function try_connect(args...; interval = 0.01, attempts = 300)
   for i = 1:attempts
     try
       return connect(args...)
     catch e
-      @show e
       i == attempts && rethrow()
     end
     sleep(interval)
@@ -95,9 +93,10 @@ end
 function init(; debug = false)
   electron() # Check path exists
   p, dp = port(), port()
+  @show p
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  proc = (debug ? run_rdr : run)(`$(electron()) $dbg $mainjs port $p`; wait=false)
+  proc = (debug ? run_rdr : run)(pipeline(`$(electron()) $dbg $mainjs port $p`, stdout=stdout, stderr=stderr); wait=false)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
