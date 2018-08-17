@@ -4,7 +4,7 @@ module BuildBlink
 include(joinpath(@__DIR__, "../src/AtomShell/install.jl"))
 
 function get_installed_version()
-    _path = isapple() ?
+    _path = Sys.isapple() ?
         joinpath(folder(), "version") :
         joinpath(folder(), "atom", "version")
     strip(read(_path, String), 'v')

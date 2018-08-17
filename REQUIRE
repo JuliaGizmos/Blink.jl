@@ -1,4 +1,4 @@
-julia 0.6
+julia 0.7
 WebSockets 0.2.3
 Lazy 0.11.3
 JSON
@@ -7,6 +7,5 @@ Mustache
 MacroTools
 Mux
 BinDeps
-Compat 0.33
 WebIO
 JSExpr

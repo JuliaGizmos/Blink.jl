@@ -141,10 +141,6 @@ function loadhtml(win::Window, html::AbstractString)
     println(io, html)
   end
   loadfile(win, tmp)
-  @static if VERSION < v"0.7.0-alpha.0"
-    @schedule (sleep(1); rm(tmp))
-  else
-    @async (sleep(1); rm(tmp))
-  end
+  @async (sleep(1); rm(tmp))
   return
 end

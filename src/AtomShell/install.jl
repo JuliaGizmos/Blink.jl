@@ -1,5 +1,4 @@
 import BinDeps
-using Compat
 
 rm′(f) = (isdir(f) || isfile(f)) && rm(f, recursive = true)
 
@@ -7,20 +6,20 @@ const version = "2.0.5"
 
 folder() = normpath(joinpath(@__FILE__, "../../../deps"))
 
-@static if Compat.Sys.isapple()
+@static if Sys.isapple()
     uninstall() = map(rm′, filter(x -> !endswith(x, "build.jl"), readdir(folder())))
 else
     uninstall() = rm′(joinpath(folder(), "atom"))
 end
 
-isinstalled() = Compat.Sys.isapple() ?
+isinstalled() = Sys.isapple() ?
     isfile(joinpath(folder(), "version")) :
     isdir(joinpath(folder(), "atom"))
 
 
 function install()
   dir = folder()
-  if Compat.Sys.isapple()
+  if Sys.isapple()
     _icons = normpath(joinpath(@__FILE__, "../../../res/julia-icns.icns"))
   end
   !isdir(dir) && mkpath(dir)
@@ -30,7 +29,7 @@ function install()
 
     download("http://junolab.s3.amazonaws.com/blink/julia.png")
 
-    if Compat.Sys.isapple()
+    if Sys.isapple()
       file = "electron-v$version-darwin-x64.zip"
       download("https://github.com/electron/electron/releases/download/v$version/$file")
       run(`unzip -q $file`)
@@ -42,7 +41,7 @@ function install()
       run(`touch Julia.app`)  # Apparently this is necessary to tell the OS to double-check for the new icons.
     end
 
-    if Compat.Sys.iswindows()
+    if Sys.iswindows()
       arch = Int == Int64 ? "x64" : "ia32"
       file = "electron-v$version-win32-$arch.zip"
       download("https://github.com/electron/electron/releases/download/v$version/$file")
@@ -50,7 +49,7 @@ function install()
       rm(file)
     end
 
-    if Compat.Sys.islinux()
+    if Sys.islinux()
       arch = Int == Int64 ? "x64" : "ia32"
       file = "electron-v$version-linux-$arch.zip"
       download("https://github.com/electron/electron/releases/download/v$version/$file")

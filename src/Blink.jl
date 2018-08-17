@@ -3,11 +3,9 @@ __precompile__()
 module Blink
 
 using Reexport
-using Compat
-using Compat.Distributed: Future
-using Compat.Sys: isunix, islinux, isapple, iswindows
-using Compat.Sockets
-using Compat.Base64: stringmime
+using Distributed: Future
+using Sockets
+using Base64: stringmime
 
 include("rpc/rpc.jl")
 include("content/content.jl")

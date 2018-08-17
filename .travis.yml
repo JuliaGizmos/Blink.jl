@@ -4,9 +4,6 @@ notifications:
 matrix:
   include:
     - os: linux
-      julia: 0.6
-      env: TESTCMD="xvfb-run julia"
-    - os: linux
       julia: 0.7
       env: TESTCMD="xvfb-run julia"
     - os: linux
@@ -15,9 +12,6 @@ matrix:
     - os: linux
       julia: nightly
       env: TESTCMD="xvfb-run julia"
-    - os: osx
-      julia: 0.6
-      env: TESTCMD="julia"
     - os: osx
       julia: 0.7
       env: TESTCMD="julia"
@@ -33,7 +27,7 @@ branches:
   only:
     - master
 before_script:
-  - julia -e 'if VERSION >= v"0.7"; using Pkg; Pkg.add(PackageSpec(name="WebIO", rev="master")); end'
+  - julia -e 'using Pkg; Pkg.add(PackageSpec(name="WebIO", rev="master"))'
 
 after_success:
-  - julia -e 'if VERSION >= v"0.7"; import Pkg; end; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
+  - julia -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'

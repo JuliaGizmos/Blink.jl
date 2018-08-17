@@ -1,8 +1,6 @@
 module AtomShell
 
-using Compat
-using Compat.Sockets
-using Compat.Sys: isapple, isunix, islinux, iswindows
+using Sockets
 
 abstract type Shell end
 

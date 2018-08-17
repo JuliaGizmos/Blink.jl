@@ -1,5 +1,5 @@
 using Blink
-using Compat.Test
+using Test
 
 @testset "size Tests" begin
     w = Window(Blink.@d(:show => false, :width=>150, :height=>100)) ; sleep(5.0);

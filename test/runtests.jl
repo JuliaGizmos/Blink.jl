@@ -1,6 +1,6 @@
 using Blink
-using Compat.Test
-using Compat.Sockets
+using Test
+using Sockets
 
 
 cleanup = !AtomShell.isinstalled()

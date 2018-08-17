@@ -6,7 +6,7 @@ const port = Ref{Int}()
 
 const ippat = r"([0-9]+\.){3}[0-9]+"
 
-@static if isunix()
+@static if Sys.isunix()
     localips() = map(IPv4, readlines(`ifconfig` |>
                       `grep -Eo $("inet (addr:)?$(ippat.pattern)")` |>
                       `grep -Eo $(ippat.pattern)` |>
@@ -15,11 +15,11 @@ end
 
 # Browser Window
 
-@static if isapple()
+@static if Sys.isapple()
     launch(x) = run(`open $x`)
-elseif islinux()
+elseif Sys.islinux()
     launch(x) = run(`xdg-open $x`)
-elseif iswindows()
+elseif Sys.iswindows()
     launch(x) = run(`cmd /C start $x`)
 end
 

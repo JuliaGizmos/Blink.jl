@@ -1,5 +1,5 @@
 using Blink
-using Compat.Test
+using Test
 
 @testset "content! Tests" begin
     w = Window(Blink.@d(:show => false)); sleep(5.0)

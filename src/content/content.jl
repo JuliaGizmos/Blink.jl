@@ -20,12 +20,8 @@ mutable struct Page
     init == nothing || (p.handlers["init"] = init)
     enable_callbacks!(p)
     pool[p.id] = WeakRef(p)
-    @static if VERSION < v"0.7-"
-      finalizer(p, p -> delete!(pool, p.id))
-    else
-      finalizer(p) do p
-        delete!(pool, p.id)
-      end
+    finalizer(p) do p
+      delete!(pool, p.id)
     end
     return p
   end

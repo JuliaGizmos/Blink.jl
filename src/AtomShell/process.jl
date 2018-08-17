@@ -3,15 +3,7 @@ using Lazy, JSON, MacroTools
 hascommand(c) =
   try read(`which $c`, String); true catch e false end
 
-# TODO: when we drop Julia v0.6, we can remove the _spawn(args...)
-# function and just call run(args...; wait=false)
-if VERSION < v"0.7-"
-  _spawn(args...) = spawn(args...)
-else
-  _spawn(args...) = run(args...; wait=false)
-end
-
-spawn_rdr(cmd) = _spawn(cmd, Base.spawn_opts_inherit()...)
+run_rdr(cmd; kw...) = run(cmd, Base.spawn_opts_inherit()...; kw...)
 
 """
   resolve_blink_asset(path...)
@@ -56,11 +48,11 @@ end
 
 Electron(proc, sock) = Electron(proc, sock, Dict())
 
-@static if isapple()
+@static if Sys.isapple()
   const _electron = resolve_blink_asset("deps/Julia.app/Contents/MacOS/Julia")
-elseif islinux()
+elseif Sys.islinux()
   const _electron = resolve_blink_asset("deps/atom/electron")
-elseif iswindows()
+elseif Sys.iswindows()
   const _electron = resolve_blink_asset("deps", "atom", "electron.exe")
 end
 const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
@@ -89,8 +81,7 @@ function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  debug = true # TODO: temporary
-  proc = (debug ? spawn_rdr : _spawn)(`$(electron()) $dbg $mainjs port $p`)
+  proc = (debug ? run_rdr : run)(`$(electron()) $dbg $mainjs port $p`; wait=false)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
@@ -107,17 +98,9 @@ handlers(shell::Electron) = shell.handlers
 
 function initcbs(shell)
   enable_callbacks!(shell)
-  @static if VERSION < v"0.7.0-alpha.0"
-    @schedule begin
-      while active(shell)
-        @errs handle_message(shell, JSON.parse(shell.sock))
-      end
-    end
-  else
-    @async begin
-      while active(shell)
-        @errs handle_message(shell, JSON.parse(shell.sock))
-      end
+  @async begin
+    while active(shell)
+      @errs handle_message(shell, JSON.parse(shell.sock))
     end
   end
 end
