@@ -31,7 +31,6 @@ handlers.eval = function(data, c) {
 
 var server = net.createServer(function(c) { //'connection' listener
   c.on('end', function() {
-    console.log("connection closed, quitting"); // TODO: temporary
     app.quit();
   });
 
@@ -59,7 +58,6 @@ var server = net.createServer(function(c) { //'connection' listener
 
 var port = parseInt(arg('port'));
 server.listen(port);
-console.log("listening on: ", port); // TODO: temporary
 
 app.on("ready", function() {
   app.on('window-all-closed', function(e) {
