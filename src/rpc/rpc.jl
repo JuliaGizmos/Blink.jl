@@ -7,7 +7,7 @@ export js, @js, @js_, @var, @new
 
 include("callbacks.jl")
 
-type JSError <: Exception
+mutable struct JSError <: Exception
     name::String
     msg::String
 end

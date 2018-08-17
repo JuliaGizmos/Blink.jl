@@ -20,7 +20,7 @@ isinstalled() = is_apple() ?
 function install()
   dir = folder()
   if is_apple()
-    const _icons = normpath(joinpath(@__FILE__, "../../../res/julia-icns.icns"))
+    _icons = normpath(joinpath(@__FILE__, "../../../res/julia-icns.icns"))
   end
   !isdir(dir) && mkpath(dir)
   uninstall()
