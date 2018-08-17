@@ -80,7 +80,7 @@ function port(max_attempts=300)
   end
 end
 
-function try_connect(args...; interval = 0.01, attempts = 300)
+function try_connect(args...; interval = 0.01, attempts = 3000)
   for i = 1:attempts
     try
       return connect(args...)
@@ -94,14 +94,9 @@ end
 function init(; debug = false)
   electron() # Check path exists
   p, dp = port(), port()
-  p = 8005
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  @show p
-  close(listen(p))
-  sleep(1)
   proc = (debug ? run_rdr : run)(`$(electron()) $dbg $mainjs port $p`; wait=false)
-  sleep(1)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
