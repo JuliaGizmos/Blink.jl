@@ -11,7 +11,7 @@ else
   _spawn(args...) = run(args...; wait=false)
 end
 
-spawn_rdr(cmd) = _spawn(cmd, Base.spawn_opts_inherit())
+spawn_rdr(cmd) = _spawn(cmd, Base.spawn_opts_inherit()...)
 
 """
   resolve_blink_asset(path...)
@@ -89,12 +89,8 @@ function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  electron_cmd = `$(electron()) $dbg $mainjs port $p`
-  proc = if debug
-    spawn_rdr(electron_cmd)
-  else
-    _spawn(electron_cmd)
-  end
+  debug = true # TODO: temporary
+  proc = (debug ? spawn_rdr : _spawn)(`$(electron()) $dbg $mainjs port $p`)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
