@@ -63,21 +63,7 @@ function electron()
   return path
 end
 
-function port(max_attempts=300)
-  for i in 1:max_attempts
-    p = rand(2_000:10_000)
-    temporary_server = try
-      listen(p)
-    catch e
-      if e isa Base.IOError
-        # port is in use, try another
-        continue
-      end
-    end
-    close(temporary_server)
-    return p
-  end
-end
+port() = rand(2_000:10_000)
 
 function try_connect(args...; interval = 0.01, attempts = 300)
   for i = 1:attempts
@@ -93,14 +79,9 @@ end
 function init(; debug = false)
   electron() # Check path exists
   p, dp = port(), port()
-  @show p
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  @assert isfile(electron())
-  @assert isfile(mainjs)
-  cmd = `$(electron()) $dbg $mainjs port $p`
-  @show cmd
-  proc = (debug ? run_rdr : run)(cmd)
+  proc = (debug ? run_rdr : run)(`$(electron()) $dbg $mainjs port $p`; wait=false)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)

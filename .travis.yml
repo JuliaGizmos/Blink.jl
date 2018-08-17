@@ -28,6 +28,7 @@ branches:
     - master
 before_script:
   - julia -e 'using Pkg; Pkg.add(PackageSpec(name="WebIO", rev="master"))'
-
+script:
+  - $TESTCMD -e 'using Pkg; Pkg.build(); Pkg.test(;coverage = true)'
 after_success:
-  - julia -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
+  - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
