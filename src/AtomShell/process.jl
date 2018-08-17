@@ -94,6 +94,7 @@ end
 function init(; debug = false)
   electron() # Check path exists
   p, dp = port(), port()
+  p = 8005
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
   @show p
