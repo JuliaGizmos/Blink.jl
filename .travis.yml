@@ -29,6 +29,6 @@ branches:
 before_script:
   - julia -e 'using Pkg; Pkg.add(PackageSpec(name="WebIO", rev="master"))'
 script:
-  - $TESTCMD --color=yes -e "VERSION >= v\"0.7.0-DEV.5183\" && using Pkg; Pkg.clone(pwd()); Pkg.build(\"${JL_PKG}\")"
+  - $TESTCMD --color=yes -e "VERSION >= v\"0.7.0-DEV.5183\" && using Pkg; Pkg.clone(pwd()); Pkg.build(\"Blink\"); Pkg.test(\"Blink\"; coverage=true)"
 after_success:
   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
