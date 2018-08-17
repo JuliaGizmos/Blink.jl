@@ -29,6 +29,9 @@ matrix:
       env: TESTCMD="julia"
   allow_failures:
     - julia: nightly
+branches:
+  only:
+    - master
 before_script:
   - julia -e 'if VERSION >= v"0.7"; using Pkg; Pkg.add("WebIO"); Pkg.develop("WebIO"); Pkg.build("WebIO"); end'
 
