@@ -31,6 +31,6 @@ matrix:
     - julia: nightly
 before_script:
   - julia -e 'if VERSION >= v"0.7"; using Pkg; Pkg.add("WebIO"); Pkg.develop("WebIO"); Pkg.build("WebIO"); end'
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - $TESTCMD -e 'Pkg.clone(pwd()); Pkg.build("Blink"); import Blink; Pkg.test("Blink"; coverage=true)'
+
+after_success:
+  - julia -e 'if VERSION >= v"0.7"; import Pkg; end; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
