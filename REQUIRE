@@ -7,5 +7,5 @@ Mustache
 MacroTools
 Mux
 BinDeps
-WebIO
-JSExpr
+WebIO 0.3
+JSExpr 0.3

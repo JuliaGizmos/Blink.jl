@@ -30,8 +30,6 @@ install:
 
 build_script:
   - echo "%JL_BUILD_SCRIPT%"
-  - C:\julia\bin\julia -e "using Pkg; Pkg.add(PackageSpec(name=\"WebIO\", rev=\"master\"))"
-  - C:\julia\bin\julia -e "using Pkg; Pkg.add(PackageSpec(name=\"JSExpr\", rev=\"master\"))"
   - C:\julia\bin\julia -e "%JL_BUILD_SCRIPT%"
 
 test_script:
