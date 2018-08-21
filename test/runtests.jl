@@ -23,4 +23,9 @@ w = Window(Blink.@d(:show => false)); sleep(10.0)
 include("content/api.jl");
 include("AtomShell/window.jl");
 
+if Sys.iswindows()
+    # Uninstalling AtomShell on Windows is currently broken:
+    # https://github.com/JunoLab/Blink.jl/pull/143#issuecomment-414144008
+    cleanup = false
+end
 cleanup && AtomShell.uninstall()
