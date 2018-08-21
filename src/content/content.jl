@@ -6,7 +6,7 @@ include("api.jl")
 
 # Content
 
-type Page
+mutable struct Page
   id::Int
   sock::WebSocket
   handlers::Dict{String, Any}
@@ -20,7 +20,9 @@ type Page
     init == nothing || (p.handlers["init"] = init)
     enable_callbacks!(p)
     pool[p.id] = WeakRef(p)
-    finalizer(p, p -> delete!(pool, p.id))
+    finalizer(p) do p
+      delete!(pool, p.id)
+    end
     return p
   end
 end
@@ -52,5 +54,5 @@ end
 include("server.jl")
 
 @init for r in ["blink.js", "blink.css", "reset.css", "spinner.css"]
-  resource(resolve("Blink", "res", r))
+  resource(resolve_blink_asset("res", r))
 end

@@ -7,7 +7,7 @@ export Window, flashframe, shell, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
   loadhtml, loadfile, css, front
 
-type Window
+mutable struct Window
   id::Int
   shell::Shell
   content
@@ -20,17 +20,17 @@ const window_defaults = @d(:url => "about:blank",
                            :title => "Julia",
                            "node-integration" => false,
                            "use-content-size" => true,
-                           :icon => resolve("Blink", "deps", "julia.png"))
+                           :icon => resolve_blink_asset("deps", "julia.png"))
 
 raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
-function Window(a::Shell, opts::Associative = Dict())
+function Window(a::Shell, opts::AbstractDict = Dict())
   return haskey(opts, :url) ?
     Window(raw_window(a, opts), a, nothing) :
     Window(a, Page(), opts)
 end
 
-function Window(a::Shell, content::Page, opts::Associative = Dict())
+function Window(a::Shell, content::Page, opts::AbstractDict = Dict())
   opts = merge(opts, Dict(:url => Blink.localurl(content)))
   return Window(raw_window(a, opts), a, content)
 end
@@ -120,7 +120,7 @@ close(win::Window) =
 
 # Window content APIs
 
-active(::Void) = false
+active(::Nothing) = false
 
 handlers(w::Window) = handlers(w.content)
 
@@ -128,7 +128,7 @@ msg(win::Window, m) = msg(win.content, m)
 
 js(win::Window, s::JSString; callback = true) =
   active(win.content) ? js(win.content, s, callback = callback) :
-    dot(win, :(this.webContents.executeJavaScript($(jsstring(s)))), callback = callback)
+    dot(win, :(this.webContents.executeJavaScript($(s.s))), callback = callback)
 
 const initcss = """
   <style>html,body{margin:0;padding:0;border:0;text-align:center;}</style>
@@ -141,6 +141,6 @@ function loadhtml(win::Window, html::AbstractString)
     println(io, html)
   end
   loadfile(win, tmp)
-  @schedule (sleep(1); rm(tmp))
+  @async (sleep(1); rm(tmp))
   return
 end

@@ -76,7 +76,7 @@ function load!(w, file; async=false)
   elseif ext == "css"
     loadcss!(w, file)
   elseif ext == "html"
-    importhtml!(w, file; async)
+    importhtml!(w, file; async=async)
   else
     error("Blink: Unsupported file type")
   end

@@ -1,6 +1,6 @@
 module AtomShell
 
-using Compat; import Compat.String
+using Sockets
 
 abstract type Shell end
 
