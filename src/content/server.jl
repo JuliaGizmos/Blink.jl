@@ -75,5 +75,16 @@ function serve()
   serving[] = true
   http = Mux.http_handler(Mux.App(http_default))
   ws = Mux.ws_handler(Mux.App(ws_default))
-  @async WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port[], false)
+  @async begin
+    # Suppress log output from HTTP.jl unless the user has already
+    # configured a custom logger. See:
+    # https://github.com/JuliaLang/julia/pull/28229#issuecomment-410229612
+    if current_task().logstate === nothing
+      with_logger(NullLogger()) do
+        WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port[], false)
+      end
+    else
+      WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port[], false)
+    end
+  end
 end

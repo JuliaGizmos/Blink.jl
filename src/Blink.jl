@@ -5,6 +5,7 @@ module Blink
 using Reexport
 using Distributed: Future
 using Sockets
+using Logging
 using Base64: stringmime
 
 include("rpc/rpc.jl")
