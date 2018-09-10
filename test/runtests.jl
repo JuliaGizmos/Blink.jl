@@ -18,7 +18,7 @@ w = Window(Blink.@d(:show => false)); sleep(10.0)
 @test string(Blink.jsstring(:(Dict("a" => 1, :b => 10)))...) == "{\"a\":1,\"b\":10}"
 
 # check that <!DOCTYPE html> was declared
-@test  startswith(Blink.maintp.tokens[1][2], "<!DOCTYPE html>\n")
+@test  startswith(Blink.maintp.tokens[1].value, "<!DOCTYPE html>\n")
 
 include("content/api.jl");
 include("AtomShell/window.jl");
