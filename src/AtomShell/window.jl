@@ -24,17 +24,16 @@ const window_defaults = @d(:url => "about:blank",
 
 raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
-function Window(a::Shell, opts::AbstractDict = Dict())
+function Window(a::Shell, opts::AbstractDict = Dict(); async=true)
+  # TODO: Custom urls don't support async b/c don't load Blink.js. (Same as https://github.com/JunoLab/Blink.jl/issues/150)
   return haskey(opts, :url) ?
     Window(raw_window(a, opts), a, nothing) :
-    Window(a, Page(), opts)
+    Window(a, Page(), opts, async=async)
 end
 
-function Window(a::Shell, content::Page, opts::AbstractDict = Dict())
+function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=true)
   url = Blink.localurl(content)
-  is_async(opts) = get(opts, :async, true)  # Async default: true
-  callback = !is_async(opts)
-  if callback
+  if !async
       # Send the callback id as a query param in the url.
       id, cond = Blink.callback!()
       url *= "?callback=$id"
@@ -43,7 +42,7 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict())
   opts = merge(opts, Dict(:url => url))
   w = Window(raw_window(a, opts), a, content)
   # If callback is requested, wait until the window has finished loading.
-  if callback
+  if !async
       val = wait(cond)
       if isa(val, AbstractDict) && get(val, "type", "") == "error"
           err = JSError(get(val, "name", "unknown"), get(val, "message", "blank"))
@@ -53,7 +52,7 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict())
   return w
 end
 
-Window(args...) = Window(shell(), args...)
+Window(args...; kwargs...) = Window(shell(), args...; kwargs...)
 
 dot(a::Electron, win::Integer, code; callback = true) =
   js(a, :(withwin($(win), $(jsstring(code)...))),

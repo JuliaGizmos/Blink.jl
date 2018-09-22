@@ -8,7 +8,7 @@ cleanup = !AtomShell.isinstalled()
 cleanup && AtomShell.install()
 
 # open window and wait for it to initialize
-w = Window(Blink.@d(:show => false, :async=>false));
+w = Window(Blink.@d(:show => false), async=false);
 
 # make sure the window is really active
 @test @js(w, Math.log(10)) ≈ log(10)

@@ -2,7 +2,7 @@ using Blink
 using Test
 
 @testset "content! Tests" begin
-    w = Window(Blink.@d(:show => false, :async=>false));
+    w = Window(Blink.@d(:show => false), async=false);
     body!(w, "", async=false);
     @test (@js w document.querySelector("body").innerHTML) == ""
 
@@ -20,14 +20,14 @@ using Test
     fadeTestHtml = """<script>var testJS = "test";</script><div id="d">hi world</div>"""
     @testset "Fade True" begin
         # Must create a new window to ensure javascript is reset.
-        w = Window(Blink.@d(:show => false));
+        w = Window(Blink.@d(:show => false), async=false);
 
         body!(w, fadeTestHtml; fade=true, async=false);
         @test (@js w testJS) == "test"
     end
     @testset "Fade False" begin
         # Must create a new window to ensure javascript is reset.
-        w = Window(Blink.@d(:show => false, :async=>false));
+        w = Window(Blink.@d(:show => false), async=false);
 
         body!(w, fadeTestHtml; fade=false, async=false);
         @test (@js w testJS) == "test"
@@ -35,7 +35,7 @@ using Test
 end
 
 @testset "Sync/Async content reload tests" begin
-    w = Window(Blink.@d(:show => false, :async=>false));
+    w = Window(Blink.@d(:show => false), async=false);
     sleep_content(seconds) = """
         <script>
             function spinsleep(ms) {
