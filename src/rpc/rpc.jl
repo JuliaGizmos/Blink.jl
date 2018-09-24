@@ -51,4 +51,3 @@ end
 macro js_(o, ex)
     :(js($(esc(o)), $(Expr(:quote, ex)), callback=false))
 end
-
