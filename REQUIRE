@@ -1,5 +1,5 @@
 julia 0.7
-WebSockets 0.2.3
+WebSockets 1.0.1
 Lazy 0.11.3
 JSON
 Reexport
