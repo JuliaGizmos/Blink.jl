@@ -63,7 +63,7 @@ function loadjs!(w, url)
   end)
 end
 
-isurl(f) = ismatch(r"^https?://", f)
+isurl(f) = occursin(r"^https?://", f)
 
 function load!(w, file; async=false)
   if !isurl(file)
