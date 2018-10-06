@@ -135,12 +135,33 @@ loadurl(win::Window, url) =
 loadfile(win::Window, f) =
   loadurl(win, "file://$f")
 
+"""
+    opentools(win::Window)
+
+Open the Chrome Developer Tools on `win`.
+
+See also: [`closetools`](@ref), [`tools`](@ref)
+"""
 opentools(win::Window) =
   @dot win openDevTools()
 
+"""
+    closetools(win::Window)
+
+Close the Chrome Developer Tools on `win` if open.
+
+See also: [`opentools`](@ref), [`tools`](@ref)
+"""
 closetools(win::Window) =
   @dot win closeDevTools()
 
+"""
+    tools(win::Window)
+
+Toggle the Chrome Developer Tools on `win`.
+
+See also: [`opentools`](@ref), [`closetools`](@ref)
+"""
 tools(win::Window) =
   @dot win toggleDevTools()
 
