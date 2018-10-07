@@ -93,15 +93,41 @@ active(s::Electron, win::Integer) =
 
 active(win::Window) = active(shell(win), id(win))
 
+"""
+    flashframe(win::Window, on=true)
+
+Start or stop "flashing" the window to get the user's attention.
+
+In Windows, flashes the window frame. In MacOS, bounces the app in the Dock.
+https://github.com/electron/electron/blob/master/docs/api/browser-window.md#winflashframeflag
+"""
 flashframe(win::Window, on = true) =
   @dot_ win flashFrame($on)
 
+"""
+    progress(win::Window, p=-1)
+
+Sets progress value in progress bar. Valid range is [0, 1.0]. Remove progress
+bar when progress < 0; Change to indeterminate mode when progress > 1.
+
+https://github.com/electron/electron/blob/master/docs/api/browser-window.md#winsetprogressbarprogress-options
+"""
 progress(win::Window, p = -1) =
   @dot_ win setProgressBar($p)
 
+"""
+    title(win::Window, title)
+
+Set `win`'s title to `title.`
+"""
 title(win::Window, title) =
   @dot_ win setTitle($title)
 
+"""
+    title(win::Window)
+
+Get the window's title.
+"""
 title(win::Window) =
   @dot win getTitle()
 
