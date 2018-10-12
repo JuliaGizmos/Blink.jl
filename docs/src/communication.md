@@ -1,4 +1,4 @@
-# Communication between Julia and Javascript
+# [Communication between Julia and Javascript](@id Communication)
 
 After creating a Window and loading HTML and JS, you may want to interact with
 julia code (e.g. by clicking a button in HTML, or displaying a plot from julia).

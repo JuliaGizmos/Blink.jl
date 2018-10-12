@@ -6,6 +6,7 @@ makedocs(
     sitename = "Blink",
     pages = [
         "index.md",
+        "guide.md",
         "Communication" => "communication.md",
         "api.md",
         #"Subsection" => [
