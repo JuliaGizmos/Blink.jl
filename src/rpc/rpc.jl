@@ -65,6 +65,10 @@ js(o, j; callback=true) = js(o, JSString(string(jsstring(j)...)); callback=callb
 
 Execute `expr`, converted to javascript, inside `win`, and return the result.
 
+`expr` will be parsed as julia code, and then converted directly to the
+equivalent javascript. Language keywords that don't exist in julia can be
+represented with their macro equivalents, `@var`, `@new`, etc.
+
 See also: `@js_`, the asynchronous version.
 
 # Examples
@@ -83,6 +87,10 @@ end
 
 Execute `expr`, converted to javascript, asynchronously inside `win`, and return
 immediately.
+
+`expr` will be parsed as julia code, and then converted directly to the
+equivalent javascript. Language keywords that don't exist in julia can be
+represented with their macro equivalents, `@var`, `@new`, etc.
 
 See also: `@js`, the synchronous version that returns its result.
 
