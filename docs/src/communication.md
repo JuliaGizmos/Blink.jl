@@ -72,12 +72,14 @@ end
 ```@repl handler
 @js w Blink.msg("press", "Hello from JS");
 ```
-Note that `Blink.msg` takes _exactly_ 1 argument.  To pass more or fewer,
-consider passing an array:
+Note that the javascript function `Blink.msg` takes _exactly_ 1 argument.  To
+pass more or fewer arguments, pass your arguments as an array:
 ```@repl handler
-@js w Blink.msg("press", [1,2,3]);
+handle(w, "event") do count, values, message
+  # ...
+end
+@js w Blink.msg("event", [1, ['a','b'], "Hi"]);
 ```
-(TODO: is this on purpose? Can we fix this to allow variadic args?)
 
 Finally, here is an example that uses a button to call back to julia:
 ```@setup Blink-w
