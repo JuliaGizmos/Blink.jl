@@ -2,10 +2,10 @@
 
 ## Overview
 
-Blink.jl provides a API for communicating with web pages from Julia. Pages may
-be served over the internet and controlled from the browser, or served locally
-via an [Electron](https://electronjs.org/) window. Blink can therefore be used
-as a GUI toolkit – DevTools.jl for an example use.
+Blink.jl is the Julia wrapper around [Electron](https://electronjs.org/). It 
+can serve HTML content in a local window, and allows for communication between
+Julia and the web page. In this way, therefore, Blink can be used as a GUI
+toolkit for building HTML-based applications for the desktop.
 
 ## Installation
 To install Blink, run:
