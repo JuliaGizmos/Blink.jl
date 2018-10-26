@@ -1,5 +1,7 @@
 using Documenter, Blink
 
+Blink.AtomShell.install()
+
 makedocs(
     modules = [Blink],
     format = :html,
