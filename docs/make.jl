@@ -15,7 +15,7 @@ makedocs(
     ],
 )
 
-#deploydocs(
-#    repo = "github.com/NHDaly/Blink.jl.git",
-#    julia = "1.0"
-#)
+deploydocs(
+    repo = "github.com/JunoLab/Blink.jl.git",
+    julia = "1.0"
+)
