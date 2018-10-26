@@ -1,6 +1,8 @@
 # Blink.jl
 
 Linux, OSX: [![Build Status](https://travis-ci.org/JunoLab/Blink.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Blink.jl)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://JunoLab.github.io/Blink.jl/stable)
+[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://JunoLab.github.io/Blink.jl/latest)
 
 Blink.jl is the Julia wrapper around [Electron](https://electronjs.org/). It 
 can serve HTML content in a local window, and allows for communication between
