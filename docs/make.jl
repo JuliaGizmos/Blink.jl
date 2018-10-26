@@ -19,5 +19,6 @@ makedocs(
 
 deploydocs(
     repo = "github.com/JunoLab/Blink.jl.git",
-    julia = "1.0"
-)
+    julia = "1.0",
+    deps = nothing,
+    make = nothing)
