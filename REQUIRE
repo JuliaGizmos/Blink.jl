@@ -9,3 +9,4 @@ Mux
 BinDeps
 WebIO 0.4.0
 JSExpr 0.3
+AssetRegistry
