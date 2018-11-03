@@ -16,4 +16,7 @@ export AtomShell
 @reexport using .AtomShell
 import .AtomShell: resolve_blink_asset
 
+import WebIO: AbstractWidget
+include("webio.jl")
+
 end # module
