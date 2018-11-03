@@ -5,9 +5,6 @@ using WebIO
 const blinksetup = joinpath(dirname(@__FILE__), "..",
                             "res", 
                             "webio_setup.js")
-@show blinksetup
-@show isfile(blinksetup)
-
 using Sockets
 
 struct BlinkConnection <: WebIO.AbstractConnection
