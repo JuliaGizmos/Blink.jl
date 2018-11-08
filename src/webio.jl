@@ -2,7 +2,7 @@ using AssetRegistry
 using Base64: stringmime
 using WebIO
 
-const blinksetup = joinpath(dirname(@__FILE__), "..",
+const webiosetup = joinpath(dirname(@__FILE__), "..",
                             "res", 
                             "webio_setup.js")
 using Sockets
@@ -15,7 +15,7 @@ function Blink.body!(p::Blink.Page, x::Union{Node, Scope, AbstractWidget})
     wait(p)
 
     bp = AssetRegistry.register(WebIO.bundlepath)
-    bs = AssetRegistry.register(blinksetup)
+    bs = AssetRegistry.register(webiosetup)
 
     Blink.loadjs!(p, bp)
     Blink.loadjs!(p, bs)
