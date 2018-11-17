@@ -10,7 +10,7 @@ function get_installed_version()
     strip(read(_path, String), 'v')
 end
 
-if !isinstalled() || version != get_installed_version()
+if isinstalled() && !(version == get_installed_version())
     install()
 end
 
