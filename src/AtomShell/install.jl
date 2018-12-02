@@ -46,7 +46,7 @@ function install()
        file = "electron-v$version-win32-$arch.zip"
        download("https://github.com/electron/electron/releases/download/v$version/$file")
        zipper = joinpath(Base.Sys.BINDIR, "7z.exe")
-        if !isfile(zipper)
+       if !isfile(zipper)
            #=
            This is likely built with cygwin, which includes its own version of 7z.
            But if we unzip with cmd = Cmd(`$(fwhich("bash.exe")) 7z x $file -oatom`)
@@ -67,7 +67,6 @@ function install()
         cmd = Cmd([zipper, "x", file, "-oatom"])
         run(cmd)
         rm(file)
-      end
     end
 
     if Sys.islinux()
