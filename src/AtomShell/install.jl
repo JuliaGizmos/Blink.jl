@@ -42,11 +42,32 @@ function install()
     end
 
     if Sys.iswindows()
-      arch = Int == Int64 ? "x64" : "ia32"
-      file = "electron-v$version-win32-$arch.zip"
-      download("https://github.com/electron/electron/releases/download/v$version/$file")
-      run(`7z x $file -oatom`)
-      rm(file)
+       arch = Int == Int64 ? "x64" : "ia32"
+       file = "electron-v$version-win32-$arch.zip"
+       download("https://github.com/electron/electron/releases/download/v$version/$file")
+       zipper = joinpath(Base.Sys.BINDIR, "7z.exe")
+        if !isfile(zipper)
+           #=
+           This is likely built with cygwin, which includes its own version of 7z.
+           But if we unzip with cmd = Cmd(`$(fwhich("bash.exe")) 7z x $file -oatom`)
+           The resulting files would not be windows executable.
+           So we want the 7z.exe included with a binary download of Julia.
+           The PATH environment variable likely includes to the locally built
+           Julia, so instead we look in the default Julia binary location and
+           pick the latest version.
+           =#
+           juliafolders = filter(readdir(ENV["LOCALAPPDATA"])) do f
+                                     startswith(f, "Julia-")
+              end
+           juliaversions = VersionNumber.([replace(f, "Julia-" => "") for f in juliafolders])
+           i = findlast(isequal(maximum(juliaversions)), juliaversions)
+           zipper = joinpath(ENV["LOCALAPPDATA"], juliafolders[i], "bin", "7z.exe")
+           isfile(zipper) || error("could not find $zipper. Try also installing a binary version of Julia.")
+        end
+        cmd = Cmd([zipper, "x", file, "-oatom"])
+        run(cmd)
+        rm(file)
+      end
     end
 
     if Sys.islinux()
