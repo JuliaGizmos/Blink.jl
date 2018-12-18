@@ -34,6 +34,9 @@ function install()
       download("https://github.com/electron/electron/releases/download/v$version/$file")
       run(`unzip -q $file`)
       rm(file)
+      if isdir("Julia.app") # Issue # 178
+          rm("Julia.app", recursive=true)
+      end
       run(`mv Electron.app Julia.app`)
       run(`mv Julia.app/Contents/MacOS/Electron Julia.app/Contents/MacOS/Julia`)
       run(`sed -i.bak 's/Electron/Julia/' Julia.app/Contents/Info.plist`)
