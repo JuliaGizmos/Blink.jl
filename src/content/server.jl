@@ -11,7 +11,8 @@ const resroute =
 
 # Server setup
 
-const maintp = Mustache.template_from_file(joinpath(dirname(@__FILE__), "main.html"))
+const mainhtml = joinpath(dirname(@__FILE__), "main.html")
+const maintp = Mustache.template_from_file(mainhtml)
 
 app(f) = req -> render(maintp, d("id"=>Page(f).id))
 
