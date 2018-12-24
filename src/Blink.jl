@@ -16,6 +16,10 @@ export AtomShell
 @reexport using .AtomShell
 import .AtomShell: resolve_blink_asset
 
+for r in ["blink.js", "blink.css", "reset.css", "spinner.css"]
+  resource(resolve_blink_asset("res", r))
+end
+
 import WebIO: AbstractWidget
 include("webio.jl")
 

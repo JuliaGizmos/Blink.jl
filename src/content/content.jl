@@ -53,6 +53,3 @@ end
 
 include("server.jl")
 
-@init for r in ["blink.js", "blink.css", "reset.css", "spinner.css"]
-  resource(resolve_blink_asset("res", r))
-end
