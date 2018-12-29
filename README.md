@@ -1,25 +1,24 @@
-# Blink.jl 
-[![Build Status](https://travis-ci.org/JunoLab/Blink.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Blink.jl) 
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://JunoLab.github.io/Blink.jl/stable) 
+# Blink.jl
+[![Build Status](https://travis-ci.org/JunoLab/Blink.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Blink.jl)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://JunoLab.github.io/Blink.jl/stable)
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://JunoLab.github.io/Blink.jl/latest)
 
-Blink.jl is the Julia wrapper around [Electron](https://electronjs.org/). It 
+Blink.jl is the Julia wrapper around [Electron](https://electronjs.org/). It
 can serve HTML content in a local window, and allows for communication between
 Julia and the web page. In this way, therefore, Blink can be used as a GUI
 toolkit for building HTML-based applications for the desktop.
 
 To install, do:
 ```julia
-Pkg.add("Blink")
-Blink.AtomShell.install()
+julia> Pkg.add("Blink")
+# ... Blink builds and downloads Electron ...
+julia> using Blink
+julia> Blink.AtomShell.install()
 ```
 
 Basic usage:
 
 ```julia
-julia> Pkg.add("Blink")
-# ... Blink builds and downloads Electron ...
-
 julia> using Blink
 
 julia> w = Window() # Open a new window
