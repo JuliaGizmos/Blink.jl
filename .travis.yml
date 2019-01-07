@@ -2,10 +2,7 @@ language: julia
 notifications:
   email: false
 
-script:
-  - $TESTCMD --color=yes -e "using Pkg; Pkg.clone(pwd()); Pkg.build(\"Blink\"); Pkg.test(\"Blink\"; coverage=true)"
-
-jobs:
+matrix:
   include:
     - stage: "test"
       os: linux
@@ -34,6 +31,13 @@ jobs:
         - julia --project=docs/ --color=yes -e 'using Pkg; Pkg.instantiate(); Pkg.develop(PackageSpec(path=pwd()))'
         - julia --project=docs/ --color=yes docs/make.jl
       after_success: skip
+  allow_failures:
+    - julia: nightly
+branches:
+  only:
+    - master
+script:
+  - $TESTCMD --color=yes -e "using Pkg; Pkg.clone(pwd()); Pkg.build(\"Blink\"); Pkg.test(\"Blink\"; coverage=true)"
 
 after_success:
   - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder()); Coveralls.submit(process_folder())'
