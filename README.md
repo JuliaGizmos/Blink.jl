@@ -47,3 +47,9 @@ If that's not convincing enough, open the console (`Cmd-Alt-I` on OS X) and eval
 ## Issues & Caveats
 
 * On Windows, the spawned process dumps its output into Julia's STDOUT, which is kind of annoying.
+* When running on a headless linux instance (such as for CI tests), you must start julia via `xvfb-run julia`. More information can be found in the electron docs [here](https://electronjs.org/docs/tutorial/testing-on-headless-ci#configuring-the-virtual-display-server). See the Blink.jl [.travis.yml](https://github.com/JunoLab/Blink.jl/blob/master/.travis.yml) file for an example.
+    
+    Otherwise you will see the following error: 
+    ```
+    │    LoadError: IOError: connect: connection refused (ECONNREFUSED)
+    ```
