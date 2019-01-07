@@ -8,8 +8,7 @@ script:
 jobs:
   include:
     - stage: "test"
-      include:
-    - os: linux
+      os: linux
       julia: 0.7
       env: TESTCMD="xvfb-run julia"
     - os: linux
