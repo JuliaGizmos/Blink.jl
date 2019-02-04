@@ -2,7 +2,7 @@ import BinDeps
 
 rm′(f) = (isdir(f) || isfile(f)) && rm(f, recursive = true)
 
-const version = "2.0.5"
+const version = "4.0.4"
 
 folder() = normpath(joinpath(@__FILE__, "../../../deps"))
 
