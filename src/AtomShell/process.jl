@@ -63,7 +63,7 @@ function electron()
   return path
 end
 
-port() = rand(2_000:10_000)
+ports() = rand(2_000:10_000, 2)
 
 function try_connect(args...; interval = 0.01, attempts = 300)
   for i = 1:attempts
@@ -78,7 +78,7 @@ end
 
 function init(; debug = false)
   electron() # Check path exists
-  p, dp = port(), port()
+  p, dp = ports()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
   proc = (debug ? run_rdr : run)(`$(electron()) $dbg $mainjs port $p`; wait=false)
