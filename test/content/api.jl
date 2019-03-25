@@ -1,8 +1,10 @@
 using Blink
 using Test
 
+# IMPORTANT: Window(...) cannot appear inside of a @testset for as-of-yet
+# unknown reasons.
+w = Window(Blink.@d(:show => false), async=false);
 @testset "content! Tests" begin
-    w = Window(Blink.@d(:show => false), async=false);
     body!(w, "", async=false);
     @test (@js w document.querySelector("body").innerHTML) == ""
 
@@ -15,27 +17,28 @@ using Test
     @test (@js w document.getElementById("a").innerHTML) == "hello world"
     # TODO(nhdaly): Is this right? Should content!(w,"div",...) change _all_ divs?
     @test (@js w document.getElementById("b").innerHTML) == "bye"
-
-    # Test `fade` parameter and scripts:
-    fadeTestHtml = """<script>var testJS = "test";</script><div id="d">hi world</div>"""
-    @testset "Fade True" begin
-        # Must create a new window to ensure javascript is reset.
-        w = Window(Blink.@d(:show => false), async=false);
-
-        body!(w, fadeTestHtml; fade=true, async=false);
-        @test (@js w testJS) == "test"
-    end
-    @testset "Fade False" begin
-        # Must create a new window to ensure javascript is reset.
-        w = Window(Blink.@d(:show => false), async=false);
-
-        body!(w, fadeTestHtml; fade=false, async=false);
-        @test (@js w testJS) == "test"
-    end
 end
 
+
+# Test `fade` parameter and scripts:
+# Must create a new window to ensure javascript is reset.
+w = Window(Blink.@d(:show => false), async=false);
+fadeTestHtml = """<script>var testJS = "test";</script><div id="d">hi world</div>"""
+@testset "Fade True" begin
+    body!(w, fadeTestHtml; fade=true, async=false);
+    @test (@js w testJS) == "test"
+end
+
+# Must create a new window to ensure javascript is reset.
+w = Window(Blink.@d(:show => false), async=false);
+@testset "Fade False" begin
+
+    body!(w, fadeTestHtml; fade=false, async=false);
+    @test (@js w testJS) == "test"
+end
+
+w = Window(Blink.@d(:show => false), async=false);
 @testset "Sync/Async content reload tests" begin
-    w = Window(Blink.@d(:show => false), async=false);
     sleep_content(seconds) = """
         <script>
             function spinsleep(ms) {

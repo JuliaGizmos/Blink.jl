@@ -1,9 +1,6 @@
 const {app, BrowserWindow} = require('electron')
 var net = require("net");
 
-// console.log('Args:');
-// console.log(process.argv);
-
 function arg(name) {
   for (var i = 0; i < process.argv.length; i++) {
     if (process.argv[i] == name) {
@@ -47,7 +44,20 @@ var server = net.createServer(function(c) { //'connection' listener
   });
 
   function line(s) {
-    data = JSON.parse(s);
+    /*
+     * HACK: Sometimes (notably, inside of a @testset in Julia), extra messages
+     * which are not well-formed JSON are sent; for example, "GET /1 HTTP/1.1"
+     * is sometimes sent. This is a fix of the symptom rather than addressing
+     * the root cause; it probably **should** crash the electron process rather
+     * than swallow the error.
+     */
+    try {
+      var data = JSON.parse(s);
+      // c.write('{}');
+    } catch (exc) {
+      console.error(`Unable to parse JSON message: ${exc}`);
+      return;
+    }
     if (handlers.hasOwnProperty(data.type)) {
       handlers[data.type](data, c);
     } else {

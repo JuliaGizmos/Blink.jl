@@ -31,7 +31,15 @@ end
 
 function inspector(port)
   inspector()
-  run(`open http://localhost:8080/debug'?'port=$port`)
+  inspector_cmd = `http://localhost:8080/debug'?'port=$port`
+  if Sys.isapple()
+    return run(`open $inspector_cmd`)
+  elseif Sys.islinux()
+    return run(`xdg-open $inspector_cmd`)
+  elseif Sys.iswindows()
+    return run(`cmd /C start $inspector_cmd`)
+  end
+  error("Cannot open inspector (unknown operating system).")
 end
 
 # atom-shell
