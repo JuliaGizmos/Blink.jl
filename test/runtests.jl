@@ -7,10 +7,12 @@ cleanup = !AtomShell.isinstalled()
 
 cleanup && AtomShell.install()
 
-@testset "basic functionality" begin
-    # open window and wait for it to initialize
-    w = Window(Blink.@d(:show => false), async=false);
+# IMPORTANT: Window(...) cannot appear inside of a @testset for as-of-yet
+# unknown reasons.
 
+# open window and wait for it to initialize
+w = Window(Blink.@d(:show => false), async=false);
+@testset "basic functionality" begin
     # make sure the window is really active
     @test @js(w, Math.log(10)) ≈ log(10)
 
