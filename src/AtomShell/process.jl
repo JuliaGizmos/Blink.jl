@@ -115,8 +115,6 @@ end
 
 # utils
 
-import Base: quit
-
 export active
 
 active(shell::Electron) = process_running(shell.proc)
