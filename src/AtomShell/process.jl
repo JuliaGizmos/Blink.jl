@@ -63,7 +63,7 @@ function electron()
   return path
 end
 
-ports() = shuffle(MersenneTwister(rand(UInt)), Vector(2_000:10_1000))[1:2]
+ports() = shuffle(MersenneTwister(rand(UInt)), Vector(2_000:10_000))[1:2]
 
 function try_connect(args...; interval = 0.01, attempts = 300)
   for i = 1:attempts
