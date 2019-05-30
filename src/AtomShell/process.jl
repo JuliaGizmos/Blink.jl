@@ -73,7 +73,7 @@ end
 
 port() = rand(2_000:10_000)
 
-function try_connect(args...; interval = 0.01, attempts = 300)
+function try_connect(args...; interval = 0.01, attempts = 500)
   for i = 1:attempts
     try
       return connect(args...)
