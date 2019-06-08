@@ -64,6 +64,11 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=true
           throw(err)
       end
   end
+  if async
+    @async initwebio!(w)
+  else
+    initwebio!(w)
+  end
   return w
 end
 
