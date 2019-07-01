@@ -1,7 +1,7 @@
 name = "Blink"
 uuid = "ad839575-38b3-5650-b840-f874b8c74a25"
 authors = []
-version = "0.10.2"
+version = "0.11.0"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -20,10 +20,11 @@ WebIO = "0f1e0344-ec1d-5b48-a673-e5cf874b6c29"
 WebSockets = "104b5d7c-a370-577a-8038-80a2059c5097"
 
 [compat]
-JSExpr = "≥ 0.3"
+JSExpr = "≥ 0.5"
 Lazy = "≥ 0.11.3"
-WebIO = "≥ 0.3"
-WebSockets = "≥ 1.0.1"
+Mux = "≥ 0.7"
+WebIO = "0.3, 0.4, 0.5, 0.6, 0.7, 0.8"
+WebSockets = "≥ 1.5"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
