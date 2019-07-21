@@ -23,7 +23,7 @@ WebSockets = "104b5d7c-a370-577a-8038-80a2059c5097"
 JSExpr = "0.5"
 Lazy = "0.13"
 Mux = "0.7"
-WebIO = "0.8"
+WebIO = "0.7"
 WebSockets = "1.5"
 
 [extras]
