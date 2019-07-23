@@ -28,4 +28,4 @@ function Sockets.send(comm::WebIOBlinkComm, data)
     msg(comm.window, Dict(:type=>"webio", :data=>data))
 end
 
-Base.isopen(comm::WebIOBlinkComm) = active(b.window)
+Base.isopen(comm::WebIOBlinkComm) = active(comm.window)
