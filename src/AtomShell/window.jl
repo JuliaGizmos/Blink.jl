@@ -48,7 +48,7 @@ end
 
 function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=true)
   id, cond = Blink.callback!()
-  url = url = Blink.localurl(content) * "?callback=$id"
+  url = Blink.localurl(content) * "?callback=$id"
 
   # Create the window.
   opts = merge(opts, Dict(:url => url))
