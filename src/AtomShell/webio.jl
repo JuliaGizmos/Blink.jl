@@ -13,6 +13,7 @@ function initwebio!(w::Window)
         )
         return
     end
+
     @js w begin
         window._webIOBundlePath = $(WebIO.bundlepath)
         require($(normpath(joinpath(@__DIR__, "webio.js"))))

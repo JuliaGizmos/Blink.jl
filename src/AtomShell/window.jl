@@ -47,29 +47,32 @@ function Window(a::Shell, opts::AbstractDict = Dict(); async=true)
 end
 
 function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=true)
-  url = Blink.localurl(content)
-  if !async
-      # Send the callback id as a query param in the url.
-      id, cond = Blink.callback!()
-      url *= "?callback=$id"
-  end
+  id, cond = Blink.callback!()
+  url = url = Blink.localurl(content) * "?callback=$id"
+
   # Create the window.
   opts = merge(opts, Dict(:url => url))
   w = Window(raw_window(a, opts), a, content)
-  # If callback is requested, wait until the window has finished loading.
-  if !async
-      val = wait(cond)
-      if isa(val, AbstractDict) && get(val, "type", "") == "error"
-          err = JSError(get(val, "name", "unknown"), get(val, "message", "blank"))
-          throw(err)
-      end
-  end
+
   if async
-    @async initwebio!(w)
+    @async initwindow!(w, cond)
   else
-    initwebio!(w)
+    initwindow!(w, cond)
   end
+
   return w
+end
+
+function initwindow!(w::Window, cond::Condition)
+  result = wait(cond)
+  if isa(result, AbstractDict) && get(result, "type", "") == "error"
+      err = JSError(
+        get(result, "name", "unknown"),
+        get(result, "message", "blank"),
+      )
+      throw(err)
+  end
+  initwebio!(w)
 end
 
 Window(args...; kwargs...) = Window(shell(), args...; kwargs...)
