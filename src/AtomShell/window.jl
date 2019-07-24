@@ -11,6 +11,7 @@ mutable struct Window
   id::Int
   shell::Shell
   content
+  inittask::Union{Nothing, Task}
 end
 
 """
@@ -39,38 +40,48 @@ const window_defaults = @d(:url => "about:blank",
 
 raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
-function Window(a::Shell, opts::AbstractDict = Dict(); async=true)
+function Window(a::Shell, opts::AbstractDict = Dict(); async=false)
   # TODO: Custom urls don't support async b/c don't load Blink.js. (Same as https://github.com/JunoLab/Blink.jl/issues/150)
   return haskey(opts, :url) ?
-    Window(raw_window(a, opts), a, nothing) :
+    Window(raw_window(a, opts), a, nothing, nothing) :
     Window(a, Page(), opts, async=async)
 end
 
-function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=true)
-  id, cond = Blink.callback!()
+function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=false)
+  id, callback_cond = Blink.callback!()
   url = Blink.localurl(content) * "?callback=$id"
 
   # Create the window.
   opts = merge(opts, Dict(:url => url))
-  w = Window(raw_window(a, opts), a, content)
+  w = Window(raw_window(a, opts), a, content, nothing)
 
-  if async
-    @async initwindow!(w, cond)
-  else
-    initwindow!(w, cond)
+  # Note: we have to use a task here because of the use of Condition throughout
+  # the codebase (it might be better to use Channel or Future which are not
+  # edge-triggered). We also need to initialize this after the Window
+  # constructor because we have to pass the window into the damn function.
+  w.inittask = @async try
+    initwindow!(w, callback_cond)
+  catch exc
+    @error(
+      "An error occurred while trying to initialize a Blink window!",
+      exception=exc,
+    )
+  end
+
+  if !async
+    wait(w)
   end
 
   return w
 end
 
-function initwindow!(w::Window, cond::Condition)
-  result = wait(cond)
-  if isa(result, AbstractDict) && get(result, "type", "") == "error"
-      err = JSError(
-        get(result, "name", "unknown"),
-        get(result, "message", "blank"),
-      )
-      throw(err)
+function initwindow!(w::Window, callback_cond::Condition)
+  initresult = wait(callback_cond)
+  if isa(initresult, AbstractDict) && get(initresult, "type", "") == "error"
+      throw(JSError(
+        get(initresult, "name", "unknown"),
+        get(initresult, "message", "blank"),
+      ))
   end
   initwebio!(w)
 end
@@ -92,6 +103,15 @@ end
 
 macro dot_(win, code)
   :(dot_($(esc(win)), $(Expr(:quote, Expr(:., :this, QuoteNode(code))))))
+end
+
+# Base.* methods
+
+function Base.wait(w::Window)
+  if w.inittask === nothing
+    error("Cannot wait() a \"raw\" window (was this window created with a url arg?).")
+  end
+  return wait(w.inittask)
 end
 
 # Window management APIs
