@@ -24,6 +24,7 @@ end
 
 include("content/api.jl");
 include("AtomShell/window.jl");
+include("./webio.jl")
 
 if Sys.iswindows()
     # Uninstalling AtomShell on Windows is currently broken:
