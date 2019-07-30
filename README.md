@@ -1,7 +1,7 @@
 # Blink.jl
-[![Build Status](https://travis-ci.org/JunoLab/Blink.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Blink.jl)
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://JunoLab.github.io/Blink.jl/stable)
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://JunoLab.github.io/Blink.jl/latest)
+[![Build Status](https://travis-ci.org/JuliaGizmos/Blink.jl.svg?branch=master)](https://travis-ci.org/JunoLab/Blink.jl)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaGizmos.github.io/Blink.jl/stable)
+[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://JuliaGizmos.github.io/Blink.jl/latest)
 
 Blink.jl is the Julia wrapper around [Electron](https://electronjs.org/). It
 can serve HTML content in a local window, and allows for communication between
@@ -48,8 +48,8 @@ If that's not convincing enough, open the console (`Cmd-Alt-I` on OS X) and eval
 
 * On Windows, the spawned process dumps its output into Julia's STDOUT, which is kind of annoying.
 * When running on a headless linux instance (such as for CI tests), you must start julia via `xvfb-run julia`. More information can be found in the electron docs [here](https://electronjs.org/docs/tutorial/testing-on-headless-ci#configuring-the-virtual-display-server). See the Blink.jl [.travis.yml](https://github.com/JunoLab/Blink.jl/blob/master/.travis.yml) file for an example.
-    
-    Otherwise you will see the following error: 
+
+    Otherwise you will see the following error:
     ```
     │    LoadError: IOError: connect: connection refused (ECONNREFUSED)
     ```

@@ -11,14 +11,12 @@ makedocs(
         "guide.md",
         "Communication" => "communication.md",
         "api.md",
-        #"Subsection" => [
-        #    ...
-        #]
     ],
 )
 
 deploydocs(
-    repo = "github.com/JunoLab/Blink.jl.git",
+    repo = "github.com/JuliaGizmos/Blink.jl.git",
     target = "build",
     deps = nothing,
-    make = nothing)
+    make = nothing,
+)
