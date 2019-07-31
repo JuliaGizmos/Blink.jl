@@ -16,7 +16,13 @@ julia> using Blink
 julia> Blink.AtomShell.install()
 ```
 
-Basic usage:
+### Dependencies
+- [7z](https://www.7-zip.org/download.html) on Windows and `unzip` on Linux.
+    - You'll need to install the appropriate one for your system to be able to install Electron (for Linux, `apt get install -y unzip` or similar should work).
+    - `7z` is also packaged with Julia, so if you have your Julia installation in your PATH, we can use that version of `7z` as well.
+
+
+# Basic usage:
 
 ```julia
 julia> using Blink
