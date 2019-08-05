@@ -10,6 +10,7 @@ Window
 title
 progress
 flashframe
+active
 ```
 
 ### Misc
