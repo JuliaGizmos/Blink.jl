@@ -35,7 +35,7 @@ julia> body!(w, "Hello World") # Set the body content
 julia> loadurl(w, "http://julialang.org") # Load a web page
 ```
 
-<div align="center">
+<div align="left">
 <img src="https://raw.githubusercontent.com/JuliaGizmos/Blink.jl/blob/master/docs/src/ReadMeTutorialImage.png" alt="Blink Window showing the JuliaLang website" width="480">
 </div>
 
