@@ -6,15 +6,15 @@ julia&gt; @js win x
          for i in 0:1000000 end  # waste time
          i  # return i
        end
-  0.338258 seconds (117.91 k allocations: 5.641 MiB)
+  0.355784 seconds (117.91 k allocations: 5.641 MiB)
 1000001
 
 julia&gt; @time @js_ win begin   # Returns immediately, but `i` is not returned.
          for i in 0:1000000 end  # waste time
          i  # This is ignored
        end
-  0.012518 seconds (5.71 k allocations: 316.343 KiB)
-Page(1, WebSocket(server, CONNECTED), Dict{String,Any}(&quot;webio&quot;=&gt;##26#27{WebIOBlinkComm}(WebIOBlinkComm(Window(1, Electron(Process(`/home/travis/.julia/packages/Blink/AO8uN/deps/atom/electron /home/travis/.julia/packages/Blink/AO8uN/src/AtomShell/main.js port 8129`, ProcessRunning), TCPSocket(RawFD(0x00000013) active, 0 bytes waiting), Dict{String,Any}(&quot;callback&quot;=&gt;##1#2())), Page(#= circular reference @-5 =#), Task (done) @0x00007f389c2387f0))),&quot;callback&quot;=&gt;##1#2()), Distributed.Future(1, 1, 1, Some(true)))</code></pre><p>If your javascript expression is complex, or you want to copy-paste existing javascript, it can be easier to represent it as a pure javascript string. For that, you can call the <a href="../api/#Blink.js"><code>js</code></a> function with a <a href="../api/#WebIO.JSString"><code>JSString</code></a>:</p><pre><code class="language-julia-repl">julia&gt; body!(win, &quot;&quot;&quot;&lt;div id=&quot;box&quot; style=&quot;color:red;&quot;&gt;&lt;/div&gt;&quot;&quot;&quot;, async=false);
+  0.014958 seconds (5.71 k allocations: 316.343 KiB)
+Page(1, WebSocket(server, CONNECTED), Dict{String,Any}(&quot;webio&quot;=&gt;##26#27{WebIOBlinkComm}(WebIOBlinkComm(Window(1, Electron(Process(`/home/travis/.julia/packages/Blink/AO8uN/deps/atom/electron /home/travis/.julia/packages/Blink/AO8uN/src/AtomShell/main.js port 6470`, ProcessRunning), TCPSocket(RawFD(0x00000013) active, 0 bytes waiting), Dict{String,Any}(&quot;callback&quot;=&gt;##1#2())), Page(#= circular reference @-5 =#), Task (done) @0x00007f147784df90))),&quot;callback&quot;=&gt;##1#2()), Distributed.Future(1, 1, 1, Some(true)))</code></pre><p>If your javascript expression is complex, or you want to copy-paste existing javascript, it can be easier to represent it as a pure javascript string. For that, you can call the <a href="../api/#Blink.js"><code>js</code></a> function with a <a href="../api/#WebIO.JSString"><code>JSString</code></a>:</p><pre><code class="language-julia-repl">julia&gt; body!(win, &quot;&quot;&quot;&lt;div id=&quot;box&quot; style=&quot;color:red;&quot;&gt;&lt;/div&gt;&quot;&quot;&quot;, async=false);
 
 julia&gt; div_id = &quot;box&quot;;
 
@@ -50,7 +50,7 @@ Stacktrace:
  [12] (::getfield(Mux, Symbol(&quot;##9#10&quot;)){Mux.App})(::HTTP.Messages.Request, ::WebSockets.WebSocket{Sockets.TCPSocket}) at /home/travis/.julia/packages/Mux/FeATY/src/server.jl:49
  [13] upgrade(::getfield(Mux, Symbol(&quot;##9#10&quot;)){Mux.App}, ::HTTP.Streams.Stream{HTTP.Messages.Request,HTTP.ConnectionPool.Transaction{Sockets.TCPSocket}}) at /home/travis/.julia/packages/WebSockets/pc4iW/src/HTTP.jl:201
  [14] (::getfield(WebSockets, Symbol(&quot;#_servercoroutine#11&quot;)){WebSockets.ServerWS})(::HTTP.Streams.Stream{HTTP.Messages.Request,HTTP.ConnectionPool.Transaction{Sockets.TCPSocket}}) at /home/travis/.julia/packages/WebSockets/pc4iW/src/HTTP.jl:370
- [15] macro expansion at /home/travis/.julia/packages/HTTP/U2ZVp/src/Servers.jl:360 [inlined]
+ [15] macro expansion at /home/travis/.julia/packages/HTTP/hJSsm/src/Servers.jl:360 [inlined]
  [16] (::getfield(HTTP.Servers, Symbol(&quot;##13#14&quot;)){getfield(WebSockets, Symbol(&quot;#_servercoroutine#11&quot;)){WebSockets.ServerWS},HTTP.ConnectionPool.Transaction{Sockets.TCPSocket},HTTP.Streams.Stream{HTTP.Messages.Request,HTTP.ConnectionPool.Transaction{Sockets.TCPSocket}}})() at ./task.jl:259</code></pre><p>Finally, here is an example that uses a button to call back to julia:</p><div></div><pre><code class="language-julia-repl">julia&gt; handle(w, &quot;press&quot;) do arg
          println(arg)
        end
