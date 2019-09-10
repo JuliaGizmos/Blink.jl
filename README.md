@@ -36,7 +36,7 @@ julia> loadurl(w, "http://julialang.org") # Load a web page
 ```
 
 <div align="left">
-<img src="https://raw.githubusercontent.com/JuliaGizmos/Blink.jl/blob/master/docs/src/ReadMeTutorialImage.png" alt="Blink Window showing the JuliaLang website" width="480">
+<img src="https://raw.githubusercontent.com/JuliaGizmos/Blink.jl/master/docs/src/ReadMeTutorialImage.png" alt="Blink Window showing the JuliaLang website" width="480">
 </div>
 
 For options see the functions defined in [window.jl](src/AtomShell/window.jl), which closely follow [electron's API](https://github.com/atom/electron/blob/master/docs/api/browser-window.md).
