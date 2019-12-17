@@ -65,6 +65,10 @@ function install()
            juliaversions = VersionNumber.([replace(f, "Julia-" => "") for f in juliafolders])
            i = findlast(isequal(maximum(juliaversions)), juliaversions)
            zipper = joinpath(ENV["LOCALAPPDATA"], juliafolders[i], "bin", "7z.exe")
+           if !isfile(zipper)
+            # we are probably in >= Julia 1.3.0, where 7z.exe is located in /libexec
+            zipper = joinpath(ENV["LOCALAPPDATA"], juliafolders[i], "libexec", "7z.exe")
+           end
            isfile(zipper) || error("could not find $zipper. Try also installing a binary version of Julia.")
         end
         cmd = Cmd([zipper, "x", file, "-oatom"])
