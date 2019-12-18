@@ -48,7 +48,11 @@ function install()
        arch = Int == Int64 ? "x64" : "ia32"
        file = "electron-v$version-win32-$arch.zip"
        download("https://github.com/electron/electron/releases/download/v$version/$file")
-       zipper = joinpath(Base.Sys.BINDIR, "7z.exe")
+       if VERSION >= v"1.3.0"
+           zipper = joinpath(Base.Sys.BINDIR, "..", "libexec", "7z.exe")
+       else
+           zipper = joinpath(Base.Sys.BINDIR, "7z.exe")
+       end
        if !isfile(zipper)
            #=
            This is likely built with cygwin, which includes its own version of 7z.
@@ -59,6 +63,7 @@ function install()
            Julia, so instead we look in the default Julia binary location and
            pick the latest version.
            =#
+           
            juliafolders = filter(readdir(ENV["LOCALAPPDATA"])) do f
                                      startswith(f, "Julia-")
               end
@@ -66,8 +71,8 @@ function install()
            i = findlast(isequal(maximum(juliaversions)), juliaversions)
            zipper = joinpath(ENV["LOCALAPPDATA"], juliafolders[i], "bin", "7z.exe")
            if !isfile(zipper)
-            # we are probably in >= Julia 1.3.0, where 7z.exe is located in /libexec
-            zipper = joinpath(ENV["LOCALAPPDATA"], juliafolders[i], "libexec", "7z.exe")
+               # we are probably in >= Julia 1.3.0, where 7z.exe is located in /libexec
+               zipper = joinpath(ENV["LOCALAPPDATA"], juliafolders[i], "libexec", "7z.exe")
            end
            isfile(zipper) || error("could not find $zipper. Try also installing a binary version of Julia.")
         end
