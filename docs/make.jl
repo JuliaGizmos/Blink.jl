@@ -4,7 +4,7 @@ Blink.AtomShell.install()
 
 makedocs(
     modules = [Blink],
-    format = :html,
+    format = Documenter.HTML(),
     sitename = "Blink",
     pages = [
         "index.md",
