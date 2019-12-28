@@ -20,9 +20,14 @@ WebIO = "0f1e0344-ec1d-5b48-a673-e5cf874b6c29"
 WebSockets = "104b5d7c-a370-577a-8038-80a2059c5097"
 
 [compat]
+BinDeps = "1.0"
 JSExpr = "0.5"
+JSON = "0.21"
 Lazy = "0.13, 0.14"
+MacroTools = "0.5"
+Mustache = "1.0"
 Mux = "0.7"
+Reexport = "0.2"
 WebIO = "=0.8.0, =0.8.1, =0.8.2, =0.8.3, =0.8.4, =0.8.5, 0.8.7"
 WebSockets = "1.5"
 
