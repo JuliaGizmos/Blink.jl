@@ -1,11 +1,20 @@
 using ..Blink
 import Blink: js, id
 import JSExpr: JSString, jsstring
-import Base: position, size, close
 
 export Window, flashframe, shell, progress, title,
   centre, floating, loadurl, opentools, closetools, tools,
   loadhtml, loadfile, css, front
+
+# Keep sorted
+export
+    center!,
+    loadfile!,
+    loadurl!,
+    opentools!,
+    position!,
+    progress!,
+    title!
 
 mutable struct Window
   id::Int
@@ -20,7 +29,7 @@ end
 
 Create and open a new Window through Electron.
 
-If `async==false`, this function blocks until the Window is fully initialized
+If `async=false`, this function blocks until the Window is fully initialized
 and ready for you to communicate with it via javascript or the Blink API.
 
 The `electron_options` dict is used to initialize the Electron window. See here
@@ -154,49 +163,94 @@ flashframe(win::Window, on = true) =
   @dot_ win flashFrame($on)
 
 """
-    progress(win::Window, p=-1)
+    progress!(win::Window, p=-1)
 
 Sets progress value in progress bar. Valid range is [0, 1.0]. Remove progress
 bar when progress < 0; Change to indeterminate mode when progress > 1.
 
 https://github.com/electron/electron/blob/master/docs/api/browser-window.md#winsetprogressbarprogress-options
 """
-progress(win::Window, p = -1) =
-  @dot_ win setProgressBar($p)
+progress!(win::Window, p) = @dot_ win setProgressBar($p)
+
+# Deprecated
+progress(win::Window, progress=-1) = progress!(win, progress)
 
 """
-    title(win::Window, title)
+    title!(window, title)
 
-Set `win`'s title to `title.`
+Set the window's title.
 """
-title(win::Window, title) =
-  @dot_ win setTitle($title)
+title!(win::Window, title) = @dot_ win setTitle($title)
+
+# Deprecated
+title(win::Window, title) = title!(win, title)
 
 """
-    title(win::Window)
+    title(window)
 
 Get the window's title.
 """
-title(win::Window) =
-  @dot win getTitle()
+title(win::Window) = @dot win getTitle()
 
+"""
+    center!(win::Window)
+
+Center a window.
+"""
+center!(win::Window) = @dot_ win center()
+
+# Deprecated (and misspelled?)
 centre(win::Window) =
   @dot_ win center()
 
-position(win::Window, x, y) =
-  @dot_ win setPosition($x, $y)
+"""
+    position!(window, x, y)
+    position!(window, position)
 
-position(win::Window) =
-  @dot win getPosition()
+Position a window.
 
-size(win::Window, w::Integer, h::Integer) =
-  invoke(size, Tuple{Window, Any, Any}, win, w, h)
+This positions the top-left corner of the window to match the given coordinates.
+"""
+position!(w::Window, x, y) = @dot_ w setPosition($x, $y)
+position!(w::Window, pos) = position!(w, pos...)
 
-size(win::Window, w, h) =
-  @dot_ win setSize($w, $h)
+# Deprecated
+position(w::Window, x, y) = position!(w, x, y)
 
-size(win::Window) =
-  @dot win getSize()
+"""
+    position(window)
+
+Get the window's position.
+
+This returns a tuple that represents the position of the top-left corner of the
+window.
+"""
+function position(win::Window)
+    x, y = Int.(@dot win getPosition())
+    return (x, y)
+end
+
+"""
+    resize!(window::$(repr(Window)), width, height)
+    resize!(window::$(repr(Window)), dims)
+
+Resize a window to the given dimensions.
+"""
+Base.resize!(window::Window, width, height) = @dot_ window setSize($width, $height)
+Base.resize!(window::Window, dims) = resize!(window, dims...)
+
+# Deprecated
+Base.size(window::Window, width, height) = resize!(window, width, height)
+
+"""
+    size(window::$(repr(Window)))
+
+Return a tuple with the dimensions of the window.
+"""
+function Base.size(window::Window)
+    width, height = Int.(@dot window getSize())
+    return (width, height)
+end
 
 floating(win::Window, flag) =
   @dot_ win setAlwaysOnTop($flag)
@@ -204,21 +258,21 @@ floating(win::Window, flag) =
 floating(win::Window) =
   @dot win isAlwaysOnTop()
 
-loadurl(win::Window, url) =
-  @dot win loadURL($url)
+loadurl!(win::Window, url) = @dot win loadURL($url)
+loadurl(win::Window, url) = loadurl!(win, url)
 
-loadfile(win::Window, f) =
-  loadurl(win, "file://$f")
+loadfile!(win::Window, f) = loadurl(win, "file://$f")
+loadfile(win::Window, f) = loadfile!(win, f)
 
 """
-    opentools(win::Window)
+    opentools!(win::Window)
 
 Open the Chrome Developer Tools on `win`.
 
 See also: [`closetools`](@ref), [`tools`](@ref)
 """
-opentools(win::Window) =
-  @dot win openDevTools()
+opentools!(w::Window) = @dot win openDevTools()
+opentools(w::Window) = opentools!(w)
 
 """
     closetools(win::Window)
@@ -227,24 +281,29 @@ Close the Chrome Developer Tools on `win` if open.
 
 See also: [`opentools`](@ref), [`tools`](@ref)
 """
-closetools(win::Window) =
-  @dot win closeDevTools()
+closetools!(win::Window) = @dot win closeDevTools()
+closetools(win::Window) = closetools!(win)
 
 """
-    tools(win::Window)
+    tools!(win::Window)
 
 Toggle the Chrome Developer Tools on `win`.
 
 See also: [`opentools`](@ref), [`closetools`](@ref)
 """
-tools(win::Window) =
-  @dot win toggleDevTools()
+tools!(win::Window) = @dot win toggleDevTools()
+tools(win::Window) = tools!(win)
+
 
 front(win::Window) =
   @dot win showInactive()
 
-close(win::Window) =
-  @dot win close()
+"""
+    close(window::$(repr(Window)))
+
+Close a window.
+"""
+Base.close(win::Window) = @dot win close()
 
 # Window content APIs
 
@@ -262,7 +321,7 @@ const initcss = """
   <style>html,body{margin:0;padding:0;border:0;text-align:center;}</style>
   """
 
-function loadhtml(win::Window, html::AbstractString)
+function loadhtml!(win::Window, html::AbstractString)
   tmp = string(tempname(), ".html")
   open(tmp, "w") do io
     println(io, initcss)
@@ -272,3 +331,4 @@ function loadhtml(win::Window, html::AbstractString)
   @async (sleep(1); rm(tmp))
   return
 end
+loadhtml(win::Window, html::AbstractString) = loadhtml!(win, html)
