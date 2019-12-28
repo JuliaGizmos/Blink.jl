@@ -48,37 +48,17 @@ function install()
       arch = Int == Int64 ? "x64" : "ia32"
       file = "electron-v$version-win32-$arch.zip"
       download("https://github.com/electron/electron/releases/download/v$version/$file")
-      if VERSION >= v"1.3.0"
-          zipper = joinpath(Sys.BINDIR, Base.LIBEXECDIR, "7z.exe")
-      else
-          zipper = joinpath(Sys.BINDIR, "7z.exe")
-      end
-      if !isfile(zipper)
-        #=
-        This is likely built with cygwin, which includes its own version of 7z.
-        But if we unzip with cmd = Cmd(`$(fwhich("bash.exe")) 7z x $file -oatom`)
-        The resulting files would not be windows executable.
-        So we want the 7z.exe included with a binary download of Julia.
-        The PATH environment variable likely includes to the locally built
-        Julia, so instead we look in the default Julia binary location and
-        pick the latest version.
-        =#
-
-        juliafolders = filter(readdir(ENV["LOCALAPPDATA"])) do f
-          startswith(f, "Julia-")
+      try
+        run(BinDeps.unpack_cmd(file, "atom", ".zip", nothing))
+      catch e
+        if e isa Base.IOError && e.code == Base.UV_ENOENT # No such file or directory
+          error("Unable to find 7z.exe. Try running `make win-extras` if you built Julia from source.")
+        else
+          rethrow(e)
         end
-        juliaversions = VersionNumber.([replace(f, "Julia-" => "") for f in juliafolders])
-        i = findlast(isequal(maximum(juliaversions)), juliaversions)
-        zipper = joinpath(ENV["LOCALAPPDATA"], juliafolders[i], "bin", "7z.exe")
-        if !isfile(zipper)
-            # we are probably in >= Julia 1.3.0, where 7z.exe is located in /libexec
-            zipper = joinpath(ENV["LOCALAPPDATA"], juliafolders[i], "libexec", "7z.exe")
-        end
-        isfile(zipper) || error("could not find $zipper. Try also installing a binary version of Julia.")
+      finally
+        rm(file)
       end
-      cmd = Cmd([zipper, "x", file, "-oatom"])
-      run(cmd)
-      rm(file)
     end
 
     if Sys.islinux()
