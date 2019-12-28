@@ -49,9 +49,9 @@ function install()
        file = "electron-v$version-win32-$arch.zip"
        download("https://github.com/electron/electron/releases/download/v$version/$file")
        if VERSION >= v"1.3.0"
-           zipper = joinpath(Base.Sys.BINDIR, "..", "libexec", "7z.exe")
+           zipper = joinpath(Sys.BINDIR, Base.LIBEXECDIR, "7z.exe")
        else
-           zipper = joinpath(Base.Sys.BINDIR, "7z.exe")
+           zipper = joinpath(Sys.BINDIR, "7z.exe")
        end
        if !isfile(zipper)
            #=
@@ -63,7 +63,7 @@ function install()
            Julia, so instead we look in the default Julia binary location and
            pick the latest version.
            =#
-           
+
            juliafolders = filter(readdir(ENV["LOCALAPPDATA"])) do f
                                      startswith(f, "Julia-")
               end
