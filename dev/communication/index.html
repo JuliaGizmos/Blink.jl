@@ -6,15 +6,15 @@ julia&gt; @js win x
          for i in 0:1000000 end  # waste time
          i  # return i
        end
-  0.259761 seconds (115.39 k allocations: 5.584 MiB)
+  0.266954 seconds (115.39 k allocations: 5.584 MiB)
 1000001
 
 julia&gt; @time @js_ win begin   # Returns immediately, but `i` is not returned.
          for i in 0:1000000 end  # waste time
          i  # This is ignored
        end
-  0.007973 seconds (5.56 k allocations: 311.780 KiB)
-Page(1, WebSocket(server, CONNECTED), Dict{String,Any}(&quot;webio&quot;=&gt;##22#23{WebIOBlinkComm}(WebIOBlinkComm(Window(1, Electron(Process(`/home/travis/.julia/packages/Blink/4FM8Y/deps/atom/electron /home/travis/.julia/packages/Blink/4FM8Y/src/AtomShell/main.js port 7607`, ProcessRunning), TCPSocket(RawFD(0x00000013) active, 0 bytes waiting), Dict{String,Any}(&quot;callback&quot;=&gt;##1#2())), Page(#= circular reference @-5 =#), Task (done) @0x00007ff4a6ed8550))),&quot;callback&quot;=&gt;##1#2()), Distributed.Future(1, 1, 1, Some(true)))</code></pre><p>If your javascript expression is complex, or you want to copy-paste existing javascript, it can be easier to represent it as a pure javascript string. For that, you can call the <a href="../api/#Blink.js"><code>js</code></a> function with a <a href="../api/#WebIO.JSString"><code>JSString</code></a>:</p><pre><code class="language-julia-repl">julia&gt; body!(win, &quot;&quot;&quot;&lt;div id=&quot;box&quot; style=&quot;color:red;&quot;&gt;&lt;/div&gt;&quot;&quot;&quot;, async=false);
+  0.018057 seconds (5.56 k allocations: 311.780 KiB, 48.98% gc time)
+Page(1, WebSocket(server, CONNECTED), Dict{String,Any}(&quot;webio&quot;=&gt;##22#23{WebIOBlinkComm}(WebIOBlinkComm(Window(1, Electron(Process(`/home/travis/.julia/packages/Blink/4FM8Y/deps/atom/electron /home/travis/.julia/packages/Blink/4FM8Y/src/AtomShell/main.js port 3026`, ProcessRunning), TCPSocket(RawFD(0x00000013) active, 0 bytes waiting), Dict{String,Any}(&quot;callback&quot;=&gt;##1#2())), Page(#= circular reference @-5 =#), Task (done) @0x00007fd17346c550))),&quot;callback&quot;=&gt;##1#2()), Distributed.Future(1, 1, 1, Some(true)))</code></pre><p>If your javascript expression is complex, or you want to copy-paste existing javascript, it can be easier to represent it as a pure javascript string. For that, you can call the <a href="../api/#Blink.js"><code>js</code></a> function with a <a href="../api/#WebIO.JSString"><code>JSString</code></a>:</p><pre><code class="language-julia-repl">julia&gt; body!(win, &quot;&quot;&quot;&lt;div id=&quot;box&quot; style=&quot;color:red;&quot;&gt;&lt;/div&gt;&quot;&quot;&quot;, async=false);
 
 julia&gt; div_id = &quot;box&quot;;
 
@@ -117,4 +117,4 @@ julia&gt; while true  # Still an infinite loop, but a _fair_ one.
 
 # NOW, CLICKING THE go BUTTON WILL WORK CORRECTLY ✅
 Start
-End</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../guide/">« Usage Guide</a><a class="docs-footer-nextpage" href="../api/">API »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 31 December 2019 03:27">Tuesday 31 December 2019</span>. Using Julia version 1.0.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+End</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../guide/">« Usage Guide</a><a class="docs-footer-nextpage" href="../api/">API »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Tuesday 31 December 2019 03:36">Tuesday 31 December 2019</span>. Using Julia version 1.0.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
