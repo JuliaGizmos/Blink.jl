@@ -78,7 +78,7 @@ pass more or fewer arguments, pass your arguments as an array:
 handle(w, "event") do count, values, message
   # ...
 end
-@js w Blink.msg("event", [1, ['a','b'], "Hi"]);
+@js w Blink.msg("press", [1, ['a','b'], "Hi"]);
 ```
 
 Finally, here is an example that uses a button to call back to julia:

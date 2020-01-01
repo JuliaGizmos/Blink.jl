@@ -10,17 +10,17 @@ toolkit for building HTML-based applications for the desktop.
 
 To install, do:
 ```julia
-julia> Pkg.add("Blink")
+julia> # press ] to enter the Pkg REPL mode
+(v1.3) pkg> add Blink
 # ... Blink builds and downloads Electron ...
+(v1.3) pkg> # press backspace to exit Pkg REPL mode
 julia> using Blink
-julia> Blink.AtomShell.install()
 ```
 
 ### Dependencies
-- [7z](https://www.7-zip.org/download.html) on Windows and `unzip` on Linux.
-    - You'll need to install the appropriate one for your system to be able to install Electron (for Linux, `apt get install -y unzip` or similar should work).
-    - `7z` is also packaged with Julia, so if you have your Julia installation in your PATH, we can use that version of `7z` as well.
-
+- [7z](https://www.7-zip.org/download.html) on Windows and `unzip` on Linux. You'll need to install the appropriate one for your system to be able to install Electron:
+    - For Linux, `apt get install -y unzip` or similar should work.
+    - For Windows, we use the `7z` that is normally packaged with binary distributions of Julia (via the BinDeps.jl build dependency). `7z` may be unavailable in case of a source build of Julia on Windows, in which case it can be obtained by running `make win-extras` after running `make`.
 
 # Basic usage:
 
