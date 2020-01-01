@@ -117,14 +117,36 @@ end
 
 export active
 
-active(shell::Electron) = process_running(shell.proc)
+Base.close(shell::Electron) = close(shell.sock)
+Base.isopen(shell::Electron) = process_running(shell.proc)
 
-quit(shell::Electron) = close(shell.sock)
+# TODO: Deprecate these functions in favor of methods above.
+active(shell::Electron) = isopen(shell)
+quit(shell::Electron) = close(shell)
 
-# Default process
+# Keep track of the active electron process (see the `shell` function).
+const _active_electron_process = Ref{Union{Electron, Nothing}}(nothing)
 
-function shell(; debug = false)
-  global _shell
-  _shell ≠ nothing && active(_shell) && return _shell
-  _shell = init(debug = debug)
+"""
+    shell(; debug=false)
+
+Get the currently active [`Electron`](@ref) shell instance (or activate one if
+none exists yet).
+
+NOTE: The `debug` keyword argument only takes effect if there is not an active
+`Electron` instance. If there *is* an active instance, this function returns
+that instance without regards to whether or not the `debug` flag matches.
+"""
+function shell(; debug=false)::Electron
+    # TODO: It might make sense to track whether or not the shell was started
+    # with the debug flag and issue a warning if the user requested debug and
+    # the active shell is non-debug.
+    proc = _active_electron_process[]
+    if proc !== nothing && active(proc)
+        return proc
+    end
+
+    proc = init(debug=debug)
+    _active_electron_process[] = proc
+    return proc
 end
