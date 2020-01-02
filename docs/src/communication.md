@@ -73,12 +73,18 @@ end
 @js w Blink.msg("press", "Hello from JS");
 ```
 Note that the javascript function `Blink.msg` takes _exactly_ 1 argument.  To
-pass more or fewer arguments, pass your arguments as an array:
+pass more or fewer arguments, you must pass your arguments as an array from
+the JavaScript side (and optionally _destructure_ them into variables on the
+Julia side):
 ```@repl handler
-handle(w, "event") do count, values, message
-  # ...
+handle(w, "event1") do args  # This can accept an array of arguments
+    @show args
 end
-@js w Blink.msg("press", [1, ['a','b'], "Hi"]);
+handle(w, "event2") do (count, values, message)  # This will use the first 3 values from the passed array
+    @show count, values, message
+end
+@js w Blink.msg("event1", [1, ['a','b'], "Hi"]);
+@js w Blink.msg("event2", [1, ['a','b'], "Hi"]);
 ```
 
 Finally, here is an example that uses a button to call back to julia:
