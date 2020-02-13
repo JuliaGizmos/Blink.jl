@@ -36,6 +36,7 @@ matrix:
 branches:
   only:
     - master
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 
 script:
   - $TESTCMD --color=yes -e 'using Pkg; Pkg.build(); Pkg.test("Blink"; coverage=true)'
