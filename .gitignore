@@ -1,5 +1,6 @@
 /deps
 !/deps/build.jl
+!/deps/julia.png
 
 docs/build/
 docs/site/
