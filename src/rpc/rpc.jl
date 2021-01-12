@@ -79,7 +79,7 @@ julia> @js_ win for i in 1:x console.log(i) end
 ```
 """
 macro js(o, ex)
-    :(js($(esc(o)), $(Expr(:quote, ex))))
+    :(js($(esc(o)), $(esc(Expr(:quote, ex)))))
 end
 
 """
@@ -102,5 +102,5 @@ julia> @js_ win for i in 1:x console.log(i) end
 ```
 """
 macro js_(o, ex)
-    :(js($(esc(o)), $(Expr(:quote, ex)), callback=false))
+    :(js($(esc(o)), $(esc(Expr(:quote, ex))), callback=false))
 end
