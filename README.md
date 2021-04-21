@@ -63,3 +63,21 @@ If that's not convincing enough, open the console (`Cmd-Alt-I` on OS X) and eval
     ```
     │    LoadError: IOError: connect: connection refused (ECONNREFUSED)
     ```
+
+# Troubleshooting
+
+## Troubleshooting `connection refused` messages
+
+These usually result from Electron failing to start. This is frequently a result of a misconfigured system (e.g., missing required shared libraries or not having a display server running).
+
+To debug, make sure that the Electron process is able to start. The path to the electron executable depends on your environment, but you can obtain it easily:
+```
+print(Blink.AtomShell._electron)
+# /Users/travis/.julia/packages/Blink/mwJC9/deps/Julia.app/Contents/MacOS/Julia
+```
+
+Running that executable from the command line (outside of Julia) should open an empty Electron window, or it should print out an error message.
+
+For error messages of the form `error while loading shared libraries: libasound.so.2`, make sure you've installed that shared library using your system's package manager (e.g., `apt install libasound2`).
+
+If you still can't solve your problems, please feel free to open a new issue.
