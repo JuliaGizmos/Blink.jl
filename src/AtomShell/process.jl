@@ -1,4 +1,4 @@
-using Lazy, JSON, MacroTools
+using Lazy, JSON, MacroTools, Pkg.Artifacts
 
 hascommand(c) =
   try read(`which $c`, String); true catch e false end
@@ -56,19 +56,17 @@ end
 
 Electron(proc, sock) = Electron(proc, sock, Dict())
 
-@static if Sys.isapple()
-  const _electron = resolve_blink_asset("deps/Julia.app/Contents/MacOS/Julia")
-elseif Sys.islinux()
-  const _electron = resolve_blink_asset("deps/atom/electron")
-elseif Sys.iswindows()
-  const _electron = resolve_blink_asset("deps", "atom", "electron.exe")
-end
+const _electron = artifact"electronjs_app"
 const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
 
 function electron()
-  path = get(ENV, "ELECTRON_PATH", _electron)
-  isfile(path) || error("Cannot find Electron. Try `Blink.AtomShell.install()`.")
-  return path
+  if Sys.isapple()
+    return joinpath(_electron, "Julia.app", "Contents", "MacOS", "Julia")
+  elseif Sys.iswindows()
+    return joinpath(_electron, "electron.exe")
+  else # assume unix layout
+    return joinpath(_electron, "electron")
+  end
 end
 
 port() = rand(2_000:10_000)

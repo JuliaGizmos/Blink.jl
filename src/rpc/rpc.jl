@@ -1,5 +1,5 @@
 import JSExpr: @js, @js_str, JSString, jsstring, jsexpr, @var, @new
-using Lazy: @d
+using Lazy
 
 export js, @js, @js_, @var, @new
 
@@ -38,7 +38,7 @@ function JSString end
 msg(o, m) = error("$(typeof(o)) object doesn't support JS messages")
 
 function js(o, js::JSString; callback = true)
-  cmd = @d(:type => :eval,
+  cmd = Dict(:type => :eval,
            :code => js.s)
   if callback
     id, cond = callback!()
