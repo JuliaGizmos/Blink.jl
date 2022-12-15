@@ -1,4 +1,6 @@
-using Mux, WebSockets, JSON, Lazy, Mustache
+using Mux, JSON, Lazy, Mustache
+import HTTP: WebSocket
+import HTTP.WebSockets: isclosed
 
 export Page, id, active
 
@@ -30,7 +32,7 @@ end
 include("config.jl")
 
 id(p::Page) = p.id
-active(p::Page) = isdefined(p, :sock) && isopen(p.sock) && isopen(p.sock.socket)
+active(p::Page) = isdefined(p, :sock) && !isclosed(p.sock)
 handlers(p::Page) = p.handlers
 
 function Base.wait(p::Page)
@@ -40,7 +42,7 @@ end
 
 function msg(p::Page, m)
   active(p) || wait(p)
-  write(p.sock, json(m))
+  send(p.sock, json(m))
 end
 
 const pool = Dict{Int, WeakRef}()

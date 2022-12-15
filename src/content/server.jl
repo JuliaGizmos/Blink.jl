@@ -1,5 +1,5 @@
 # Resources
-
+import HTTP.WebSockets: CloseFrameBody
 const resources = Dict{String, String}()
 
 resource(f, name = basename(f)) = (@assert isfile(f); resources[name] = f)
@@ -30,35 +30,22 @@ function page_handler(req)
            :status => 404)
 end
 
-function ws_handler(req)
-  id = try parse(Int, req[:path][end]) catch e @goto fail end
-  client = req[:socket]
+function ws_handler(ws)
+  id = try parse(Int, split(ws.request.target, "/", keepempty=false)[end]) catch e @goto fail end
   haskey(pool, id) || @goto fail
   p = pool[id].value
   active(p) && @goto fail
 
-  p.sock = client
+  p.sock = ws
   @async @errs get(handlers(p), "init", identity)(p)
   put!(p.cb, true)
-  while active(p)
-    local data
-    try
-      data = read(client)
-    catch e
-      if (isa(e, ArgumentError) && contains(e.msg, "closed")) || isa(e, WebSockets.WebSocketClosedError)
-        handle_message(p, d("type"=>"close", "data"=>nothing))
-        yield() # Prevents an HttpServer task error (!?)
-        return
-      else
-        rethrow()
-      end
-    end
-    @errs handle_message(p, JSON.parse(String(data)))
+  for msg in ws
+    @errs handle_message(p, JSON.parse(String(msg)))
   end
   return
 
   @label fail
-  close(client)
+  close(ws, CloseFrameBody(1000, ""))
 end
 
 http_default =
@@ -67,27 +54,12 @@ http_default =
       page(":id", page_handler),
       Mux.notfound())
 
-ws_default =
-  mux(Mux.wdefaults,
-      ws_handler)
-
 const serving = Ref(false)
 
 function serve()
   serving[] && return
   serving[] = true
-  http = Mux.http_handler(Mux.App(http_default))
-  ws = Mux.ws_handler(Mux.App(ws_default))
   @async begin
-    # Suppress log output from HTTP.jl unless the user has already
-    # configured a custom logger. See:
-    # https://github.com/JuliaLang/julia/pull/28229#issuecomment-410229612
-    if current_task().logstate === nothing
-      with_logger(NullLogger()) do
-        WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port[], false)
-      end
-    else
-      WebSockets.serve(WebSockets.ServerWS(http, ws), ip"127.0.0.1", port[], false)
-    end
+    Mux.serve(Mux.App(http_default), Mux.App(ws_handler), ip"127.0.0.1", port[])
   end
 end
