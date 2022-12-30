@@ -40,14 +40,16 @@ const window_defaults = @d(:url => "about:blank",
 
 raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
-function Window(a::Shell, opts::AbstractDict = Dict(); async=false)
+function Window(a::Shell, opts::AbstractDict = Dict(); async=false, body=nothing)
   # TODO: Custom urls don't support async b/c don't load Blink.js. (Same as https://github.com/JunoLab/Blink.jl/issues/150)
-  return haskey(opts, :url) ?
+  window = haskey(opts, :url) ?
     Window(raw_window(a, opts), a, nothing, nothing) :
-    Window(a, Page(), opts, async=async)
+    Window(a, Page(), opts; async=async)
+  isnothing(body) || body!(window, body)
+  return window
 end
 
-function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=false)
+function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=false, body=nothing)
   id, callback_cond = Blink.callback!()
   url = Blink.localurl(content) * "?callback=$id"
 
@@ -71,6 +73,8 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=fals
   if !async
     wait(w)
   end
+
+  isnothing(body) || body!(w, body)
 
   return w
 end
