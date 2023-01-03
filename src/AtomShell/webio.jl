@@ -15,14 +15,23 @@ function initwebio!(w::Window)
     end
 
     @js w begin
-        window._webIOBundlePath = $(WebIO.bundlepath)
-        require($(normpath(joinpath(@__DIR__, "webio.js"))))
+        WebIO = window.WebIO = @new webio.default();
+        WebIO.setSendCallback(function (message)
+            window.Blink.msg("webio", message)
+        end)
+        Blink.handlers.webio = function (message)
+            window.WebIO.dispatch(message.data)
+        end
     end
 
     comm = WebIOBlinkComm(w)
     handle(w, "webio") do msg
         WebIO.dispatch(comm, msg)
     end
+end
+
+@init begin
+    resource(WebIO.bundlepath)
 end
 
 function Sockets.send(comm::WebIOBlinkComm, data)

@@ -3,7 +3,7 @@ using Test
 
 # IMPORTANT: Window(...) cannot appear inside of a @testset for as-of-yet
 # unknown reasons.
-w = Window(Blink.@d(:show => false), async=false);
+w = Window(Blink.Dict(:show => false), async=false);
 @testset "content! Tests" begin
     body!(w, "", async=false);
     @test (@js w document.querySelector("body").innerHTML) == ""
@@ -22,7 +22,7 @@ end
 
 # Test `fade` parameter and scripts:
 # Must create a new window to ensure javascript is reset.
-w = Window(Blink.@d(:show => false), async=false);
+w = Window(Blink.Dict(:show => false), async=false);
 fadeTestHtml = """<script>var testJS = "test";</script><div id="d">hi world</div>"""
 @testset "Fade True" begin
     body!(w, fadeTestHtml; fade=true, async=false);
@@ -30,14 +30,14 @@ fadeTestHtml = """<script>var testJS = "test";</script><div id="d">hi world</div
 end
 
 # Must create a new window to ensure javascript is reset.
-w = Window(Blink.@d(:show => false), async=false);
+w = Window(Blink.Dict(:show => false), async=false);
 @testset "Fade False" begin
 
     body!(w, fadeTestHtml; fade=false, async=false);
     @test (@js w testJS) == "test"
 end
 
-w = Window(Blink.@d(:show => false), async=false);
+w = Window(Blink.Dict(:show => false), async=false);
 @testset "Sync/Async content reload tests" begin
     sleep_content(seconds) = """
         <script>

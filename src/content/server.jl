@@ -6,14 +6,17 @@ resource(f, name = basename(f)) = (@assert isfile(f); resources[name] = f)
 
 const resroute =
   branch(req -> length(req[:path]) == 1 && haskey(resources, req[:path][1]),
-         req -> d(:body => open(read, resources[req[:path][1]]),
+         req -> Dict(:body => open(read, resources[req[:path][1]]),
                   :headers => Mux.fileheaders(req[:path][1])))
 
 # Server setup
 
-const maintp = Mustache.template_from_file(joinpath(dirname(@__FILE__), "main.html"))
+const maintp = Mustache.template_from_file(joinpath(@__DIR__, "main.html"))
 
-app(f) = req -> render(maintp, d("id"=>Page(f).id))
+app(f) = req -> render(maintp, Dict(
+  "id" => Page(f).id,
+  # "webio_bundle" => basename(WebIO.bundlepath)
+))
 
 function page_handler(req)
   id = try parse(Int, req[:params][:id]) catch e @goto fail end
@@ -22,11 +25,11 @@ function page_handler(req)
 
   callback_id = try split(req[:query], "=")[2] catch e nothing end
   callback_script = callback_id != nothing ? """var callback_id = $callback_id""" : ""
-  return render(maintp, d("id"=>id,
+  return render(maintp, Dict("id"=>id,
                           "optional_create_window_callback"=>callback_script))
 
   @label fail
-  return d(:body => "Not found",
+  return Dict(:body => "Not found",
            :status => 404)
 end
 

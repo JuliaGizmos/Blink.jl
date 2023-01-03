@@ -32,11 +32,13 @@ function Window end
 shell(win::Window) = win.shell
 id(win::Window) = win.id
 
-const window_defaults = @d(:url => "about:blank",
-                           :title => "Julia",
-                           "node-integration" => false,
-                           "use-content-size" => true,
-                           :icon => resolve_blink_asset("deps", "julia.png"))
+const window_defaults = Dict(
+  :url => "about:blank",
+  :title => "Julia",
+  "node-integration" => false,
+  "use-content-size" => true,
+  :icon => resolve_blink_asset("deps", "julia.png")
+)
 
 raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
 
@@ -64,7 +66,7 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=fals
   catch exc
     @error(
       "An error occurred while trying to initialize a Blink window!",
-      exception=exc,
+      exception=(exc, catch_backtrace()),
     )
   end
 
