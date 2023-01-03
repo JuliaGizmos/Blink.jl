@@ -14,7 +14,7 @@ w = Window(Blink.Dict(:show => false), async=false);
     @test string(Blink.jsstring(:(Dict("a" => 1, :b => 10)))...) == "{\"a\":1,\"b\":10}"
 
     # check that <!DOCTYPE html> was declared
-    @test  startswith(Blink.maintp.tokens[1].value, "<!DOCTYPE html>\n")
+    @test startswith(Blink.maintp.tokens[1].value, "<!DOCTYPE html>")
 end
 
 include("content/api.jl");

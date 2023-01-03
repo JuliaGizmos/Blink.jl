@@ -16,6 +16,12 @@ function initwebio!(w::Window)
 
     @js w begin
         WebIO = window.WebIO = @new webio.default();
+        WebIO.setSendCallback(function (message)
+            window.Blink.msg("webio", message)
+        end)
+        Blink.handlers.webio = function (message)
+            window.WebIO.dispatch(message.data)
+        end
     end
 
     comm = WebIOBlinkComm(w)
