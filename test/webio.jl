@@ -35,7 +35,6 @@ end
     end
 
     @testset "button click" begin
-        w = Window(Dict(:show => false))
         scope = Scope()
         obs = Observable(scope, "obs", false)
         obschannel = Channel(1)
@@ -47,7 +46,7 @@ end
                 end
             )
         ))
-        body!(w, scope)
+        w = Window(Dict(:show => false); body=scope)
 
         # Sleep to allow WebIO scope to mount in Electron
         sleep(0.25)
