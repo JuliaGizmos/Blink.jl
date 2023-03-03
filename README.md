@@ -17,11 +17,6 @@ julia> # press ] to enter the Pkg REPL mode
 julia> using Blink
 ```
 
-### Dependencies
-- [7z](https://www.7-zip.org/download.html) on Windows and `unzip` on Linux. You'll need to install the appropriate one for your system to be able to install Electron:
-    - For Linux, `apt get install -y unzip` or similar should work.
-    - For Windows, we use the `7z` that is normally packaged with binary distributions of Julia (via the BinDeps.jl build dependency). `7z` may be unavailable in case of a source build of Julia on Windows, in which case it can be obtained by running `make win-extras` after running `make`.
-
 # Basic usage:
 
 ```julia
