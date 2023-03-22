@@ -8,18 +8,26 @@
   if (!/\/\d+$/.test(ws)) {
     ws += '/' + id;
   }
-  var sock = new WebSocket(ws);
 
   function msg(t, m) {
     var msg = (m === undefined) ?
       { type: t.type, data: t } :
       { type: t, data: m }
-    sock.send(JSON.stringify(msg))
+    Blink.sock.send(JSON.stringify(msg))
   }
 
-  var handlers = {};
 
-  sock.onmessage = function(event) {
+  function connect() {
+    Blink.sock = new WebSocket(ws);
+    Blink.sock.onmessage = onmessage;
+    Blink.sock.onclose = function() {
+      if (Blink.sock.readyState == 3) {
+        setTimeout(connect, 500);
+      }
+    }
+  }
+
+  function onmessage(event) {
     var msg = JSON.parse(event.data);
     if (handlers.hasOwnProperty(msg.type)) {
       handlers[msg.type](msg);
@@ -34,6 +42,8 @@
     });
   }
 
+
+  var handlers = {};
   handlers.eval = function(data) {
     new Promise(resolve => resolve(eval(data.code)))
       .catch(e => {
@@ -46,10 +56,10 @@
       });
   }
 
-  Blink.sock = sock;
   Blink.msg = msg;
   Blink.cb = cb;
   Blink.handlers = handlers;
+  connect();
 
   // JS eval
 
