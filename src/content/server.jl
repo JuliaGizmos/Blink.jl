@@ -41,7 +41,11 @@ function ws_handler(ws)
 
   p.sock = ws
   @async @errs get(handlers(p), "init", identity)(p)
-  put!(p.cb, true)
+  try
+    put!(p.cb, true)
+  catch e
+    @warn e
+  end
   for msg in ws
     @errs handle_message(p, JSON.parse(String(msg)))
   end
