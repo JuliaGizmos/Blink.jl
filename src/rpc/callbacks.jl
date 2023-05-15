@@ -10,20 +10,26 @@ handle(f, o, t) = (handlers(o)[t] = f)
 
 # Callback Tasks
 
-const callbacks = Dict{Int,Condition}()
+const callbacks = Dict{Int,Threads.Condition}()
 
 const counter = Ref(0)
 
 function callback!()
   id = (counter[] += 1)
-  cb = Condition()
+  cb = Threads.Condition()
   callbacks[id] = cb
   return id, cb
 end
 
 function callback!(id, value = nothing)
   haskey(callbacks, id) || return
-  notify(callbacks[id], value)
+  c = callbacks[id]
+  lock(c)
+  try
+    notify(callbacks[id], value)
+  finally
+    unlock(c)
+  end
   delete!(callbacks, id)
   return
 end
