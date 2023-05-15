@@ -81,8 +81,13 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=fals
   return w
 end
 
-function initwindow!(w::Window, callback_cond::Condition)
-  initresult = wait(callback_cond)
+function initwindow!(w::Window, callback_cond::Threads.Condition)
+  lock(callback_cond)
+  initresult = try
+    wait(callback_cond)
+  finally
+    unlock(callback_cond)
+  end
   if isa(initresult, AbstractDict) && get(initresult, "type", "") == "error"
       throw(JSError(
         get(initresult, "name", "unknown"),

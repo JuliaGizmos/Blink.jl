@@ -47,7 +47,12 @@ function js(o, js::JSString; callback = true)
   msg(o, cmd)
 
   if callback
-      val = wait(cond)
+      lock(cond)
+      val = try
+        wait(cond)
+      finally
+        unlock(cond)
+      end
       if isa(val, AbstractDict) && get(val, "type", "") == "error"
           err = JSError(get(val, "name", "unknown"), get(val, "message", "blank"))
           throw(err)
