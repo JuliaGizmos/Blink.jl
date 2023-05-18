@@ -47,6 +47,7 @@ end
 import Base: Process
 
 export Electron
+const _electron = artifact"electronjs_app"
 
 mutable struct Electron <: Shell
   proc::Process
@@ -56,8 +57,15 @@ end
 
 Electron(proc, sock) = Electron(proc, sock, Dict())
 
-const _electron = artifact"electronjs_app"
-const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
+"""
+resolve_electron_asset(path...)
+
+Find a file, expressed as a relative path from the folder where
+the Electron artifact was extracted. Example:
+
+  resolve_electron_asset("julia.png") -> /home/<user>/.julia/artifacts/<git-tree-sha1>/julia.png
+"""
+resolve_electron_asset(path...) = abspath(joinpath(_electron, path...))
 
 function electron()
   if Sys.isapple()
@@ -82,11 +90,13 @@ function try_connect(args...; interval = 0.01, attempts = 500)
   end
 end
 
+const mainjs = resolve_blink_asset("src", "AtomShell", "main.js")
+
 function init(; debug = false)
   electron() # Check path exists
   p, dp = port(), port()
   debug && inspector(dp)
-  dbg = debug ? "--debug=$dp" : []
+  dbg = debug ? "--inspect=$dp" : []
   proc = (debug ? run_rdr : run)(`$(electron()) $dbg $mainjs port $p`; wait=false)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
