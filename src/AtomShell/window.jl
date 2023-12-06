@@ -1,5 +1,5 @@
 using ..Blink
-import Blink: js, id
+import Blink: js, id, stopserve
 import JSExpr: JSString, jsstring
 import Base: position, size, close
 
@@ -254,8 +254,14 @@ tools(win::Window) =
 front(win::Window) =
   @dot win showInactive()
 
-close(win::Window) =
+function close(win::Window; quit=false)
   @dot win close()
+  if quit
+    close(win.shell)
+    stopserve()
+  end
+
+end
 
 # Window content APIs
 

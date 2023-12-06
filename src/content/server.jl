@@ -62,11 +62,16 @@ http_default =
       Mux.notfound())
 
 const serving = Ref(false)
+const server = Ref{Mux.HTTP.Servers.Server}()
 
 function serve()
   serving[] && return
   serving[] = true
-  @async begin
-    Mux.serve(Mux.App(http_default), Mux.App(ws_handler), ip"127.0.0.1", port[])
-  end
+  server[] = Mux.serve(Mux.App(http_default), Mux.App(ws_handler), ip"127.0.0.1", port[])
+end
+
+function stopserve()
+  serving[] || return
+  serving[] = false
+  close(server[])
 end
