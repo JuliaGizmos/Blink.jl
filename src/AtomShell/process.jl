@@ -105,7 +105,7 @@ handlers(shell::Electron) = shell.handlers
 function initcbs(shell)
   enable_callbacks!(shell)
   @async begin
-    while active(shell)
+    while active(shell) && !eof(shell.sock)  # check for eof to prevent errors during shutdown
       @errs handle_message(shell, JSON.parse(shell.sock))
     end
   end
