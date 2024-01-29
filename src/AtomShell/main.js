@@ -77,6 +77,8 @@ app.on("ready", function() {
 // Window creation
 var windows = {};
 
+// opts are Electron BrowserWindow options and comUrl is the url to the local
+// server that will be used to communicate with the window.
 function createWindow(opts, comUrl) {
   var win = new BrowserWindow(opts);
   windows[win.id] = win;
@@ -85,8 +87,9 @@ function createWindow(opts, comUrl) {
 
     windows[win.id].comUrl = comUrl;
 
-    // load blink.js and webio.bundle.js
+    // load blink.js and webio.bundle.js whenever navigation is performed
     win.webContents.on('did-finish-load', function() {
+      // load files from the local server instead of provided url for content
       win.webContents.executeJavaScript(`
         // is blink.js already loaded?
         if (typeof Blink != 'object') {

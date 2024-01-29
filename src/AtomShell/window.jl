@@ -40,12 +40,12 @@ const window_defaults = Dict(
   :icon => resolve_blink_asset("deps", "julia.png")
 )
 
-raw_window(a::Electron, opts, comurl="") = @js a createWindow($(merge(window_defaults, opts)), $(comurl))
+raw_window(a::Electron, opts, comurl) = @js a createWindow($(merge(window_defaults, opts)), $(comurl))
 
 function Window(a::Shell, opts::AbstractDict = Dict(); async=false, body=nothing)
   # TODO: Custom urls don't support async b/c don't load Blink.js. (Same as https://github.com/JunoLab/Blink.jl/issues/150)
   window = haskey(opts, :url) ?
-    initwindowUrl(a, Page(), opts) :
+    initWindowUrl(a, Page(), opts) :
     Window(a, Page(), opts; async=async)
   isnothing(body) || body!(window, body)
   return window
@@ -70,7 +70,12 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=fals
   return w
 end
 
-function initwindowUrl(a, content, opts)
+"""
+    initWindowUrl(a::Shell, content::Page, opts::AbstractDict = Dict())
+
+  Builds window that loads content from specified url in opts.
+"""
+function initWindowUrl(a::Shell, content::Page, opts::AbstractDict = Dict())
   id, callback_cond = Blink.callback!()
   comurl = Blink.localurl(content) * "?callback=$id"
 
