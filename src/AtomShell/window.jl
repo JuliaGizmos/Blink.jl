@@ -40,12 +40,12 @@ const window_defaults = Dict(
   :icon => resolve_blink_asset("deps", "julia.png")
 )
 
-raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
+raw_window(a::Electron, opts, comurl="") = @js a createWindow($(merge(window_defaults, opts)), $(comurl))
 
 function Window(a::Shell, opts::AbstractDict = Dict(); async=false, body=nothing)
   # TODO: Custom urls don't support async b/c don't load Blink.js. (Same as https://github.com/JunoLab/Blink.jl/issues/150)
   window = haskey(opts, :url) ?
-    Window(raw_window(a, opts), a, nothing, nothing) :
+    initwindowUrl(a, Page(), opts) :
     Window(a, Page(), opts; async=async)
   isnothing(body) || body!(window, body)
   return window
@@ -57,8 +57,32 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=fals
 
   # Create the window.
   opts = merge(opts, Dict(:url => url))
-  w = Window(raw_window(a, opts), a, content, nothing)
+  w = Window(raw_window(a, opts, url), a, content, nothing)
 
+  initializeWindowAsync!(w, callback_cond)
+
+  if !async
+    wait(w)
+  end
+
+  isnothing(body) || body!(w, body)
+
+  return w
+end
+
+function initwindowUrl(a, content, opts)
+  id, callback_cond = Blink.callback!()
+  comurl = Blink.localurl(content) * "?callback=$id"
+
+  # supply url of server (comurl) since :url in opts is url to load content from
+  w = Window(raw_window(a, opts, comurl), a, content, nothing)
+
+  initializeWindowAsync!(w, callback_cond)
+
+  return w
+end
+
+function initializeWindowAsync!(w::Window, callback_cond::Threads.Condition)
   # Note: we have to use a task here because of the use of Condition throughout
   # the codebase (it might be better to use Channel or Future which are not
   # edge-triggered). We also need to initialize this after the Window
@@ -71,14 +95,6 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=fals
       exception=(exc, catch_backtrace()),
     )
   end
-
-  if !async
-    wait(w)
-  end
-
-  isnothing(body) || body!(w, body)
-
-  return w
 end
 
 function initwindow!(w::Window, callback_cond::Threads.Condition)

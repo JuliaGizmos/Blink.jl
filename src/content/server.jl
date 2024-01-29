@@ -42,7 +42,10 @@ function ws_handler(ws)
   p.sock = ws
   @async @errs get(handlers(p), "init", identity)(p)
   try
-    put!(p.cb, true)
+    # set only on first websocket connection initialization
+    if !isready(p.cb)
+      put!(p.cb, true)
+    end
   catch e
     @warn e
   end

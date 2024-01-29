@@ -77,11 +77,40 @@ app.on("ready", function() {
 // Window creation
 var windows = {};
 
-function createWindow(opts) {
+function createWindow(opts, comUrl) {
   var win = new BrowserWindow(opts);
   windows[win.id] = win;
   if (opts.url) {
     win.loadURL(opts.url);
+
+    windows[win.id].comUrl = comUrl;
+
+    // load blink.js and webio.bundle.js
+    win.webContents.on('did-finish-load', function() {
+      win.webContents.executeJavaScript(`
+        // is blink.js already loaded?
+        if (typeof Blink != 'object') {
+          var comUrl = '${comUrl ? comUrl : windows[win.id].comUrl}';
+          var port = comUrl.split(":").pop().split("/")[0];
+          var id = comUrl.split("/").pop()[0];
+          var urlParams = new URLSearchParams(comUrl);
+          var callback_id = urlParams.get('callback');
+
+          document.ws = comUrl.replace("http", "ws");
+
+          var script = document.createElement('script');
+          script.defer = true;
+          script.type = 'text/javascript';
+          script.src = 'http://localhost:' + port + '/blink.js';
+          document.head.appendChild(script);
+
+          var script = document.createElement('script');
+          script.type = 'text/javascript';
+          script.src =  'http://localhost:' + port + '/webio.bundle.js';
+          document.head.appendChild(script);
+        }
+      `);
+    });
   }
   win.setMenu(null);
 
