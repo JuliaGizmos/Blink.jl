@@ -19,6 +19,17 @@ w = Window(Blink.Dict(:show => false), async=false);
     @test (@js w document.getElementById("b").innerHTML) == "bye"
 end
 
+temp_dir = tempdir()
+temp_html = joinpath(temp_dir, "temp.html")
+write(temp_html, """<html><head><title>Test</title></head><body><div id="a">Test</div></body></html>""")
+w_url = Window(Blink.Dict(:url => "file://" * temp_html, :show => false), async=false);
+@testset "blink.js is included in document when using loadurl" begin
+    sleep(1) # wait for page to load
+
+    @test (@js w_url document.getElementById("a").innerHTML) == "Test"
+    @test (@js w_url [].filter.call(document.scripts, function (script) return script.src.includes("blink.js") end).length) == 1
+end
+
 
 # Test `fade` parameter and scripts:
 # Must create a new window to ensure javascript is reset.
