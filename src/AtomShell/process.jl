@@ -1,4 +1,4 @@
-using Lazy, JSON, MacroTools, Pkg.Artifacts
+using JSON, MacroTools, Pkg.Artifacts
 
 hascommand(c) =
   try read(`which $c`, String); true catch e false end

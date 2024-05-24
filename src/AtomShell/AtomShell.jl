@@ -1,6 +1,6 @@
 module AtomShell
 
-using ..Blink: resource
+using ..Blink: resource, @init, @errs
 using Sockets
 using WebIO
 

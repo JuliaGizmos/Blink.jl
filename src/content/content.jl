@@ -1,4 +1,4 @@
-using Mux, JSON, Lazy, Mustache
+using Mux, JSON, Mustache
 import HTTP: WebSocket
 import HTTP.WebSockets: isclosed
 
