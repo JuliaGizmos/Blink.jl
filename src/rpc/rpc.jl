@@ -1,5 +1,4 @@
 import JSExpr: @js, @js_str, JSString, jsstring, jsexpr, @var, @new
-using Lazy
 
 export js, @js, @js_, @var, @new
 

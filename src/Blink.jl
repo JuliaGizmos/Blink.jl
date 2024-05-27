@@ -9,6 +9,7 @@ using Logging
 using Base64: stringmime
 using WebIO
 
+include("lazy/lazy.jl")
 include("rpc/rpc.jl")
 include("content/content.jl")
 
