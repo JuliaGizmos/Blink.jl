@@ -1,5 +1,6 @@
-const {app, BrowserWindow} = require('electron')
-var net = require("net");
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const net = require("net");
+const path = require("path");
 
 function arg(name) {
   for (var i = 0; i < process.argv.length; i++) {
@@ -70,14 +71,26 @@ var port = parseInt(arg('port'));
 server.listen(port);
 
 app.on("ready", function() {
-  app.on('window-all-closed', function(e) {
-  });
+  app.on('window-all-closed', function(e) { /*  */ });
+  ipcMain.handle("dialog:openFile", (evt, opts) => dialog.showOpenDialog(evt.sender.getOwnerBrowserWindow(), opts));
+  ipcMain.handle("dialog:saveFile", (evt, opts) => dialog.showSaveDialog(evt.sender.getOwnerBrowserWindow(), opts));
 });
 
 // Window creation
 var windows = {};
 
 function createWindow(opts) {
+  // Store the user defined preload script(s), if any, to pass to our preload script.
+  let userPreloads = opts.webPreferences?.preload ?? [];
+  // Merge in the required scripts as additionalArguments and overwrite preload.
+  opts.webPreferences = { ...opts.webPreferences, ...{
+    additionalArguments: [
+      ...opts.webPreferences?.additionalArguments ?? [],
+      ...(Array.isArray(userPreloads) ? userPreloads : [userPreloads]).map(f => `--blink-preloadjs=${f}`)
+    ],
+    preload: path.join(__dirname, 'preload.js')
+  }};
+
   var win = new BrowserWindow(opts);
   windows[win.id] = win;
   if (opts.url) {

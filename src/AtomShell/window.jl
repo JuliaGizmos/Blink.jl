@@ -32,15 +32,26 @@ function Window end
 shell(win::Window) = win.shell
 id(win::Window) = win.id
 
+# Deep merge code adapted from the Discourse solutions given by
+# @hhaensel (https://discourse.julialang.org/t/multi-layer-dict-merge/27261/6), and
+# @MilesCranmer (https://discourse.julialang.org/t/multi-layer-dict-merge/27261/7)
+recursive_merge(x::AbstractDict...) = merge(recursive_merge, x...)
+#recursive_merge(x::AbstractVector...) = reduce(vcat, x)
+recursive_merge(x...) = last(x)
+# Whether or not we decide that vectors should be merged depends on the window_defaults.
+# Currently disabled (e.g. replace Vector values instead of concatenating them)
+
 const window_defaults = Dict(
   :url => "about:blank",
   :title => "Julia",
-  "node-integration" => false,
-  "use-content-size" => true,
-  :icon => resolve_blink_asset("deps", "julia.png")
+  :icon => resolve_electron_asset("julia.png"),
+  :webPreferences => Dict(
+    :nodeIntegration => false,
+    :useContentSize => true
+  )
 )
 
-raw_window(a::Electron, opts) = @js a createWindow($(merge(window_defaults, opts)))
+raw_window(a::Electron, opts) = @js a createWindow($(mergewith(recursive_merge, window_defaults, opts)))
 
 function Window(a::Shell, opts::AbstractDict = Dict(); async=false, body=nothing)
   # TODO: Custom urls don't support async b/c don't load Blink.js. (Same as https://github.com/JunoLab/Blink.jl/issues/150)
