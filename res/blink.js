@@ -5,6 +5,12 @@
   // Comms stuff
 
   var ws = location.href.replace("http", "ws");
+
+  // use specified url if it exists (supplied by createWindow opts)
+  if (document.ws) {
+    ws = document.ws;
+  }
+
   if (!/\/\d+$/.test(ws)) {
     ws += '/' + id;
   }
