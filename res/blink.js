@@ -4,9 +4,20 @@
 
   // Comms stuff
 
-  var ws = location.href.replace("http", "ws");
-  if (!/\/\d+$/.test(ws)) {
-    ws += '/' + id;
+  var href = (typeof window !== 'undefined' && window.location && window.location.href) ?
+    window.location.href :
+    null;
+  var ws = null;
+  if (href && /^https?:\/\//.test(href)) {
+    ws = href.replace(/^http/, "ws");
+    // Remove query string for the regex check
+    var wsBase = ws.split('?')[0];
+    ws = wsBase;
+    if (!/\/\d+$/.test(wsBase) && typeof id !== 'undefined') {
+      ws = wsBase + '/' + id;
+    }
+  } else {
+    console.error("[Blink] Unable to establish WebSocket: no http(s) location available", href);
   }
 
   function msg(t, m) {
@@ -18,7 +29,16 @@
 
 
   function connect() {
+    if (!ws) {
+      return;
+    }
     Blink.sock = new WebSocket(ws);
+    Blink.sock.onopen = function() {
+      if (typeof callback_id !== 'undefined' && !Blink._initCallbackSent) {
+        Blink._initCallbackSent = true;
+        cb(callback_id, true);
+      }
+    };
     Blink.sock.onmessage = onmessage;
     Blink.sock.onclose = function() {
       if (Blink.sock.readyState == 3) {
@@ -59,6 +79,7 @@
   Blink.msg = msg;
   Blink.cb = cb;
   Blink.handlers = handlers;
+  Blink._initCallbackSent = false;
   connect();
 
   // JS eval
@@ -157,8 +178,5 @@
 
   Blink.click = click;
 
-  // Window creation callback: Mark this window as done loading.
-  if (typeof callback_id !== 'undefined') {
-    Blink.sock.onopen = ()=>{ cb(callback_id, true); }
-  }
+  // Window creation callback is sent from connect()->onopen (once).
 })();

@@ -12,18 +12,37 @@ function arg(name) {
 var handlers = {};
 
 handlers.eval = function(data, c) {
-  var result = eval(data.code);
-  if (data.callback) {
-    result == undefined && (result = null);
-    result = {
-      type: 'callback',
-      data: {
-        callback: data.callback,
-        result: result
+  Promise.resolve()
+    .then(() => eval(data.code))
+    .then((result) => {
+      if (data.callback) {
+        result == undefined && (result = null);
+        c.write(JSON.stringify({
+          type: 'callback',
+          data: {
+            callback: data.callback,
+            result: result
+          }
+        }) + '\n');
       }
-    }
-    c.write(JSON.stringify(result));
-  }
+    })
+    .catch((exc) => {
+      console.error('[Blink] Eval error:', exc);
+      if (data.callback) {
+        c.write(JSON.stringify({
+          type: 'callback',
+          data: {
+            callback: data.callback,
+            result: {
+              type: 'error',
+              name: (exc && exc.name) ? exc.name : 'EvaluationError',
+              message: (exc && exc.message) ? exc.message : String(exc)
+            },
+            error: true
+          }
+        }) + '\n');
+      }
+    });
 }
 
 var server = net.createServer(function(c) { //'connection' listener
@@ -58,10 +77,25 @@ var server = net.createServer(function(c) { //'connection' listener
       console.error(`Unable to parse JSON message: ${exc}`);
       return;
     }
-    if (handlers.hasOwnProperty(data.type)) {
-      handlers[data.type](data, c);
-    } else {
-      throw "No such command: " + data.type;
+    try {
+      if (handlers.hasOwnProperty(data.type)) {
+        handlers[data.type](data, c);
+      } else {
+        console.error("No such command: " + data.type);
+      }
+    } catch (exc) {
+      console.error(`Error handling command ${data.type}: ${exc}`);
+      if (data.callback) {
+        var result = {
+          type: 'callback',
+          data: {
+            callback: data.callback,
+            result: { type: 'error', name: 'EvaluationError', message: String(exc) },
+            error: true
+          }
+        };
+        c.write(JSON.stringify(result) + '\n');
+      }
     }
   }
 });
@@ -77,13 +111,16 @@ app.on("ready", function() {
 // Window creation
 var windows = {};
 
-function createWindow(opts) {
+function _createWindow(opts) {
   var win = new BrowserWindow(opts);
   windows[win.id] = win;
   if (opts.url) {
     win.loadURL(opts.url);
   }
   win.setMenu(null);
+  if (process.env.BLINK_DEBUG) {
+    win.webContents.openDevTools({ mode: 'detach' });
+  }
 
   // Create a local variable that we'll use in
   // the closed event handler because the property
@@ -96,6 +133,15 @@ function createWindow(opts) {
   });
 
   return win.id;
+}
+
+function createWindow(opts) {
+  if (app.isReady()) {
+    return _createWindow(opts);
+  }
+  return app.whenReady().then(function() {
+    return _createWindow(opts);
+  });
 }
 
 function evalwith(obj, code) {

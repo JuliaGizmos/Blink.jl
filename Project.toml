@@ -20,7 +20,7 @@ WebIO = "0f1e0344-ec1d-5b48-a673-e5cf874b6c29"
 
 [compat]
 HTTP = "1.5.0"
-JSExpr = "0.5"
+JSExpr = "0.5 - 1"
 JSON = "0.21, 1.0"
 MacroTools = "0.4, 0.5"
 Mustache = "0.5, 1.0"

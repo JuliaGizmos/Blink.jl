@@ -98,15 +98,22 @@ end
 
 import ..Blink: msg, enable_callbacks!, handlers, handle_message, active
 
-msg(shell::Electron, m) = (JSON.print(shell.sock, m); println(shell.sock))
+msg(shell::Electron, m) = (JSON.print(shell.sock, m); println(shell.sock); flush(shell.sock))
 
 handlers(shell::Electron) = shell.handlers
 
 function initcbs(shell)
   enable_callbacks!(shell)
   @async begin
-    while active(shell) && !eof(shell.sock)  # check for eof to prevent errors during shutdown
-      @errs handle_message(shell, JSON.parse(shell.sock))
+    while active(shell) && isopen(shell.sock)
+      line = try
+        readline(shell.sock)
+      catch
+        break
+      end
+
+      isempty(strip(line)) && continue
+      @errs handle_message(shell, JSON.parse(line))
     end
   end
 end

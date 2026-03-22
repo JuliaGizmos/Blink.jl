@@ -42,7 +42,7 @@ end
 
 function msg(p::Page, m)
   active(p) || wait(p)
-  send(p.sock, json(m))
+  send(p.sock, JSON.json(m))
 end
 
 const pool = Dict{Int, WeakRef}()

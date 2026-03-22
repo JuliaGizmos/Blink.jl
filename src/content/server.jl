@@ -34,7 +34,8 @@ function page_handler(req)
 end
 
 function ws_handler(ws)
-  id = try parse(Int, split(ws.request.target, "/", keepempty=false)[end]) catch e @goto fail end
+  target_path = split(ws.request.target, "?", limit=2)[1]
+  id = try parse(Int, split(target_path, "/", keepempty=false)[end]) catch e @goto fail end
   haskey(pool, id) || @goto fail
   p = pool[id].value
   active(p) && @goto fail

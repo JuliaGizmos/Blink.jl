@@ -1,6 +1,6 @@
 using ..Blink
 import Blink: js, id, stopserve
-import JSExpr: JSString, jsstring
+import JSExpr: JSString, jsstring, crawl, deparse, JSAST, JSTerminal
 import Base: position, size, close
 
 export Window, flashframe, shell, progress, title,
@@ -81,13 +81,8 @@ function Window(a::Shell, content::Page, opts::AbstractDict = Dict(); async=fals
   return w
 end
 
-function initwindow!(w::Window, callback_cond::Threads.Condition)
-  lock(callback_cond)
-  initresult = try
-    wait(callback_cond)
-  finally
-    unlock(callback_cond)
-  end
+function initwindow!(w::Window, callback_cond)
+  initresult = Blink.wait_callback(callback_cond)
   if isa(initresult, AbstractDict) && get(initresult, "type", "") == "error"
       throw(JSError(
         get(initresult, "name", "unknown"),
@@ -103,17 +98,23 @@ dot(a::Electron, win::Integer, code; callback = true) =
   js(a, :(withwin($(win), $(jsstring(code)...))),
      callback = callback)
 
+dot(a::Electron, win::Integer, code::JSString; callback = true) =
+  js(a, JSString("withwin($win, \"$(escape_string(code.s))\")"),
+     callback = callback)
+
 dot(w::Window, code; callback = true) =
   ifelse(callback, dot(shell(w), id(w), code, callback = callback), w)
 
 dot_(args...) = dot(args..., callback = false)
 
 macro dot(win, code)
-  :(dot($(esc(win)), $(esc(Expr(:quote, Expr(:., :this, QuoteNode(code)))))))
+  js = Expr(:call, :deparse, crawl(Expr(:., :this, QuoteNode(code))))
+  :(dot($(esc(win)), $js))
 end
 
 macro dot_(win, code)
-  :(dot_($(esc(win)), $(esc(Expr(:quote, Expr(:., :this, QuoteNode(code)))))))
+  js = Expr(:call, :deparse, crawl(Expr(:., :this, QuoteNode(code))))
+  :(dot_($(esc(win)), $js))
 end
 
 # Base.* methods
