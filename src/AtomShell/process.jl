@@ -98,7 +98,19 @@ end
 
 import ..Blink: msg, enable_callbacks!, handlers, handle_message, active
 
-msg(shell::Electron, m) = (JSON.print(shell.sock, m); println(shell.sock))
+# Blink and Electron exchange newline-delimited JSON over `shell.sock`
+# (see the `data` handler in `main.js` for the other end)
+sendmsg(io::IO, m) = (jsonprint(io, m); println(io))
+
+function recvmsg(io::IO)
+  line = readline(io)
+  if isempty(line)
+    return nothing  # EOF, or a truncated read during shutdown
+  end
+  return jsonparse(line)
+end
+
+msg(shell::Electron, m) = sendmsg(shell.sock, m)
 
 handlers(shell::Electron) = shell.handlers
 
@@ -106,7 +118,10 @@ function initcbs(shell)
   enable_callbacks!(shell)
   @async begin
     while active(shell) && !eof(shell.sock)  # check for eof to prevent errors during shutdown
-      @errs handle_message(shell, JSON.parse(shell.sock))
+      @errs begin
+        m = recvmsg(shell.sock)
+        m !== nothing && handle_message(shell, m)
+      end
     end
   end
 end

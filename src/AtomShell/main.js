@@ -22,7 +22,8 @@ handlers.eval = function(data, c) {
         result: result
       }
     }
-    c.write(JSON.stringify(result));
+    // Messages are newline-delimited in both directions; see `process.jl`.
+    c.write(JSON.stringify(result) + '\n');
   }
 }
 

@@ -2,6 +2,8 @@ using Blink
 using Test
 using Sockets
 
+include("jsoncompat.jl");
+
 # IMPORTANT: Window(...) cannot appear inside of a @testset for as-of-yet
 # unknown reasons.
 

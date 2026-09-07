@@ -47,7 +47,7 @@ function ws_handler(ws)
     @warn e
   end
   for msg in ws
-    @errs handle_message(p, JSON.parse(String(msg)))
+    @errs handle_message(p, jsonparse(String(msg)))
   end
   return
 

@@ -1,7 +1,7 @@
 name = "Blink"
 uuid = "ad839575-38b3-5650-b840-f874b8c74a25"
 authors = []
-version = "0.12.9"
+version = "0.12.10"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -17,6 +17,10 @@ Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 Sockets = "6462fe0b-24de-5631-8697-dd941f90decc"
 WebIO = "0f1e0344-ec1d-5b48-a673-e5cf874b6c29"
+
+[sources]
+JSExpr = {rev = "jsonv1-compat", url = "https://github.com/fromelicks/JSExpr.jl"}
+WebIO = {rev = "jsonv1-compat", url = "https://github.com/fromelicks/WebIO.jl"}
 
 [compat]
 HTTP = "1.5.0"
