@@ -87,7 +87,10 @@ function init(; debug = false)
   p, dp = port(), port()
   debug && inspector(dp)
   dbg = debug ? "--debug=$dp" : []
-  proc = (debug ? run_rdr : run)(`$(electron()) $dbg $mainjs port $p`; wait=false)
+  # Electron defaults to X11 on Linux and exits when there is no X server;
+  # let it pick Wayland when that is what the session provides.
+  ozone = Sys.islinux() ? "--ozone-platform-hint=auto" : []
+  proc = (debug ? run_rdr : run)(`$(electron()) $ozone $dbg $mainjs port $p`; wait=false)
   conn = try_connect(ip"127.0.0.1", p)
   shell = Electron(proc, conn)
   initcbs(shell)
